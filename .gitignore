@@ -1,5 +1,6 @@
 node_modules/**/*
 .expo/*
+android/*
 npm-debug.*
 
 # @generated expo-cli sync-28e2ab0e9ece60556eaf932abe52d017ec33db50
