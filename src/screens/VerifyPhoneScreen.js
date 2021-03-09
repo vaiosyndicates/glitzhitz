@@ -9,10 +9,17 @@ import {sizeHeight, sizeWidth} from '../util/Size';
 
 import { deviceWidth, deviceHeight, shadowOpt, colors, fontSize } from '../styles/variables';
 import CodeInput from 'react-native-confirmation-code-input';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { showError } from '../util/ShowMessage';
 
-export default class VerifyPhoneScreen extends Component {
+class VerifyPhoneScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      otp: '',
+    }
+    const { navigation } = this.props;
   }
 
   render() {
@@ -33,7 +40,7 @@ export default class VerifyPhoneScreen extends Component {
         <CodeInput
           ref="codeInputRef1"
           className={'border-circle'}
-          codeLength={4}
+          codeLength={6}
           placeholder="1"
           inputPosition='center'
           activeColor={'#76908E'}
@@ -80,17 +87,58 @@ export default class VerifyPhoneScreen extends Component {
 
   _onFulfill(code) {
     // TODO
+    this.setState({otp: code})
   }
 
-  _handleVerify() {
+  async _handleVerify() {
     // TODO
-    this.props.navigation.navigate('StartNameScreen');
+
+    const data = {
+      phone: this.props.navigation.state.params.phone,
+      otp: this.state.otp,
+    };
+
+    try {
+      // console.log(data);
+      this.props.loading(true);
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/cek_otp', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+
+      if (response.data.status === 200) {
+
+        this.props.loading(false);
+        console.log(response);
+        // this.props.navigation.replace('SignInScreen');
+
+      } else {
+        this.props.loading(false);
+        showError('Wrong OTP Code');
+      }
+
+    } catch (error) {
+      this.props.loading(false);
+      console.log(error.response.data);
+    }
+    // this.props.navigation.navigate('StartNameScreen');
   }
 
   _handleResend() {
     // TODO
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loading: value => dispatch({ type: 'SET_LOADING', value: value })
+  }
+}
+
+export default connect(null, mapDispatchToProps)(VerifyPhoneScreen)
 
 const styles = StyleSheet.create({
   titleBox: {

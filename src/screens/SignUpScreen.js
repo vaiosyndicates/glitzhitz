@@ -143,7 +143,6 @@ class SignUpScreen extends Component {
   }
 
   async _handleClickSignUpButton() {
-    //this.props.navigation.navigate('StartNameScreen');
     this.props.loading(true);
     const data = {
       name: this.state.name,
@@ -157,21 +156,18 @@ class SignUpScreen extends Component {
 
     try {
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/add',
-        data,
+        'http://api.glitzandhitz.com/index.php/User/add', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
       );
 
       if (response.data.status === 200) {
 
         this.props.loading(false);
-        this.setState({name: ''});
-        this.setState({phone: ''});
-        this.setState({address: ''});
-        this.setState({email: ''});
-        this.setState({gender: ''});
-        this.setState({password: ''});
+        this.props.navigation.navigate('VerifyPhoneScreen', data);
 
-        console.log(response.data);
       } else {
         this.props.loading(false);
         showError(response.data.message)
@@ -179,9 +175,9 @@ class SignUpScreen extends Component {
 
     } catch (error) {
       this.props.loading(false);
-      console.log(error);
+      console.log(error.response);
+      showError(error.message);
     }
-    // this.props.navigation.navigate('VerifyPhoneScreen');
   }
 
   _handleClickSignIn() {
