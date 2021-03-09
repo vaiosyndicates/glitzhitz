@@ -20,6 +20,7 @@ class VerifyPhoneScreen extends Component {
       otp: '',
     }
     const { navigation } = this.props;
+    console.log(this.props);
   }
 
   render() {

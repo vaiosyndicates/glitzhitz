@@ -10,11 +10,17 @@ import CommonStyles from '../styles/CommonStyles';
 import { deviceWidth, deviceHeight, shadowOpt, colors } from '../styles/variables';
 
 import SignUpScreen from './SignUpScreen';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { showError } from '../util/ShowMessage';
 // import SignInScreen from './SignInScreen';
 
-export default class ForgotPasswordScreen extends Component {
+class ForgotPasswordScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      phone : '',
+    }
   }
 
   render() {
@@ -39,9 +45,10 @@ export default class ForgotPasswordScreen extends Component {
               style={{position:'absolute',bottom: 12,left: 20,width: 22, height: 17}}
             />
             <TextInput
-              placeholder='Email'
+              placeholder='Phone'
               style={CommonStyles.textInput}
               underlineColorAndroid='transparent'
+              onChangeText={text => this.setState({phone: text})}
             />
           </View>
         </View>
@@ -67,15 +74,39 @@ export default class ForgotPasswordScreen extends Component {
     );
   }
 
-  _handleResetPassword() {
-    // const screen = SignInScreen;
-    // const params = null;
-    // const path = null; 
-    // const { router } = screen;
-    // const action = path && router.getActionForPathAndParams(path, params);
+  async _handleResetPassword() {
+    this.props.loading(true);
 
-    // this.props.navigation.navigate('SignInScreen', {}, action);
-    this.props.navigation.navigate('SignInScreen');
+    const data = {
+      phone: this.state.phone,
+      action: 'forgot',
+    }
+    // console.log(data);
+    try {
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/forgot_password', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+
+      if (response.data.status === 200) {
+
+        this.props.loading(false);
+        console.log(response);
+        this.props.navigation.navigate('VerifyPhoneScreen', data);
+
+
+      } else {
+        this.props.loading(false);
+        showError('Wrong Phone Number');
+      }
+    } catch (error) {
+      this.props.loading(false);
+      console.log(error.response);
+      showError(error.message);
+    }
   }
 
   _handleClickSignUp() {
@@ -88,6 +119,14 @@ export default class ForgotPasswordScreen extends Component {
     this.props.navigation.navigate('SignUpScreen', {}, action);
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loading: value => dispatch({ type: 'SET_LOADING', value: value })
+  }
+}
+
+export default connect(null, mapDispatchToProps)(ForgotPasswordScreen)
 
 const styles = StyleSheet.create({
   titleBox: {
