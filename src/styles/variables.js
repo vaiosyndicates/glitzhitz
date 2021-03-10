@@ -37,6 +37,7 @@ const colors = {
   periBlue: 'rgb(79,109,230)',
   red: 'rgb(255,16,0)',
   borderColor: 'rgb(229,229,229)',
+  borderViolet: '#bb5fff',
   alert: '#E06379',
   green1: '#0BCAD4',
 } 

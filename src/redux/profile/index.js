@@ -5,12 +5,14 @@ const initialState = {
     phone_number: null,
     email: null,
     gender: null,
+    birthday: null,
   },
 };
 
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SAVE_USER':
+
       return {
         ...state,
         isLogin: true,
@@ -18,12 +20,22 @@ const profileReducer = (state = initialState, action) => {
           ...state.profile,
           name: action.value.name,
           address: action.value.address,
-          phone_number: action.value.phone_number,
+          phone_number: action.value.phone,
           email: action.value.email,
           gender: action.value.gender,
+          birthday: action.value.birth,
         },
       };
 
+    case 'UPDATE_BIRTH':
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          birthday: action.value.birthday,
+        },
+      };
+      
     default:
       break;
   }

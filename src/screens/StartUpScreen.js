@@ -35,7 +35,7 @@ class StartUpScreen extends Component {
     }
 
     setTimeout(() => {
-      this.props.navigation.navigate('IntroOneScreen');
+      this.props.navigation.navigate('GetStartedScreen');
     }, 2000);
 
     return (
@@ -48,8 +48,8 @@ class StartUpScreen extends Component {
         }}
       >
         <Image
-          source={require('../../img/healer/logoHealer.png')}
-          style={{width: 202, height: 51}}
+          source={require('../../img/glitz/logo_glitz.png')}
+          style={{width: 202, height: 171}}
         />
       </View>
     );

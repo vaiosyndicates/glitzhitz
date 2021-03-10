@@ -52,6 +52,7 @@ import NewsCommentScreen from '../screens/NewsCommentScreen';
 import BookmarkScreen from '../screens/BookmarkScreen';
 import IndicatorsDetailsScreen from '../screens/IndicatorsDetailsScreen';
 import ChangePassword from '../screens/ChangePassword';
+import GetStarted from '../screens/GetStarted';
 
 import CartScreen from '../screens/CartScreen';
 import BillingScreen from '../screens/BillingScreen';
@@ -83,6 +84,9 @@ const AppRouter = StackRouter(
     },
     ChangePasswordScreen: {
       screen: ChangePassword,
+    },
+    GetStartedScreen: {
+      screen: GetStarted,
     },
     StartNameScreen: {
       screen: StartNameScreen,

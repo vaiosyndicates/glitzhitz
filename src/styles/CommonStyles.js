@@ -80,7 +80,7 @@ export default CommonStyles = StyleSheet.create({
     width: deviceWidth - 55,
     height: 45,
     marginBottom: 25,
-    borderColor: colors.borderColor,
+    borderColor: colors.borderViolet,
     borderWidth: 1,
     borderStyle: 'solid',
     borderRadius: 50,
