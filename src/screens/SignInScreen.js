@@ -37,14 +37,8 @@ class SignInScreen extends Component {
           <View style={styles.formBox}>
             <View style={CommonStyles.textInputField}>
               <Image
-                source={require('../../img/healer/avatar.png')}
-                style={{
-                  position:'absolute',
-                  bottom: 12,
-                  left: 20,
-                  width: 19,
-                  height: 22
-                }}
+               source={require('../../img/healer/envelope.png')}
+               style={{position:'absolute',bottom: 12,left: 20,width: 22, height: 17}}
               />
               <TextInput
                 placeholder='Email'
@@ -63,17 +57,8 @@ class SignInScreen extends Component {
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
                 onChangeText={text => this.setState({password: text})}
+                secureTextEntry
               />
-            </View>
-            <View style={styles.subFormBox}>
-              <TouchableHighlight
-                underlayColor={'transparent'}
-                onPress={() => this._handleClickFortgotPass()}>
-                <Image
-                  source={require('../../img/healer/icForgotPass.png')}
-                  style={{width: 40, height: 40}}
-                />
-              </TouchableHighlight>
             </View>
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
@@ -81,7 +66,24 @@ class SignInScreen extends Component {
               onPressButton={this._onLoggedIn.bind(this)}
               setting={shadowOpt}
               btnText="SIGN IN"
+              disabled={
+                this.state.email.length < 3 ||
+                this.state.password.length < 3
+                  ? true
+                  : false
+              }
             />
+          </View>
+          <View style={styles.noteBoxes}>
+            <Text normal lightGrey regular>
+              Forgot Password?
+              <Text> </Text>
+              <Text
+                style={{color: colors.softBlue}}
+                onPress={() => this._handleClickFortgotPass()}>
+                FORGOT
+              </Text>
+            </Text>
           </View>
           <View style={styles.noteBox}>
             <Text normal lightGrey regular>
@@ -184,5 +186,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 15,
+  },
+  noteBoxes: {
+    alignItems: 'center',
+    marginTop: -55,
   }
 });

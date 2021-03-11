@@ -22,7 +22,7 @@ const ChangePassword = ({navigation}) => {
       otp: navigation.state.params.otp,
       password: password
     }
-    console.log(data);
+    
     try {
       dispatch({type: 'SET_LOADING', value: false});
       const response = await axios.put(
@@ -36,7 +36,7 @@ const ChangePassword = ({navigation}) => {
       if (response.status === 200) {
 
         dispatch({type: 'SET_LOADING', value: false});
-        showSuccess('Registration Success');
+        showSuccess('Change Password Success');
         setTimeout(() => {
           navigation.dispatch(resetAction); 
         }, 2000);

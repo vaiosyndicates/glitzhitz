@@ -130,8 +130,34 @@ class VerifyPhoneScreen extends Component {
     }
   }
 
-  _handleResend() {
+  async _handleResend() {
     // TODO
+    const data = {
+      phone: this.props.navigation.state.params.phone
+    }
+
+    try {
+      this.props.loading(true);
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/resend_otp', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+      
+      if(response.status === 200) {
+        this.props.loading(false);
+        showSuccess('OTP Re-send')
+      } else {
+        this.props.loading(false);
+        showError(response.message)
+      }
+
+    } catch (error) {
+      this.props.loading(false);
+      showError(error.message)
+    }
   }
 }
 

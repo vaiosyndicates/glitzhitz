@@ -27,10 +27,6 @@ class ForgotPasswordScreen extends Component {
   render() {
     return (
       <View style={CommonStyles.normalSinglePage}>
-        <PrimeNavigationBar
-          navigation={this.props.navigation}
-          back
-        />
         <View style={styles.titleBox}>
           <Text extraLarge black semiBold>MOBILE NUMBER</Text>
         </View>
@@ -145,6 +141,6 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     marginLeft:10,
     backgroundColor: 'red',
-    width: '25%'
+    width: '15%',
   }
 });
