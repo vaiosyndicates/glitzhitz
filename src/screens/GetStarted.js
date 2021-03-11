@@ -32,13 +32,13 @@ const GetStarted = ({navigation}) => {
             <View style={styles.buttonGroup}>
               <GradientButton
                 setting={shadowOpt}
-                btnText="LOGIN"
+                btnText="SIGN IN"
                 onPressButton={() => navigation.navigate('SignInScreen')}
                 disabled= {false}/>
                 <Text style={{height: 45}} />
               <GradientButton
                 setting={shadowOpt}
-                btnText="SIGNUP"
+                btnText="SIGN UP"
                 onPressButton={() => navigation.navigate('SignUpScreen')}
                 disabled= {false}/>
             </View>

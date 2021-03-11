@@ -37,6 +37,10 @@ class TextElement extends Component {
             fontSize: fontSize.header,
             lineHeight: lineHeight.header
           },
+          this.props.region && {
+            fontSize: fontSize.region,
+            lineHeight: lineHeight.header
+          },
           this.props.itemHeader && {
             fontSize: fontSize.itemHeader,
             lineHeight: lineHeight.itemHeader

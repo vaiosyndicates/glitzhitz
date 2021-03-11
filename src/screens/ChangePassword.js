@@ -7,6 +7,8 @@ import CheckBox from '../elements/CheckBox';
 import { deviceHeight, shadowOpt, colors } from '../styles/variables';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import {resetAction} from '../util/ResetRouting';
+import { showError, showSuccess } from '../util/ShowMessage';
 
 const ChangePassword = ({navigation}) => {
   const [password, setPassword] = useState('');
@@ -14,9 +16,40 @@ const ChangePassword = ({navigation}) => {
   const dispatch = useDispatch();
 
   const handleChangePW = async () => {
-    // dispatch({type: 'SET_LOADING', value: true});
-    console.log(password);
-    console.log(navigation);
+    dispatch({type: 'SET_LOADING', value: true});
+    const data = {
+      phone: navigation.state.params.phone,
+      otp: navigation.state.params.otp,
+      password: password
+    }
+    console.log(data);
+    try {
+      dispatch({type: 'SET_LOADING', value: false});
+      const response = await axios.put(
+        'http://api.glitzandhitz.com/index.php/User/change_password', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+      
+      if (response.status === 200) {
+
+        dispatch({type: 'SET_LOADING', value: false});
+        showSuccess('Registration Success');
+        setTimeout(() => {
+          navigation.dispatch(resetAction); 
+        }, 2000);
+
+      } else {
+        dispatch({type: 'SET_LOADING', value: false});
+        showError(response.message)
+      }
+
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      showError(error.message);
+    }
   }
 
   return (

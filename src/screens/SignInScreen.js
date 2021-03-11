@@ -10,13 +10,20 @@ import { deviceWidth, deviceHeight, shadowOpt, colors } from '../styles/variable
 import CommonStyles from '../styles/CommonStyles';
 import SignUpScreen from './SignUpScreen';
 import ForgotPasswordScreen from './ForgotPasswordScreen';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { showError } from '../util/ShowMessage';
+import { resetLogin } from '../util/ResetRouting';
 
 // @inject('sampleStore')
-export default class SignInScreen extends Component {
+class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      remember: false
+      remember: false,
+      email: '',
+      password: '',
+
     };
   }
 
@@ -40,9 +47,10 @@ export default class SignInScreen extends Component {
                 }}
               />
               <TextInput
-                placeholder='Username'
+                placeholder='Email'
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
+                onChangeText={text => this.setState({email: text})}
               />
             </View>
             <View style={CommonStyles.textInputField}>
@@ -54,16 +62,10 @@ export default class SignInScreen extends Component {
                 placeholder='Password'
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
+                onChangeText={text => this.setState({password: text})}
               />
             </View>
             <View style={styles.subFormBox}>
-              <CheckBox
-                label='remember me'
-                checked={this.state.remember}
-                onChange={(checked) => this.setState({remember: !this.state.remember}) }
-                checkedImage={require('../../img/healer/check.png')}
-                uncheckedImage={require('../../img/healer/icUncheck.png')}
-              />
               <TouchableHighlight
                 underlayColor={'transparent'}
                 onPress={() => this._handleClickFortgotPass()}>
@@ -76,16 +78,9 @@ export default class SignInScreen extends Component {
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
             <GradientButton
-              onPressButton={this._goToSignUpScreen.bind(this)}
+              onPressButton={this._onLoggedIn.bind(this)}
               setting={shadowOpt}
               btnText="SIGN IN"
-            />
-          </View>
-          <View style={CommonStyles.buttonBox}>
-            <GradientButton
-              onPressButton={this._goToSignUpScreen.bind(this)}
-              setting={shadowOpt}
-              btnText="Sign In with Facebook"
             />
           </View>
           <View style={styles.noteBox}>
@@ -107,11 +102,51 @@ export default class SignInScreen extends Component {
   _goToSignUpScreen() {
     this.props.navigation.navigate('SignUpScreen');
   }
+  
+  async _onLoggedIn() {
+    const data = {
+      email: this.state.email,
+      password: this.state.password,
+    }
+    // console.log(data);
+    try {
+      this.props.loading(true);
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/login', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+
+      if (response.status === 200) {
+
+        this.props.loading(false);
+        this.props.navigation.dispatch(resetLogin); 
+
+      } else {
+        this.props.loading(false);
+        showError(response.message)
+      }
+
+    } catch (error) {
+      this.props.loading(false);
+      showError(error.message);
+    }
+  }
 
   _handleClickFortgotPass() {
     this.props.navigation.navigate('ForgotPasswordScreen');
   }
 }
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loading: value => dispatch({ type: 'SET_LOADING', value: value })
+  }
+}
+
+export default connect(null, mapDispatchToProps)(SignInScreen)
 
 const ELEMENT_HEIGHT = 377;
 const spaceHeight = deviceHeight - ELEMENT_HEIGHT;

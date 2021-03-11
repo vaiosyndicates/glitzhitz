@@ -19,6 +19,7 @@ class ForgotPasswordScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      region: '0',
       phone : '',
     }
   }
@@ -31,19 +32,11 @@ class ForgotPasswordScreen extends Component {
           back
         />
         <View style={styles.titleBox}>
-          <Text header black semiBold>FORGOT PASSWORD</Text>
-          <Text normal grey regular
-            style={{width: deviceWidth - 70, marginTop: 15, textAlign: 'center'}}
-          >
-            We just need your registered Email to  send you password reset intruction
-          </Text>
+          <Text extraLarge black semiBold>MOBILE NUMBER</Text>
         </View>
         <View style={styles.formBox}>
           <View style={CommonStyles.textInputField}>
-            <Image
-              source={require('../../img/healer/envelope.png')}
-              style={{position:'absolute',bottom: 12,left: 20,width: 22, height: 17}}
-            />
+            <Text region style={styles.region} >+62</Text>
             <TextInput
               placeholder='Phone'
               style={CommonStyles.textInput}
@@ -51,6 +44,11 @@ class ForgotPasswordScreen extends Component {
               onChangeText={text => this.setState({phone: text})}
             />
           </View>
+          <Text normal grey regular
+            style={{width: deviceWidth - 70, marginBottom: 65, textAlign: 'left'}}
+          >
+            Lost access to your number?
+          </Text>
         </View>
         <View style={CommonStyles.buttonBox}>
           <GradientButton
@@ -78,7 +76,7 @@ class ForgotPasswordScreen extends Component {
     this.props.loading(true);
 
     const data = {
-      phone: this.state.phone,
+      phone: this.state.region + this.state.phone,
       action: 'forgot',
     }
     // console.log(data);
@@ -94,17 +92,15 @@ class ForgotPasswordScreen extends Component {
       if (response.data.status === 200) {
 
         this.props.loading(false);
-        console.log(response);
         this.props.navigation.navigate('VerifyPhoneScreen', data);
 
-
       } else {
+        
         this.props.loading(false);
         showError('Wrong Phone Number');
       }
     } catch (error) {
       this.props.loading(false);
-      console.log(error.response);
       showError(error.message);
     }
   }
@@ -144,5 +140,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 15,
+  },
+  region: {
+    paddingTop: 5,
+    marginLeft:10,
+    backgroundColor: 'red',
+    width: '25%'
   }
 });

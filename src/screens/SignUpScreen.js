@@ -157,6 +157,7 @@ class SignUpScreen extends Component {
                   this.state.address.length < 3 ||
                   this.state.email.length < 3 ||
                   this.state.gender.length < 3 ||
+                  this.state.birth.length < 3 ||
                   this.state.password.length < 3
                     ? true
                     : false
@@ -190,12 +191,13 @@ class SignUpScreen extends Component {
       password: this.state.password,
       birth: this.state.birth,
       android_device_id: DeviceInfo.getUniqueId(),
+      action: 'register',
     };
-
+    // console.log(data);
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.myhosterid.com/index.php/User/add', data, {
+        'http://api.glitzandhitz.com/index.php/User/add', data, {
           headers: {
             Accept: 'application/json',
           }

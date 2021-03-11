@@ -25,7 +25,8 @@ export default class MoreModal extends Component {
     Animated.timing(
       this.state.opacity, {
         toValue: show ? 1 : 0,
-        duration: !this.props.noAnimation ? duration : 0
+        duration: !this.props.noAnimation ? duration : 0,
+        useNativeDriver: true
       }
     ).start();
   }

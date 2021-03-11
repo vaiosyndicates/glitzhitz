@@ -106,7 +106,8 @@ class ScalingDrawer extends Component {
       {
         toValue: 1,
         duration: this.props.duration || 250,
-        Easing: Easing.linear
+        Easing: Easing.linear,
+        useNativeDriver: true
       }
     ).start();
   }

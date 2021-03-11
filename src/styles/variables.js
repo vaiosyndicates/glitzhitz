@@ -54,6 +54,7 @@ const fontFamily = {
 let fontSize = {
   extraLarge: 32,
   title: 30,
+  region: 22,
   header: 18,
   itemHeader: 17,
   medium: 16,

@@ -11,7 +11,9 @@ import { deviceWidth, deviceHeight, shadowOpt, colors, fontSize } from '../style
 import CodeInput from 'react-native-confirmation-code-input';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { showError } from '../util/ShowMessage';
+import { showError, showSuccess } from '../util/ShowMessage';
+import { NavigationActions, StackActions } from 'react-navigation';
+import {resetAction} from '../util/ResetRouting';
 
 class VerifyPhoneScreen extends Component {
   constructor(props) {
@@ -19,17 +21,11 @@ class VerifyPhoneScreen extends Component {
     this.state = {
       otp: '',
     }
-    const { navigation } = this.props;
-    console.log(this.props);
   }
 
-  render() {
+  render() {    
     return (
       <View style={[CommonStyles.normalPage, {flex: 0}]}>
-        <PrimeNavigationBar
-          navigation={this.props.navigation}
-          back
-        />
         <View style={styles.titleBox}>
           <Text header black semiBold >Verify Phone</Text>
           <Text normal grey regular
@@ -93,14 +89,14 @@ class VerifyPhoneScreen extends Component {
 
   async _handleVerify() {
     // TODO
-
+    const action = this.props.navigation.state.params.action;
+    const { navigation } = this.props;
     const data = {
       phone: this.props.navigation.state.params.phone,
       otp: this.state.otp,
     };
 
     try {
-      // console.log(data);
       this.props.loading(true);
       const response = await axios.post(
         'http://api.glitzandhitz.com/index.php/User/cek_otp', data, {
@@ -111,10 +107,17 @@ class VerifyPhoneScreen extends Component {
       );
 
       if (response.data.status === 200) {
-
         this.props.loading(false);
-        console.log(response);
-        // this.props.navigation.replace('SignInScreen');
+
+        if(action === 'register') {
+          showSuccess('Registration Success');
+          setTimeout(() => {
+            navigation.dispatch(resetAction); 
+          }, 2000);
+
+        } else if(action === 'forgot') {
+          this.props.navigation.navigate('ChangePasswordScreen', data);
+        }
 
       } else {
         this.props.loading(false);
@@ -123,9 +126,8 @@ class VerifyPhoneScreen extends Component {
 
     } catch (error) {
       this.props.loading(false);
-      console.log(error.response.data);
+      console.log(error);
     }
-    // this.props.navigation.navigate('StartNameScreen');
   }
 
   _handleResend() {
