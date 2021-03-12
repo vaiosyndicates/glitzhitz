@@ -5,7 +5,9 @@ import * as Font from 'expo-font';
 
 import IntroOneScreen from './IntroOneScreen';
 import StartHeightScreen from './StartHeightScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
+import { resetLogin } from '../util/ResetRouting';
 
 class StartUpScreen extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class StartUpScreen extends Component {
 
     this.state = {
       fontLoaded: false,
+      didLoaded: true,
     }
   }
 
@@ -25,6 +28,29 @@ class StartUpScreen extends Component {
       'Poppins-Bold': require('../../assets/fonts/Poppins-Bold.ttf'),
     });
     this.setState({ fontLoaded: true });
+    if(this.state.didLoaded == true) {
+      setTimeout(() => {
+        this._getToken();
+      }, 2000);
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({didLoaded: false});
+  }
+
+  async _getToken() {
+    try {
+      const value = await AsyncStorage.getItem('token')
+      let data;
+      if(value !== null) {
+        this.props.navigation.dispatch(resetLogin); 
+      } else {
+        this.props.navigation.navigate('GetStartedScreen');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -33,10 +59,6 @@ class StartUpScreen extends Component {
         <View />
       )
     }
-
-    setTimeout(() => {
-      this.props.navigation.navigate('GetStartedScreen');
-    }, 2000);
 
     return (
       <View

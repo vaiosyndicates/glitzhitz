@@ -14,6 +14,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
 import { resetLogin } from '../util/ResetRouting';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // @inject('sampleStore')
 class SignInScreen extends Component {
@@ -23,7 +24,7 @@ class SignInScreen extends Component {
       remember: false,
       email: '',
       password: '',
-
+      didLoaded: true,
     };
   }
 
@@ -120,12 +121,16 @@ class SignInScreen extends Component {
           }
         }
       );
-
       if (response.status === 200) {
 
         this.props.loading(false);
-        this.props.navigation.dispatch(resetLogin); 
+        try {
+          await AsyncStorage.setItem('token', response.data.data.token)
+          this.props.navigation.dispatch(resetLogin); 
 
+        } catch (error) {
+          showError(error)
+        }
       } else {
         this.props.loading(false);
         showError(response.message)
