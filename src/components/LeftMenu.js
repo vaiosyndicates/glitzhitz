@@ -4,6 +4,11 @@ import { NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import CommonStyles from '../styles/CommonStyles';
 import { deviceWidth, deviceHeight, colors, fontSize, fontFamily } from '../styles/variables';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showError, showSuccess } from '../util/ShowMessage';
+import { connect } from 'react-redux';
+import { resetLogout } from '../util/ResetRouting';
+import axios from 'axios';
 
 const resetAction = (routeName) => NavigationActions.reset({
   index: 0,
@@ -219,6 +224,7 @@ class LeftMenu extends Component {
 
           <TouchableHighlight
             style={styles.itemBox}
+            onPress={this._handleClickLogOut.bind(this)}
           >
             <Text style={styles.menuText}>LOG OUT</Text>
           </TouchableHighlight>
@@ -267,6 +273,58 @@ class LeftMenu extends Component {
     this.setState({isActive:'newHealthy'});
     this.props.navigation.navigate('HealerBlogsScreen');
     this.props.drawer.close()
+  }
+
+  async _handleClickLogOut() {
+    const token = this.props.authToken;
+    const data = {
+      token: token
+    };
+
+    try {
+      this.props.loading(true);
+      const response =  await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/add', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+
+      if(response.status === 200) {
+        this.props.loading(false);
+        try {
+          await AsyncStorage.removeItem('token')
+          this.props.clearProfile();
+          this.props.clearToken();
+          showSuccess('Logout Success');
+        } catch(e) {
+          showError(e)
+        }
+        setTimeout(() => {
+          this.props.navigation.dispatch(resetLogout); 
+        }, 2000);
+      } else {
+        this.props.loading(false);
+        showError('Logout Failed')
+      }
+
+    } catch(e) {
+      console.log(e);
+      showError('Logout Failed');
+    }
+  }
+}
+
+const mapStateToProps = (state) => ({
+  authToken: state.tokenReducer.authToken
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loading: value => dispatch({ type: 'SET_LOADING', value: value }),
+    clearProfile: value => dispatch({ type: 'CLEAR_PROFILE'}),
+    clearToken: value => dispatch({ type: 'CLEAR_TOKEN'})
   }
 }
 
@@ -357,4 +415,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LeftMenu;
+export default connect(mapStateToProps, mapDispatchToProps)(LeftMenu);

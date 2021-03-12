@@ -27,13 +27,9 @@ const profileReducer = (state = initialState, action) => {
         },
       };
 
-    case 'UPDATE_BIRTH':
+    case 'CLEAR_PROFILE':
       return {
-        ...state,
-        profile: {
-          ...state.profile,
-          birthday: action.value.birthday,
-        },
+        initialState
       };
       
     default:

@@ -7,9 +7,14 @@ const tokenReducer = (state = initialState, action) => {
     case 'ADD_TOKEN':
       return {
         ...state,
-        authToken: action.value[0].token,
+        authToken: action.value.token,
       };
 
+    case 'CLEAR_TOKEN':
+      return {
+        initialState,
+      };
+      
     default:
       break;
   }

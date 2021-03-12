@@ -44,7 +44,11 @@ class StartUpScreen extends Component {
       const value = await AsyncStorage.getItem('token')
       let data;
       if(value !== null) {
-        this.props.navigation.dispatch(resetLogin); 
+        const data = {
+          token: value
+        };
+        this.props.token(data);
+        this.props.navigation.dispatch(resetLogin);
       } else {
         this.props.navigation.navigate('GetStartedScreen');
       }
@@ -78,8 +82,10 @@ class StartUpScreen extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  authToken: state.tokenReducer.authToken
-});
+const mapDispatchToProps = dispatch => {
+  return {
+    token: value => dispatch({ type: 'ADD_TOKEN', value: value })
+  }
+}
 
-export default connect(mapStateToProps)(StartUpScreen)
+export default connect(null, mapDispatchToProps)(StartUpScreen)
