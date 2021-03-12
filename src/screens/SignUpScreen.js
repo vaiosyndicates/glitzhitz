@@ -26,7 +26,7 @@ class SignUpScreen extends Component {
       phone: '',
       address: '',
       email: '',
-      gender: 0,
+      gender: 'Male',
       birth: '',
       password: '',
       isDatePickerVisible: false,
@@ -35,8 +35,8 @@ class SignUpScreen extends Component {
 
   render() {
     let radio_props = [
-      {label: 'Male', value: 0 },
-      {label: 'Female', value: 1 }
+      {label: 'Male', value: 'Male' },
+      {label: 'Female', value: 'Female' }
     ];
     return (
       <View style={CommonStyles.normalSinglePage}>
@@ -217,7 +217,6 @@ class SignUpScreen extends Component {
 
     } catch (error) {
       this.props.loading(false);
-      console.log(error);
       showError(error.message);
     }
   }
