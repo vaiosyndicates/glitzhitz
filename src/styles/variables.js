@@ -40,6 +40,7 @@ const colors = {
   borderViolet: '#bb5fff',
   alert: '#E06379',
   green1: '#0BCAD4',
+  violet1: '#7224AC',
 } 
 
 const fontFamily = {

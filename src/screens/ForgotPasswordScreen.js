@@ -7,7 +7,7 @@ import PrimeNavigationBar from '../elements/PrimeNavigationBar';
 import CheckBox from '../elements/CheckBox';
 import CommonStyles from '../styles/CommonStyles';
 
-import { deviceWidth, deviceHeight, shadowOpt, colors } from '../styles/variables';
+import { deviceWidth, deviceHeight, shadowOpt, colors, fontSize, fontFamily } from '../styles/variables';
 
 import SignUpScreen from './SignUpScreen';
 import axios from 'axios';
@@ -31,14 +31,17 @@ class ForgotPasswordScreen extends Component {
           <Text extraLarge black semiBold>MOBILE NUMBER</Text>
         </View>
         <View style={styles.formBox}>
-          <View style={CommonStyles.textInputField}>
-            <Text region style={styles.region} >+62</Text>
-            <TextInput
-              placeholder='Phone'
-              style={CommonStyles.textInput}
-              underlineColorAndroid='transparent'
-              onChangeText={text => this.setState({phone: text})}
-            />
+          <View style={styles.forgotten}>
+            <View style={styles.regionArea}>
+              <Text style={styles.countryRegion}>+62</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <TextInput 
+                placeholder='00-0000-0000'
+                style={styles.inputs}
+                onChangeText={text => this.setState({phone: text})}
+              />
+            </View>
           </View>
           <Text normal grey regular
             style={{width: deviceWidth - 70, marginBottom: 65, textAlign: 'left'}}
@@ -51,6 +54,11 @@ class ForgotPasswordScreen extends Component {
             onPressButton={this._handleResetPassword.bind(this)}
             setting={shadowOpt}
             btnText="RESET PASSWORD"
+            disabled={
+              this.state.phone.length < 11 
+                ? true
+                : false
+            }
           />
         </View>
         <View style={styles.noteBox}>
@@ -142,5 +150,33 @@ const styles = StyleSheet.create({
     marginLeft:10,
     backgroundColor: 'red',
     width: '15%',
+  },
+  forgotten: {
+    flexDirection: 'row',
+    marginLeft: 5,
+    paddingBottom: 15,
+  },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: colors.borderViolet,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    width: '70%',
+  },
+  regionArea: {
+    height: 55,
+    backgroundColor: colors.violet1,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+  },
+  countryRegion: {
+    fontSize: fontSize.region,
+    fontFamily: fontFamily.medium,
+  },
+  inputs: {
+    fontSize: fontSize.region,
   }
 });
