@@ -4,53 +4,70 @@ import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight } from
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
 import CommonStyles from '../styles/CommonStyles';
-import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT } from '../styles/variables';
+import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT, fontSize, colors, fontFamily } from '../styles/variables';
 
 import MenuItemBox from '../components/MenuItemBox';
 import CustomTabBar from '../components/CustomTabBar';
+import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { showError } from '../util/ShowMessage';
 
-export default class MainServiceScreen extends Component {
+class MainServiceScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      didLoaded: true,
+      data: [],
+    }
+  }
+
+  async componentDidMount() {
+    if(this.state.didLoaded == true) {
+      try {
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/User');
+        if(response.status === 200){
+          const data = {
+            name: response.data.data.user[1].name,
+            phone: response.data.data.user[1].phone,
+            address: response.data.data.user[1].address,
+            email: response.data.data.user[1].email,
+            gender: response.data.data.user[1].gender,
+            birth: response.data.data.user[1].birth,
+          }
+          this.props.profile(data);
+
+        } else {
+          showError('Failed');
+        }
+      } catch (error) {
+        showError(error);
+      }
+     }
+  }
+
+  componentWillUnmount() {
+    this.setState({didLoaded: false});
   }
 
   render() {
     return (
       <View style={CommonStyles.normalPage}>
-        <GradientNavigationBar
-          navigation={this.props.navigation}
-          menu
-          titleImg={require('../../img/person/logoHealer2.png')}
-          titleImgStyle={{
-            width: 73,
-            height: 18,
-          }}
-          rightButtons={
-            [
-              {
-                key: 1,
-                buttonIcon: require('../../img/healer/email.png'),
-                buttonAction: this._handleClickEmailButton.bind(this),
-                buttonWidth: 24,
-                buttonHeight: 19,
-              },
-              {
-                key: 2,
-                buttonIcon: require('../../img/healer/notification.png'),
-                buttonAction: this._handleClickNotificationButton.bind(this),
-                buttonWidth: 19,
-                buttonHeight: 22,
-              }
-            ]
-          }
+        <View style={styles.imageContainer}>
+          <Image
+            source={require('../../img/glitz/logoWhite.png')}
+            style={{width: 100, height: 80}}
+          />
+        </View>
+        <LinearGradient
+          colors={['#C32DBC', '#AC25AF', '#981EA3', '#650C85', '#450072' ]}
+          style={styles.linearGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         />
-        <View style={styles.titleBox}>
-          <Text title black mediumBold style={{lineHeight: 49, marginBottom: 10}}>
-            Hello Money,
-          </Text>
-          <Text title lightGrey extraBold>
-            HOW CAN WE TAKE CARE YOURSELF?
-          </Text>
+        <View style={styles.personal}>
+          <Text style={styles.personalHellos}>Hello {this.props.getProfile.name}</Text>
+          <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
         <View style={styles.fullField}>
           <View style={styles.colMainLeft}>
@@ -127,6 +144,18 @@ export default class MainServiceScreen extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  getProfile: state.profileReducer.profile
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    profile: value => dispatch({ type: 'SAVE_USER', value: value })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainServiceScreen)
+
 MainServiceScreen.defaultNavigationOptions = {
   tabBarVisible: false,
 };
@@ -153,4 +182,29 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
   },
+  linearGradient: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '30%',
+  },
+  imageContainer: {
+    position: 'absolute',
+    zIndex: 1,
+    left: 155,
+    top: 30,
+  },
+  personal: {
+    marginTop: -70,
+    marginLeft: 15,
+  },
+  personalHellos: {
+    fontSize: fontSize.region,
+    color: colors.white,
+    fontFamily: fontFamily.medium,
+  },
+  personalAsk: {
+    fontSize: fontSize.header,
+    color: colors.white,
+    fontFamily: fontFamily.medium,
+  }
 });
