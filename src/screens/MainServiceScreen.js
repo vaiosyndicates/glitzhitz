@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight } from 'react-native';
+import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight, ScrollView } from 'react-native';
 
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
@@ -12,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class MainServiceScreen extends Component {
   constructor(props) {
@@ -25,7 +26,13 @@ class MainServiceScreen extends Component {
   async componentDidMount() {
     if(this.state.didLoaded == true) {
       try {
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/User');
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/User', {
+          headers: {
+            Authorization: tokenizer,
+          }
+        });
+        
         if(response.status === 200){
           const data = {
             name: response.data.data.user[1].name,
@@ -43,6 +50,27 @@ class MainServiceScreen extends Component {
       } catch (error) {
         showError(error);
       }
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/Service', {
+          headers: {
+            Authorization: tokenizer,
+          }
+        });
+
+        if(response.status === 200){
+          
+          this.setState({data: response.data.data.services})
+        } else {
+          this.setState({data: []})
+          showError('Failed');
+        }
+
+      } catch (error) {
+        console.log(error);
+        showError(error);
+      }
      }
   }
 
@@ -50,7 +78,22 @@ class MainServiceScreen extends Component {
     this.setState({didLoaded: false});
   }
 
+  findMiddle(){
+    const datas = this.state.data;
+    let mid = datas[Math.round((datas.length - 1) / 2)];
+    return datas.indexOf(mid);
+  }
+
+  splitArray() {
+    const datas = this.state.data;
+    let first = datas.slice(0, this.findMiddle());
+    let second = datas.slice(this.findMiddle() + 1);
+    return [first, second] ;
+  }
+  
+
   render() {
+    let  [first, second] = this.splitArray();
     return (
       <View style={CommonStyles.normalPage}>
         <View style={styles.imageContainer}>
@@ -66,47 +109,45 @@ class MainServiceScreen extends Component {
           end={{ x: 1, y: 1 }}
         />
         <View style={styles.personal}>
-          <Text style={styles.personalHellos}>Hello {this.props.getProfile.name}</Text>
+          <Text style={styles.personalHellos}>Hello User</Text>
           <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
+        <View style={{height: 14}} />
+        <ScrollView vertical>
         <View style={styles.fullField}>
           <View style={styles.colMainLeft}>
-            <MenuItemBox
-              header='Doctors'
-              subHeader='113 Doctors'
-              icon={require('../../img/healer/surgeonIcon.png')}
-              iconWidth={20}
-              iconHeight={26}
-              onPressCard={this._handleClickFindDoctor.bind(this)}
-            />
-            <MenuItemBox
-              header='Appointment'
-              subHeader='59 available'
-              icon={require('../../img/healer/medicineBookIcon.png')}
-              iconWidth={20}
-              iconHeight={26}
-              onPressCard={this._handleClickAppointment.bind(this)}
-            />
+            {first.map((current, i) => {
+              return (
+                <MenuItemBox
+                  header={current.name}
+                  // subHeader='113 Doctors'
+                  icon={require('../../img/healer/surgeonIcon.png')}
+                  iconWidth={20}
+                  iconHeight={26}
+                  ids={current.id_service}
+                  // onPressCard={this._handleClickFindDoctor.bind(this)}
+                />
+              );
+            })}
           </View>
           <View style={styles.colMainRight}>
-            <MenuItemBox
-              header='Hospitals'
-              subHeader='269 hospital'
-              icon={require('../../img/healer/hospital.png')}
-              iconWidth={26}
-              iconHeight={25}
-              onPressCard={this._handleClickFindHospital.bind(this)}
-            />
-            <MenuItemBox
-              header='Pricing'
-              subHeader='26 services'
-              icon={require('../../img/healer/clipboard1.png')}
-              iconWidth={22}
-              iconHeight={26}
-              onPressCard={this._handleClickServicePrice.bind(this)}
-            />
+            {second.map((current, i) => {
+                return (
+                  <MenuItemBox
+                    header={current.name}
+                    // subHeader='113 Doctors'
+                    icon={require('../../img/healer/surgeonIcon.png')}
+                    iconWidth={20}
+                    iconHeight={26}
+                    ids={current.id_service}
+                    // onPressCard={this._handleClickFindDoctor.bind(this)}
+                  />
+                );
+              })}
           </View>
         </View>
+        </ScrollView>
+        <View style={{height: 45}} />
         <CustomTabBar
           navigation={this.props.navigation}
           isActive='tabHome'
@@ -145,7 +186,8 @@ class MainServiceScreen extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  getProfile: state.profileReducer.profile
+  getProfile: state.profileReducer.profile,
+  getToken: state.tokenReducer.authToken
 });
 
 const mapDispatchToProps = dispatch => {

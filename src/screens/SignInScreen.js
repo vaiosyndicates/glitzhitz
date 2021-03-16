@@ -121,11 +121,13 @@ class SignInScreen extends Component {
           }
         }
       );
-      if (response.status === 200) {
+
+      if (response.data.status === 200) {
 
         this.props.loading(false);
         try {
           await AsyncStorage.setItem('token', response.data.data.token)
+          this.props.setToken(response.data.data.token);
           this.props.navigation.dispatch(resetLogin); 
 
         } catch (error) {
@@ -133,7 +135,7 @@ class SignInScreen extends Component {
         }
       } else {
         this.props.loading(false);
-        showError(response.message)
+        showError(response.data.message)
       }
 
     } catch (error) {
@@ -149,7 +151,8 @@ class SignInScreen extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loading: value => dispatch({ type: 'SET_LOADING', value: value })
+    loading: value => dispatch({ type: 'SET_LOADING', value: value }),
+    setToken: value => dispatch({ type: 'ADD_TOKEN', value: value }),
   }
 }
 

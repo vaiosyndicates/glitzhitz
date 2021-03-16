@@ -71,7 +71,6 @@ export default class PrimeTabBar extends Component {
               />
             }
           </TouchableOpacity>
-          <View style={styles.btn} />
           <TouchableOpacity
             activeOpacity={0.6}
             style={styles.btn}
@@ -119,19 +118,6 @@ export default class PrimeTabBar extends Component {
             }
           </TouchableOpacity>
         </View>
-        {
-          <TouchableOpacity
-            style={styles.inactiveHomeBtn}
-            onPress={this.props.tabHomeBtn.onPressButton}>
-            <Image
-              source={this.props.tabHomeBtn.inactive}
-              style={{
-                width: this.props.tabHomeBtn.width,
-                height: this.props.tabHomeBtn.height
-              }}
-            />
-          </TouchableOpacity>
-        }
       </View>
     );
   }
@@ -152,7 +138,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   btn: {
-    width: deviceWidth / 5,
+    width: deviceWidth / 4,
     height: TAB_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',

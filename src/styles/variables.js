@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 
 const NAV_HEIGHT = 45;
-const TAB_HEIGHT = 50;
+const TAB_HEIGHT = 45;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;

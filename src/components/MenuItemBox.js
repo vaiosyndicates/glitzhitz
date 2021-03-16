@@ -27,13 +27,16 @@ export default class MenuItemBox extends Component {
       <LinearGradient
         start={{x: 0.2, y: 0.2}} end={{x: 1.0, y: 2.0}}
         colors={['rgb(150,150,150)', 'rgb(105,105,105)']}
-        style={styles.card}>
+        style={styles.card}
+        key={`data-${ this.props.ids }`}>
         <TouchableHighlight
+          key={`data-${ this.props.ids }`}
           underlayColor={colors.softBlue}
           style={styles.highLightCard}
           onPress={this.props.onPressCard}>
-          <View>
+          <View key={`data-${ this.props.ids }`}>
             <Image
+              key={`data-${ this.props.ids }`}
               source={this.props.icon}
               style={[
                 styles.icon,

@@ -25,15 +25,15 @@ const ChangePassword = ({navigation}) => {
     
     try {
       dispatch({type: 'SET_LOADING', value: false});
-      const response = await axios.put(
+      const response = await axios.post(
         'http://api.glitzandhitz.com/index.php/User/change_password', data, {
           headers: {
             Accept: 'application/json',
           }
         }
       );
-      
-      if (response.status === 200) {
+      // console.log(response.data.status);
+      if (response.data.status === 200) {
 
         dispatch({type: 'SET_LOADING', value: false});
         showSuccess('Change Password Success');
