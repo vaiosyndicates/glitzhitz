@@ -97,7 +97,8 @@ export default class PrimeTabBar extends Component {
           <TouchableOpacity
             activeOpacity={0.6}
             style={styles.btn}
-            onPress={this.props.tabFourBtn.action}>
+            onPress={this.props.tabFourBtn.action}
+        >
             {this.props.isActive == 'tabFour' &&
               <Image
                 source={this.props.tabFourBtn.active}

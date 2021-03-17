@@ -9,8 +9,12 @@ import CommonStyles from '../styles/CommonStyles';
 import CustomTabBar from '../components/CustomTabBar';
 import ItemWithDetail from '../components/ItemWithDetail';
 import ProfileCard from '../components/user-profile/ProfileCard';
-
-export default class UserProfileScreen extends Component {
+import { connect } from 'react-redux';
+import { showError, showSuccess } from '../util/ShowMessage';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { resetLogout } from '../util/ResetRouting';
+class UserProfileScreen extends Component {
   constructor(props) {
     super(props);
   }
@@ -106,12 +110,12 @@ export default class UserProfileScreen extends Component {
             />
             <ItemWithDetail
               image={{
-                url: require('../../img/healer/umbrella.png'),
+                url: require('../../img/glitz/logout.png'),
                 width: 22,
                 height: 25 
               }}
-              header='Insurrance'
-              onPressItem={this._handleClickInsurrance.bind(this)}
+              header='Sign Out'
+              onPressItem={this._handleClickLogOut.bind(this)}
             />
           </View>
         </ScrollView>
@@ -141,7 +145,62 @@ export default class UserProfileScreen extends Component {
   _handleClickInsurrance() {
     this.props.navigation.navigate("InsurranceScreen");
   }
+
+  async _handleClickLogOut() {
+    const token = this.props.authToken;
+    const data = {
+      token: token
+    };
+
+    try {
+      this.props.loading(true);
+      const response =  await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/add', data, {
+          headers: {
+            Accept: 'application/json',
+          }
+        }
+      );
+
+      if(response.status === 200) {
+        this.props.loading(false);
+        try {
+          await AsyncStorage.removeItem('token');
+          this.props.clearProfile();
+          this.props.clearToken();
+          showSuccess('Logout Success');
+          setTimeout(() => {
+            this.props.navigation.dispatch(resetLogout); 
+          }, 2000);
+        } catch(e) {
+          showError(e)
+        }
+      } else {
+        this.props.loading(false);
+        showError('Logout Failed')
+      }
+
+    } catch(e) {
+      console.log(e);
+      showError('Logout Failed');
+    }
+  }
 }
+
+const mapStateToProps = (state) => ({
+  authToken: state.tokenReducer.authToken
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loading: value => dispatch({ type: 'SET_LOADING', value: value }),
+    clearProfile: value => dispatch({ type: 'CLEAR_PROFILE'}),
+    clearToken: value => dispatch({ type: 'CLEAR_TOKEN'})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfileScreen);
 
 UserProfileScreen.defaultNavigationOptions = {
   tabBarVisible: false,

@@ -17,7 +17,7 @@ export default class CustomTabBar extends Component {
           inactive: require('../../img/healer/drugs.png'),
           width: 24,
           height: 24,
-          // action: this._onDrugsIconClick.bind(this),
+          action: this. _onHomeIconClick.bind(this),
         }}
         tabTwoBtn={{
           active: require('../../img/healer/activeDoctors.png'),
@@ -38,16 +38,16 @@ export default class CustomTabBar extends Component {
           inactive: require('../../img/healer/profile.png'),
           width: 20,
           height: 24,
-          // action: this._onProfileIconClick.bind(this),
+          action: this._onProfileIconClick.bind(this),
         }}
       />
     );
   }
 
   // Handle click buttons of tabbar
-  // _onHomeIconClick() {
-  //   this.props.navigation.navigate('MainServiceScreen');
-  // }
+  _onHomeIconClick() {
+    this.props.navigation.navigate('MainServiceScreen');
+  }
 
   _onDrugsIconClick() {
     this.props.navigation.navigate('DrugScreen');

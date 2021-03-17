@@ -15,6 +15,9 @@ import { showError } from '../util/ShowMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class MainServiceScreen extends Component {
+  _isMounted = false;
+  signal = axios.CancelToken.source();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -24,13 +27,15 @@ class MainServiceScreen extends Component {
   }
 
   async componentDidMount() {
-    if(this.state.didLoaded == true) {
+    this._isMounted = true;
+    if(this._isMounted === true) {
       try {
         const tokenizer = await AsyncStorage.getItem('token')
         const response = await axios.get('http://api.glitzandhitz.com/index.php/User', {
           headers: {
             Authorization: tokenizer,
-          }
+          },
+          cancelToken: this.signal.token,
         });
         
         if(response.status === 200){
@@ -48,7 +53,11 @@ class MainServiceScreen extends Component {
           showError('Failed');
         }
       } catch (error) {
-        showError(error);
+        if (axios.isCancel(error)) {
+          console.log('Error: ', error.message);
+        } else {
+          showError(error);
+        }        
       }
 
       try {
@@ -56,7 +65,8 @@ class MainServiceScreen extends Component {
         const response = await axios.get('http://api.glitzandhitz.com/index.php/Service', {
           headers: {
             Authorization: tokenizer,
-          }
+          },
+          cancelToken: this.signal.token,
         });
 
         if(response.status === 200){
@@ -68,14 +78,19 @@ class MainServiceScreen extends Component {
         }
 
       } catch (error) {
-        console.log(error);
-        showError(error);
+        if (axios.isCancel(error)) {
+          console.log('Error: ', error.message);
+        } else {
+          showError(error);
+        }        
       }
      }
   }
 
   componentWillUnmount() {
     this.setState({didLoaded: false});
+    this._isMounted = false;
+    this.signal.cancel('Api is being canceled');
   }
 
   findMiddle(){
@@ -116,7 +131,7 @@ class MainServiceScreen extends Component {
         <ScrollView vertical>
         <View style={styles.fullField}>
           <View style={styles.colMainLeft}>
-            {first.map((current, i) => {
+            {first.length > 0 && first.map((current, i) => {
               return (
                 <MenuItemBox
                   header={current.name}
@@ -131,7 +146,7 @@ class MainServiceScreen extends Component {
             })}
           </View>
           <View style={styles.colMainRight}>
-            {second.map((current, i) => {
+            {second.length > 0 && second.map((current, i) => {
                 return (
                   <MenuItemBox
                     header={current.name}
