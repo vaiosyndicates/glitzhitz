@@ -41,6 +41,7 @@ const colors = {
   alert: '#E06379',
   green1: '#0BCAD4',
   violet1: '#7224AC',
+  blurry: 'rgba(0,0,0,0.35)',
 } 
 
 const fontFamily = {

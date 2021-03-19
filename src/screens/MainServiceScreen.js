@@ -140,7 +140,7 @@ class MainServiceScreen extends Component {
                   iconWidth={20}
                   iconHeight={26}
                   ids={current.id_service}
-                  // onPressCard={this._handleClickFindDoctor.bind(this)}
+                  onPressCard={this._handleClickShopping.bind(this)}
                 />
               );
             })}
@@ -155,7 +155,7 @@ class MainServiceScreen extends Component {
                     iconWidth={20}
                     iconHeight={26}
                     ids={current.id_service}
-                    // onPressCard={this._handleClickFindDoctor.bind(this)}
+                    onPressCard={this._handleClickShopping.bind(this)}
                   />
                 );
               })}
@@ -197,6 +197,10 @@ class MainServiceScreen extends Component {
   // Go to ServicePriceScreen
   _handleClickServicePrice() {
     this.props.navigation.navigate("ServicePriceScreen");
+  }
+
+  _handleClickShopping() {
+    this.props.navigation.navigate('ShoppingScreen');
   }
 }
 

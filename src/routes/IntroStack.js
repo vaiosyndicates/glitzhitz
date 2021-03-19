@@ -58,6 +58,7 @@ import CartScreen from '../screens/CartScreen';
 import BillingScreen from '../screens/BillingScreen';
 import VerifyPhoneScreen from '../screens/VerifyPhoneScreen';
 import { connect, useSelector } from 'react-redux';
+import ShoppingScreen from '../screens/ShoppingScreen';
 
 const AppRouter = StackRouter(
   {
@@ -105,6 +106,10 @@ const AppRouter = StackRouter(
     },
     MainServiceScreen: {
       screen: MainServiceScreen,
+      path: 'main_service',
+    },
+    ShoppingScreen: {
+      screen: ShoppingScreen,
       path: 'main_service',
     },
     DrugScreen: {
