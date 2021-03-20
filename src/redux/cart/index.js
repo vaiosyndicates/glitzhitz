@@ -5,7 +5,15 @@ const initialState = {
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'ADD_CART':
-      state.cart.push(action.value);
+      const ids = action.value.id;
+      const idy = state.cart.findIndex((el) => {
+        return el.id === ids;
+      });
+
+      if (idy === -1) {
+        state.cart.push(action.value);
+      }
+
       return {
         ...state,
         cart: state.cart,
@@ -20,11 +28,12 @@ const cartReducer = (state = initialState, action) => {
         if (idx !== -1) {
           state.cart.splice(idx, 1);
         }
+
         return {
           ...state,
-          cart: state.cart,
-        };     
-
+          cart: state.cart.filter(cart => cart.id !== id),
+        };
+  
     default:
       break;
   }

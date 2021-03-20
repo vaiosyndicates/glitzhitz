@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, ImageBackground,  Dimensions } from 'react-native'
 import Accordions from '../components/Accordion';
-import { colors, fontFamily, fontSize } from '../styles/variables'
+import GradientButton from '../elements/GradientButton';
+import CommonStyles from '../styles/CommonStyles';
+import { colors, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
@@ -45,11 +47,21 @@ const ShoppingScreen = ({navigation}) => {
       <View style={styles.content}>
         <Accordions datas={data}/>
       </View>
+      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+        <GradientButton
+          onPressButton={()=> navigation.navigate('CartScreen')}
+          setting={shadowOpt}
+          btnText="Go To Cart"
+        />
+      </View>
     </View>
   )
 }
 
 export default ShoppingScreen
+
+const ELEMENT_HEIGHT = 377;
+const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 
 const styles = StyleSheet.create({
   page: {
