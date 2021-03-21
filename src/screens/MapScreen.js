@@ -1,174 +1,97 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Image, Platform, ScrollView, TouchableHighlight } from 'react-native';
-import { MapView } from 'expo';
-
-import { deviceWidth, deviceHeight, NAV_HEIGHT, STATUSBAR_HEIGHT } from '../styles/variables';
-
-import GradientNavigationBar from '../elements/GradientNavigationBar';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  PermissionsAndroid,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import {useDispatch, useSelector} from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
+import {showError, showSuccess} from '../util/ShowMessage';
 import CommonStyles from '../styles/CommonStyles';
-import MapCard from '../components/MapCard';
+import { deviceHeight, deviceWidth, shadowOpt } from '../styles/variables';
+import GradientButton from '../elements/GradientButton';
 
-export default class MapScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      doctorsList: [
-        {
-          id: 0,
-          image: require('../../img/person/pixta21931547M.png'),
-          name: 'Della Jensen',
-          career: 'Cardiologist',
-          ranking: 4.2,
-          isSpecial: true
-        },
-        {
-          id: 1,
-          image: require('../../img/person/pixta19279319M.png'),
-          name: 'Fannie Larson',
-          career: 'Gynecological',
-          ranking: 4.2,
-          isSpecial: true
-        },
-        {
-          id: 2,
-          image: require('../../img/person/pixta14912862M.png'),
-          name: 'May Hampton',
-          career: 'Cardiologist',
-          ranking: 4.2,
-          isSpecial: true
-        },
-        {
-          id: 3,
-          image: require('../../img/person/pixta19791094M.png'),
-          name: 'Jose Holland',
-          career: 'Pediatrician',
-          ranking: 4.2,
-          isSpecial: false
-        },
-      ],
-      markers: [
-        {
-          id: 0,
-          latlng: {
-            latitude: 37.78825,
-            longitude: -122.4324,
-          }
-        },
-        {
-          id: 1,
-          latlng: {
-            latitude: 38.78825,
-            longitude: -123.4324,
-          }
-        },
-      ]
-    }
-  }
+const MapScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const positions = useSelector(state => state.mapsReducer.maps);
 
-  render() {
-    return (
-      <View style={CommonStyles.normalPage}>
-        <GradientNavigationBar
-          navigation={this.props.navigation}
-          back
-          titleText='Maps'
+  useEffect(() => {
+    const accessPermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Sallon Permission',
+            message: 'Sallon needs access to your current location',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          Geolocation.getCurrentPosition(info => {
+           const data = {
+             latitude: info.coords.latitude,
+             longitude: info.coords.longitude,
+           }
+           dispatch({type: 'ADD_COORDINATE', value: data});
+          });
+        } else {
+          showError('Geolocation permission denied');
+          console.log('Geolocation permission denied');
+        }
+      } catch (err) {
+        showError('err');
+        console.warn(err);
+      }
+    };
+
+    accessPermission();
+  }, [dispatch]);
+
+  return (
+    <View style={{flex: 3}}>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={{flex: 1}}
+        region={{
+          latitude: parseFloat(positions.latitude),
+          longitude: parseFloat(positions.longitude),
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}>
+        <Marker
+          draggable
+          coordinate={{
+            latitude: parseFloat(positions.latitude),
+            longitude: parseFloat(positions.longitude),
+          }}
+          onDragEnd={(e) => {
+            const data = {
+              latitude: e.nativeEvent.coordinate.latitude,
+              longitude: e.nativeEvent.coordinate.longitude,
+            };
+            dispatch({type: 'ADD_COORDINATE', value: data});
+            showSuccess('Location Set');
+          }}
         />
-        <View style={CommonStyles.noTabScrollView}>
-          <View style ={styles.container}>
-            <MapView
-              style={styles.map}
-              region={{
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.015,
-                longitudeDelta: 0.0121,
-              }}
-            >
-              {
-                this.state.markers.map((marker,index) => (
-                  <MapView.Marker
-                    key={marker.id}
-                    coordinate={marker.latlng}
-                    image={require('../../img/person/pixta21931547M.png')}
-                  />
-                ))
-              } 
-            </MapView>
-            <View style={styles.info}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {
-                  this.state.doctorsList.map((item, index) => (
-                    <MapCard
-                      key={item.id}
-                      image={item.image}
-                      name={item.name}
-                      career={item.career}
-                      ranking={item.ranking}
-                      isSpecial={item.isSpecial}
-                    />
-                  ))
-                }
-              </ScrollView>
-            </View>
-            <TouchableHighlight
-              underlayColor={'transparent'}
-              style={styles.circleBtn}>
-              <View>
-                <Image
-                  source={require('../../img/healer/blueEsclip.png')}
-                  style={{alignItems: 'center', width: 70, height: 75}}
-                >
-                  <Image
-                    source={require('../../img/healer/whitePlaceholder.png')}
-                    style={{width: 21.5, height: 26, marginTop: 18}}
-                  />
-                </Image>
-              </View>
-            </TouchableHighlight>
-          </View>
-        </View>
+      </MapView>
+      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15, marginVertical: deviceHeight * 0.90, marginHorizontal: deviceWidth * 0.06, position: 'absolute'}]}>
+        <GradientButton
+          onPressButton={()=> navigation.navigate('BookAppointmentScreen')}
+          setting={shadowOpt}
+          btnText="Set Date and Time"
+        />
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    position: 'relative',
-    height: deviceHeight,
-    width: deviceWidth,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+export default MapScreen;
 
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  info: {
-    position: 'absolute',
-    ...Platform.select({
-      ios: {
-        bottom: 85,
-      },
-      android: {
-        bottom: 95,
-      },
-    }),
-  },
-  circleBtn: {
-    position: 'absolute',
-    ...Platform.select({
-      ios: {
-        bottom: 60,
-      },
-      android: {
-        bottom: 70,
-      },
-    }),
-    right: 15,
-  }
-});
+const ELEMENT_HEIGHT = 377;
+const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
+
+const styles = StyleSheet.create({});

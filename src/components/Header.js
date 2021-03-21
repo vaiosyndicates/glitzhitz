@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   titles: {
     fontSize: fontSize.region,
-    marginLeft: deviceWidth * 0.30,
+    marginLeft: deviceWidth * 0.25,
     marginTop: deviceHeight * 0.010,
     fontFamily: fontFamily.medium,
     color: colors.white,

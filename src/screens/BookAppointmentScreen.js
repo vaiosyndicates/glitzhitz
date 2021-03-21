@@ -23,6 +23,7 @@ import {
   fontFamily,
   fontSize
 } from '../styles/variables';
+import HeaderGradient from '../components/Header';
 
 export default class BookAppointmentScreen extends Component {
   constructor(props) {
@@ -34,12 +35,9 @@ export default class BookAppointmentScreen extends Component {
 
   render() {
     return (
-      <View style={CommonStyles.normalPage}>
-        <GradientNavigationBar
-          navigation={this.props.navigation}
-          back
-          titleText='Book Appointment'
-        />
+      <View style={styles.pages}>
+        <HeaderGradient title="Date Time" onPress={()=> this.props.navigation.goBack(null)} />
+
         <ScrollView style={CommonStyles.noTabScrollView}>
           <View style={CommonStyles.wrapperBox}>
             <View style={[
@@ -175,5 +173,9 @@ const styles = StyleSheet.create({
   right: {
     flexDirection: 'row',
     alignItems: 'center',
-  }
+  },
+  page: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
 });
