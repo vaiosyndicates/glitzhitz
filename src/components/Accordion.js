@@ -5,32 +5,59 @@ import { List } from 'react-native-paper';
 import { Button } from 'react-native-paper';
 import { ToggleButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
+import {showError, showSuccess} from '../util/ShowMessage';
 
 const Accordions = ({datas, isFlag}) => {
 
   const [data, setData] = useState([]);
   const carts = useSelector(state => state.cartReducer.cart);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     const expanding = () => {
-      const newState = datas.data.map((cur, i) => {
-       cur.subService.map((current, key) => {
-         current.isAdds = true;
-         current.isMins = false;
-         return {...current};
-       })
-       return {...cur};
-      })
+     
+      if(carts || carts.length > 0) {
+        const newState = datas.data.map((cur, i) => {
+          cur.subService.map((current, key) => {
+          
+            const idx = carts.findIndex((el) => {
+              return el.id === current.id;
+            });
 
-      setData(newState);
+            if(idx !== -1){
+              current.isAdds = false;
+              current.isMins = true;
+            } else {
+              current.isAdds = true;
+              current.isMins = false;
+            }
+
+           
+            return {...current};
+          })
+          return {...cur};
+         })
+
+         setData(newState);
+      } else {
+
+        const newState = datas.data.map((cur, i) => {
+          cur.subService.map((current, key) => {
+            current.isAdds = true;
+            current.isMins = false;
+            return {...current};
+          })
+          return {...cur};
+         })
+         setData(newState);
+      }
     }
     expanding();
   }, [])
 
  const handleAddService = (obj) => {
   try {
-    const newState = datas.data.map((cur, i) => {
+    const newState = data.map((cur, i) => {
       cur.subService.map((current, key) => {
         if(current.id === obj.id) {
           current.isAdds = false;
@@ -40,18 +67,19 @@ const Accordions = ({datas, isFlag}) => {
       })
       return {...cur};
     })
-
+    showSuccess('Success add to cart');
     dispatch({type: 'ADD_CART', value: obj});
     setData(newState);
 
   } catch (error) {
+    showError('Failed add to cart');
     console.log(error);
   }
  };
 
  const handleMinService = (obj) => {
    try {
-    const newState = datas.data.map((cur, i) => {
+    const newState = data.map((cur, i) => {
       cur.subService.map((current, key) => {
         if(current.id === obj.id) {
           current.isAdds = true;
@@ -61,12 +89,13 @@ const Accordions = ({datas, isFlag}) => {
       })
       return {...cur};
      })
+     showSuccess('Success delete');
      dispatch({type: 'DELETE_CART', value: obj});
      setData(newState); 
    } catch (error) {
+     showError('Failed delete');
      console.log(error);
    }
- 
 };
 
 

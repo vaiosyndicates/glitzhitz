@@ -13,19 +13,23 @@ import {
   colors,
   fontFamily,
   fontSize,
+  shadowOpt,
 } from '../styles/variables';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
+import {showError, showSuccess} from '../util/ShowMessage';
 
 const CartScreen = ({navigation}) => {
   
   const dispatch = useDispatch();
   const stateCart = useSelector(state => state.cartReducer.cart);
-
+  
   const deleteCart = (obj) => {
     try {
       dispatch({type: 'DELETE_CART', value: obj});
+      showSuccess('Delete Success');
     } catch (error) {
+      showError('Delete Failed');
       console.log(error);
     }
   }
@@ -50,11 +54,26 @@ const CartScreen = ({navigation}) => {
           );
         })}
       </View>
+      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+        <GradientButton
+          onPressButton={()=> navigation.navigate('MapScreen')}
+          setting={shadowOpt}
+          disabled={
+            stateCart.length <= 0
+              ? true
+              : false
+          }
+          btnText="Set Location"
+        />
+      </View>
     </View>
   );
 }
 
 export default CartScreen
+
+const ELEMENT_HEIGHT = 377;
+const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 
 const styles = StyleSheet.create({
   page: {
@@ -77,6 +96,7 @@ const styles = StyleSheet.create({
     borderRadius: 10 ,
     marginTop: deviceWidth * 0.10,
     elevation: 15,
+    marginBottom: deviceHeight * 0.10,
   },
   nameService: {
     marginLeft: deviceWidth * 0.05,
@@ -108,4 +128,3 @@ const styles = StyleSheet.create({
     marginTop: deviceHeight * 0.05,
   }
 });
-
