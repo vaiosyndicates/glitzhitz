@@ -168,6 +168,8 @@ class UserProfileScreen extends Component {
           await AsyncStorage.removeItem('token');
           this.props.clearProfile();
           this.props.clearToken();
+          this.props.clearMaps();
+          this.props.clearCart();
           showSuccess('Logout Success');
           setTimeout(() => {
             this.props.navigation.dispatch(resetLogout); 
@@ -195,7 +197,9 @@ const mapDispatchToProps = dispatch => {
   return {
     loading: value => dispatch({ type: 'SET_LOADING', value: value }),
     clearProfile: value => dispatch({ type: 'CLEAR_PROFILE'}),
-    clearToken: value => dispatch({ type: 'CLEAR_TOKEN'})
+    clearToken: value => dispatch({ type: 'CLEAR_TOKEN'}),
+    clearMaps: value => dispatch({ type: 'CLEAR_MAPS'}),
+    clearCart: value => dispatch({ type: 'CLEAR_CART'}),
   }
 }
 

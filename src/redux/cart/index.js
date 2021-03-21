@@ -33,6 +33,12 @@ const cartReducer = (state = initialState, action) => {
           ...state,
           cart: state.cart.filter(cart => cart.id !== id),
         };
+
+        case 'CLEAR_CART':
+          return {
+            ...state,
+            cart: []
+          }
   
     default:
       break;
