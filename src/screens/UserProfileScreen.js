@@ -14,6 +14,8 @@ import { showError, showSuccess } from '../util/ShowMessage';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetLogout } from '../util/ResetRouting';
+import HeaderGradient from '../components/Header';
+import { colors } from '../styles/variables';
 class UserProfileScreen extends Component {
   constructor(props) {
     super(props);
@@ -21,33 +23,9 @@ class UserProfileScreen extends Component {
 
   render() {
     return (
-      <View style={CommonStyles.normalPage}>
-        <GradientNavigationBar
-          navigation={this.props.navigation}
-          menu
-          titleText='Profile'
-          rightButtons={
-            [
-              {
-                key: 1,
-                buttonIcon: require('../../img/healer/settings.png'),
-                buttonAction: this.onClickSettingButton.bind(this),
-                buttonWidth: 22,
-                buttonHeight: 22,
-              }
-            ]
-          }
-        />
+      <View style={styles.page}>
+       <HeaderGradient title="User Profile" onPress={()=> this.props.navigation.goBack(null)} dMarginLeft={0.20} />
         <ScrollView style={CommonStyles.scrollView}>
-          <View style={styles.avaCont}>
-            <Image
-              source={require('../../img/person/avatar_2.png')}
-              style={{width: 160, height: 160}}
-            />
-          </View>
-          <View style={styles.nameCont}>
-            <Text header black mediumBold>Willie Wright</Text>
-          </View>
           <View style={CommonStyles.itemWhiteBox}>
             <View style={styles.rowTop}>
               <ProfileCard
@@ -90,24 +68,6 @@ class UserProfileScreen extends Component {
             </View>
           </View>
           <View style={styles.otherCont}>
-            <ItemWithDetail
-              image={{
-                url: require('../../img/healer/target.png'),
-                width: 26,
-                height: 26
-              }}
-              header='Goal Settings'
-              onPressItem={this._handleClickGoalSettings.bind(this)}
-            />
-            <ItemWithDetail
-              image={{
-                url: require('../../img/healer/heart.png'),
-                width: 26,
-                height: 23.5 
-              }}
-              header='Doctor Favorites'
-              onPressItem={this._handleClickDoctorFavorites.bind(this)}
-            />
             <ItemWithDetail
               image={{
                 url: require('../../img/glitz/logout.png'),
@@ -211,6 +171,10 @@ UserProfileScreen.defaultNavigationOptions = {
 }
 
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
   avaCont: {
     justifyContent: 'center',
     alignItems: 'center',

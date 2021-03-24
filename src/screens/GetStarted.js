@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import GradientButton from '../elements/GradientButton'
 
 const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
 
 const GetStarted = ({navigation}) => {
   
@@ -63,9 +64,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     position: 'absolute',
-    marginTop: 90,
-    marginLeft: 110,
-    marginBottom: 80,
+    marginTop: deviceHeight * 0.10,
+    marginLeft: deviceWidth * 0.28,
+    marginBottom: deviceHeight * 0.20,
   },
   linearGradient: {
     alignItems: 'center',
@@ -78,8 +79,8 @@ const styles = StyleSheet.create({
   header: {
     position: 'absolute',
     zIndex: 1,
-    marginLeft: 55,
-    marginTop: 50,
+    marginLeft: deviceWidth * 0.14,
+    marginTop: deviceHeight * 0.05,
   },
   textHeader: {
     fontSize: fontSize.extraLarge,
@@ -94,12 +95,12 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: fontSize.itemHeader,
     fontFamily: fontFamily.regular,
-    marginLeft: 5,
-    marginTop: 140,
-    marginBottom: 40,
+    marginLeft: deviceWidth * 0.01,
+    marginTop: deviceHeight * 0.20,
+    marginBottom: deviceHeight * 0.05,
     textAlign: 'center',
   },
   buttonGroup: {
-    marginLeft: 25,
+    marginLeft: deviceWidth * 0.07,
   }
 })
