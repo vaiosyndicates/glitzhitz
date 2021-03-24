@@ -8,7 +8,7 @@ import { colors, fontFamily, fontSize } from '../styles/variables';
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
-const HeaderGradient = ({title, onPress}) => {
+const HeaderGradient = ({title, onPress, dMarginLeft}) => {
   return (
     <View style={styles.pages}>
       <LinearGradient
@@ -19,7 +19,7 @@ const HeaderGradient = ({title, onPress}) => {
       />
       <View style={styles.content}>
         <ButtonHeader dWidth={deviceWidth} dHeight={deviceHeight} onPress={onPress}/>
-        <Text style={styles.titles}>{title}</Text>
+        <Text style={styles.titles(dMarginLeft)}>{title}</Text>
       </View>
     </View>
   )
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
     marginTop: Constants.statusBarHeight,
     position: 'absolute',
   },
-  titles: {
+  titles: (mL) => ({
     fontSize: fontSize.region,
-    marginLeft: deviceWidth * 0.25,
+    marginLeft: deviceWidth * mL,
     marginTop: deviceHeight * 0.010,
     fontFamily: fontFamily.medium,
     color: colors.white,
-  }
+  }),
 })
