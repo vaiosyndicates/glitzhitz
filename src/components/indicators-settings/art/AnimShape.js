@@ -33,7 +33,7 @@ export default class AnimShape extends React.Component {
     this.computeNextState(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.computeNextState(nextProps);
   }
 
