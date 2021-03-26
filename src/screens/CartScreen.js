@@ -55,17 +55,19 @@ const CartScreen = ({navigation}) => {
         <View style={styles.container}>
         {stateCart.length > 0 && stateCart.map((cur, key) => {
             return (
-              <View style={(key === stateCart.length - 1) ? styles.noBorderBox : styles.box}>
-                <View style={styles.contentWrapper}>
-                  <View style={styles.boxWrapper}>
-                    <Text style={styles.nameService}>{cur.name}</Text>
-                    <Text style={styles.price}> IDR {cur.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
-                  </View>
-                  <View style={styles.buttonsWrapper}>
-                  <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => deleteCart({id: cur.id, name: cur.name, price: cur.price, parent: cur.parent})} />
+              <React.Fragment key={cur.id}>
+                <View style={(key === stateCart.length - 1) ? styles.noBorderBox : styles.box}>
+                  <View style={styles.contentWrapper}>
+                    <View style={styles.boxWrapper}>
+                      <Text style={styles.nameService}>{cur.name}</Text>
+                      <Text style={styles.price}> IDR {cur.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                    </View>
+                    <View style={styles.buttonsWrapper}>
+                    <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => deleteCart({id: cur.id, name: cur.name, price: cur.price, parent: cur.parent})} />
+                    </View>
                   </View>
                 </View>
-              </View>
+              </React.Fragment>
             );
           })}
         </View>

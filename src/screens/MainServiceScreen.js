@@ -4,7 +4,7 @@ import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight, Scrol
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
 import CommonStyles from '../styles/CommonStyles';
-import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT, fontSize, colors, fontFamily } from '../styles/variables';
+import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT, fontSize, colors, fontFamily, deviceWidth } from '../styles/variables';
 
 import MenuItemBox from '../components/MenuItemBox';
 import CustomTabBar from '../components/CustomTabBar';
@@ -61,6 +61,7 @@ class MainServiceScreen extends Component {
       }
 
       try {
+        this.props.loading(true);
         const tokenizer = await AsyncStorage.getItem('token')
         const response = await axios.get('http://api.glitzandhitz.com/index.php/Service', {
           headers: {
@@ -70,15 +71,17 @@ class MainServiceScreen extends Component {
         });
 
         if(response.status === 200){
-          
+          this.props.loading(false);
           this.setState({data: response.data.data.services})
         } else {
+          this.props.loading(false);
           this.setState({data: []})
           showError('Failed');
         }
 
       } catch (error) {
         if (axios.isCancel(error)) {
+          this.props.loading(false);
           console.log('Error: ', error.message);
         } else {
           showError(error);
@@ -110,11 +113,11 @@ class MainServiceScreen extends Component {
   render() {
     let  [first, second] = this.splitArray();
     return (
-      <View style={CommonStyles.normalPage}>
+      <View style={styles.page}>
         <View style={styles.imageContainer}>
           <Image
             source={require('../../img/glitz/logoWhite.png')}
-            style={{width: 100, height: 80}}
+            style={{width: 150, height: 80}}
           />
         </View>
         <LinearGradient
@@ -127,27 +130,13 @@ class MainServiceScreen extends Component {
           <Text style={styles.personalHellos}>Hello User</Text>
           <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
-        <View style={{height: 14}} />
-        <ScrollView vertical>
+        <View style={{height: deviceHeight * 0.03}} />
+        <ScrollView vertical showsVerticalScrollIndicator={false}>
         <View style={styles.fullField}>
           <View style={styles.colMainLeft}>
             {first.length > 0 && first.map((current, i) => {
               return (
-                <MenuItemBox
-                  header={current.name}
-                  // subHeader='113 Doctors'
-                  icon={require('../../img/healer/surgeonIcon.png')}
-                  iconWidth={20}
-                  iconHeight={26}
-                  ids={current.id_service}
-                  onPressCard={this._handleClickShopping.bind(this)}
-                />
-              );
-            })}
-          </View>
-          <View style={styles.colMainRight}>
-            {second.length > 0 && second.map((current, i) => {
-                return (
+                <React.Fragment key={current.id_service}>
                   <MenuItemBox
                     header={current.name}
                     // subHeader='113 Doctors'
@@ -157,6 +146,24 @@ class MainServiceScreen extends Component {
                     ids={current.id_service}
                     onPressCard={this._handleClickShopping.bind(this)}
                   />
+                </React.Fragment>
+              );
+            })}
+          </View>
+          <View style={styles.colMainRight}>
+            {second.length > 0 && second.map((current, i) => {
+                return (
+                  <React.Fragment key={current.id_service}>
+                    <MenuItemBox
+                      header={current.name}
+                      // subHeader='113 Doctors'
+                      icon={require('../../img/healer/surgeonIcon.png')}
+                      iconWidth={20}
+                      iconHeight={26}
+                      ids={current.id_service}
+                      onPressCard={this._handleClickShopping.bind(this)}
+                    />
+                  </React.Fragment>
                 );
               })}
           </View>
@@ -211,7 +218,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    profile: value => dispatch({ type: 'SAVE_USER', value: value })
+    profile: value => dispatch({ type: 'SAVE_USER', value: value }),
+    loading: value => dispatch({ type: 'SET_LOADING', value: value })
   }
 }
 
@@ -237,26 +245,26 @@ const styles = StyleSheet.create({
   },
   colMainLeft: {
     flex: 1,
-    marginRight: 8,
+    marginRight: deviceWidth * 0.010,
   },
   colMainRight: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: deviceWidth * 0.010,
   },
   linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: '30%',
+    height: deviceHeight * 0.30,
   },
   imageContainer: {
     position: 'absolute',
     zIndex: 1,
-    left: 155,
-    top: 30,
+    left: deviceWidth * 0.32,
+    top: deviceHeight * 0.05,
   },
   personal: {
-    marginTop: -70,
-    marginLeft: 15,
+    marginTop: deviceHeight * -0.1,
+    marginLeft: deviceWidth * 0.05,
   },
   personalHellos: {
     fontSize: fontSize.region,
@@ -267,5 +275,8 @@ const styles = StyleSheet.create({
     fontSize: fontSize.header,
     color: colors.white,
     fontFamily: fontFamily.medium,
+  },
+  page: {
+    flex: 1,
   }
 });

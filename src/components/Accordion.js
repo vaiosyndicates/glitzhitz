@@ -103,21 +103,23 @@ const Accordions = ({datas, isFlag}) => {
     <>
       {data.length > 0 && data.map((current, i) => {
         return (
-          <List.AccordionGroup>
-            <List.Accordion title={current.name} id="1">
-            {current.subService.length > 0 && current.subService.map((cur, key) => {
-              return (
-                <List.Item title={cur.name} right={props => 
-                  <>
-                    {cur.isMins && <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => handleMinService({id: cur.id, name: cur.name, price: cur.price, parent: current.name})} /> }
-                    {cur.isAdds && <Button icon={require('../../img/glitz/adds.png')} mode="outlined" style={styles.buttons} onPress={() => handleAddService({id: cur.id, name: cur.name, price: cur.price, parent: current.name})} /> }
-                  </>
-                }
-                />
-              );
-            })}
-            </List.Accordion>
-          </List.AccordionGroup>
+          <React.Fragment key={i}>
+            <List.AccordionGroup>
+              <List.Accordion title={current.name} id="1">
+              {current.subService.length > 0 && current.subService.map((cur, key) => {
+                return (
+                  <List.Item title={cur.name} key={key} right={props => 
+                    <>
+                      {cur.isMins && <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => handleMinService({id: cur.id, name: cur.name, price: cur.price, parent: current.name})} /> }
+                      {cur.isAdds && <Button icon={require('../../img/glitz/adds.png')} mode="outlined" style={styles.buttons} onPress={() => handleAddService({id: cur.id, name: cur.name, price: cur.price, parent: current.name})} /> }
+                    </>
+                  }
+                  />
+                );
+              })}
+              </List.Accordion>
+            </List.AccordionGroup>
+          </React.Fragment> 
         );
      })}
     </>
