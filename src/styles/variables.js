@@ -41,6 +41,7 @@ const colors = {
   alert: '#E06379',
   green1: '#0BCAD4',
   violet1: '#7224AC',
+  violet2: 'rgba(193, 109, 255, 0.4)',
   blurry: 'rgba(0,0,0,0.35)',
 } 
 
