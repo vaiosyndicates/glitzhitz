@@ -179,8 +179,14 @@ export default class BookAppointmentScreen extends Component {
     // TODO:
     let date = Moment(this.state.date).toDate()
     let currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+    const data = {
+      book_date: currentDate,
+      book_time: this.state.time,
+      fullAddress: this.state.address,
+    }
     console.log(currentDate);
     console.log(this.state.address);
+    this.props.navigation.navigate('DetailScreen', data);
   }
 
   _handleConfirm(time) {

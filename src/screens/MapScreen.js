@@ -52,7 +52,7 @@ const MapScreen = ({navigation}) => {
   }, [dispatch]);
 
   return (
-    <View style={{flex: 3}}>
+    <View style={{flex: 1}}>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
