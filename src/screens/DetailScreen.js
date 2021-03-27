@@ -62,7 +62,7 @@ const DetailsScreen = ({navigation}) => {
                     <React.Fragment key={cur.id}>
                     <View style={styles.bookingCart}>
                       <Text style={styles.service}>{cur.name}</Text>
-                      <Text style={styles.price}>{cur.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                      <Text style={styles.price}>{cur.price}</Text>
                     </View>
                     </React.Fragment>
                   );
@@ -74,7 +74,7 @@ const DetailsScreen = ({navigation}) => {
                   <Text style={styles.totalTitle}>Total</Text>
                 </View>
                 <View style={styles.totalWrap}>
-                  <Text style={styles.totalPrice}>Rp. {totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                  <Text style={styles.totalPrice}>Rp. {totalPrice}</Text>
                 </View>
               </View>
             </View>
