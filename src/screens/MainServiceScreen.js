@@ -63,13 +63,13 @@ class MainServiceScreen extends Component {
       try {
         this.props.loading(true);
         const tokenizer = await AsyncStorage.getItem('token')
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/Service', {
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/category', {
           headers: {
             Authorization: tokenizer,
           },
           cancelToken: this.signal.token,
         });
-
+        // console.log(response);
         if(response.status === 200){
           this.props.loading(false);
           this.setState({data: response.data.data.services})
@@ -84,7 +84,8 @@ class MainServiceScreen extends Component {
           this.props.loading(false);
           console.log('Error: ', error.message);
         } else {
-          showError(error);
+          this.props.loading(false);
+          showError('Failed');
         }        
       }
      }
@@ -140,11 +141,11 @@ class MainServiceScreen extends Component {
                   <MenuItemBox
                     header={current.name}
                     // subHeader='113 Doctors'
-                    icon={require('../../img/healer/surgeonIcon.png')}
-                    iconWidth={20}
-                    iconHeight={26}
+                    icon={current.image}
+                    iconWidth={150}
+                    iconHeight={150}
                     ids={current.id_service}
-                    onPressCard={this._handleClickShopping.bind(this)}
+                    onPressCard={() => this._handleClickShopping(current.id_service)}
                   />
                 </React.Fragment>
               );
@@ -157,11 +158,11 @@ class MainServiceScreen extends Component {
                     <MenuItemBox
                       header={current.name}
                       // subHeader='113 Doctors'
-                      icon={require('../../img/healer/surgeonIcon.png')}
-                      iconWidth={20}
-                      iconHeight={26}
+                      icon={current.image}
+                      iconWidth={150}
+                      iconHeight={150}
                       ids={current.id_service}
-                      onPressCard={this._handleClickShopping.bind(this)}
+                      onPressCard={() => this._handleClickShopping(current.id_service)}
                     />
                   </React.Fragment>
                 );
@@ -169,7 +170,7 @@ class MainServiceScreen extends Component {
           </View>
         </View>
         </ScrollView>
-        <View style={{height: 45}} />
+        <View style={{height: 55}} />
         <CustomTabBar
           navigation={this.props.navigation}
           isActive='tabHome'
@@ -206,8 +207,11 @@ class MainServiceScreen extends Component {
     this.props.navigation.navigate("ServicePriceScreen");
   }
 
-  _handleClickShopping() {
-    this.props.navigation.navigate('ShoppingScreen');
+  _handleClickShopping(ids) {
+    const data = {
+      ids: ids
+    };
+    this.props.navigation.navigate('ShoppingScreen', data);
   }
 }
 
@@ -242,14 +246,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     marginTop: spaceHeight * 0.1,
+    marginLeft: deviceWidth * 0.05,
   },
   colMainLeft: {
     flex: 1,
-    marginRight: deviceWidth * 0.010,
+    marginRight: deviceWidth * 0.015,
   },
   colMainRight: {
     flex: 1,
-    marginLeft: deviceWidth * 0.010,
+    marginLeft: deviceWidth * 0.015,
   },
   linearGradient: {
     alignItems: 'center',
