@@ -5,9 +5,9 @@ import { addNavigationHelpers } from 'react-navigation';
 import LeftMenu from './LeftMenu';
 
 let defaultScalingDrawerConfig = {
-  scalingFactor: 0.6,
-  minimizeFactor: 0.6,
-  swipeOffset: 20
+  scalingFactor: 0,
+  minimizeFactor: 0,
+  swipeOffset: 0
 };
 
 export default class DrawerView extends Component {
@@ -45,16 +45,16 @@ export default class DrawerView extends Component {
     return (
       <ScalingDrawer
         ref={ref => this._drawer = ref}
-        content={<LeftMenu navigation={this.props.navigation}/>}
+        // content={<LeftMenu navigation={this.props.navigation}/>}
         {...defaultScalingDrawerConfig}
-        onClose={() => console.log('close')}
-        onOpen={() => console.log('open')}
+        // onClose={() => console.log('close')}
+        // onOpen={() => console.log('open')}
       >
         <ActiveScreen
           navigation={addNavigationHelpers({
             ...this.props.navigation,
             state: routes[index],
-            openDrawer: () => this._drawer.open(),
+            openDrawer: () => this._drawer.close(),
           })}
         />
       </ScalingDrawer>

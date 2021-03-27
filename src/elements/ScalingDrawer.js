@@ -6,9 +6,9 @@ const {width, height} = Dimensions.get('window');
 
 class ScalingDrawer extends Component {
   static defaultProps = {
-    scalingFactor: 0.5,
-    minimizeFactor: 0.5,
-    swipeOffset: 10,
+    scalingFactor: 0,
+    minimizeFactor: 0,
+    swipeOffset: 0,
   };
 
   constructor(props) {
@@ -105,7 +105,7 @@ class ScalingDrawer extends Component {
       this.drawerAnimation,
       {
         toValue: 1,
-        duration: this.props.duration || 250,
+        duration: 0,
         Easing: Easing.linear,
         useNativeDriver: true
       }

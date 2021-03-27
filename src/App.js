@@ -14,8 +14,8 @@ import FlashMessage from 'react-native-flash-message';
 const {width, height} = Dimensions.get('window');
 
 const defaultScalingDrawerConfig = {
-  scalingFactor: 0.8,
-  minimizeFactor: 0.7,
+  scalingFactor: 0,
+  minimizeFactor: 0,
   swipeOffset: 0
 };
 
@@ -70,9 +70,10 @@ class CustomDrawerView extends Component {
     const ActiveScreen = HealerRouter.getComponentForState(this.props.navigation.state);
 
     return (
+      <>
       <ScalingDrawer
         ref={ref => this._drawer = ref}
-        content={ <LeftMenu drawer={this._drawer} navigation={this.props.navigation} /> }
+        // content={ <LeftMenu drawer={this._drawer} navigation={this.props.navigation} /> }
         {...defaultScalingDrawerConfig}
       >
         <StatusBar backgroundColor={'transparent'} translucent />
@@ -87,6 +88,7 @@ class CustomDrawerView extends Component {
           />
         </View>
       </ScalingDrawer>
+      </>
     )
   }
 }
