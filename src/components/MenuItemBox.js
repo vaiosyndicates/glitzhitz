@@ -7,13 +7,16 @@ import {
   Image,
   Platform,
   TouchableHighlight,
+  ImageBackground,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
 
 import {
   colors,
   fontSize,
-  fontFamily
+  fontFamily,
+  deviceHeight,
+  deviceWidth
 } from '../styles/variables';
 
 export default class MenuItemBox extends Component {
@@ -27,7 +30,7 @@ export default class MenuItemBox extends Component {
         <React.Fragment key={this.props.ids}>
         <LinearGradient
           start={{x: 0.2, y: 0.2}} end={{x: 1.0, y: 2.0}}
-          colors={['rgb(150,150,150)', 'rgb(105,105,105)']}
+          colors={['rgb(255,255,255)', 'rgb(255,255,255)']}
           style={styles.card}
           key={`data-${ this.props.ids }`}>
           <TouchableHighlight
@@ -38,14 +41,15 @@ export default class MenuItemBox extends Component {
             <View key={`data-${ this.props.ids }`}>
               <Image
                 key={`data-${ this.props.ids }`}
-                source={this.props.icon}
+                source={{uri: `${this.props.icon}`}}
                 style={[
                   styles.icon,
-                  {width:this.props.iconWidth, height:this.props.iconHeight}
+                  {width: deviceWidth * 0.39, height:this.props.iconHeight, marginTop: deviceHeight * -0.02, marginLeft: deviceWidth * -0.03, borderRadius: 5, }
                 ]}
               />
-              <Text style={styles.header}>{this.props.header}</Text>
-              <Text style={styles.subHeader}>{this.props.subHeader}</Text>
+              <View style={styles.titleSection}>
+                <Text style={styles.header}>{this.props.header}</Text>
+              </View>
             </View>
           </TouchableHighlight>
         </LinearGradient>
@@ -56,11 +60,12 @@ export default class MenuItemBox extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    height: 135,
+    height: deviceHeight * 0.17,
     borderWidth: 0,
-    borderRadius: 8,
-    marginTop: 15,
-    marginBottom: 15,
+    borderRadius: 5,
+    marginTop: deviceHeight * 0.01,
+    marginBottom: deviceHeight * 0.03,
+    borderRadius: 5,
     ...Platform.select({
       ios: {
         shadowColor: 'rgba(0,0,0,0.6)',
@@ -69,15 +74,15 @@ const styles = StyleSheet.create({
           height: 12
         },
         shadowRadius: 5,
-        shadowOpacity: 0.3
+        shadowOpacity: 0.0
       },
       android: {
-        elevation: 12,
+        width: deviceWidth * 0.39,
       },
     }),
   },
   highLightCard: {
-    height: 135,
+    height: deviceHeight * 0.19,
     backgroundColor: 'transparent',
     borderWidth: 0,
     borderRadius: 9,
@@ -99,13 +104,23 @@ const styles = StyleSheet.create({
   icon: {
     marginBottom: 24,
   },
+  titleSection: {
+    backgroundColor: colors.blurry,
+    position: 'absolute',
+    marginLeft: deviceWidth * -0.03,
+    marginTop: deviceHeight * 0.085,
+    width: deviceWidth * 0.39,
+    height: deviceHeight * 0.08,
+    paddingLeft: deviceWidth * 0.11,
+    paddingTop: deviceHeight * 0.01,
+    borderRadius: 5,
+  }
 });
 
 MenuItemBox.propTypes = {
   header: PropTypes.string,
   subHeader: PropTypes.string,
   onPressCard: PropTypes.func,
-  icon: PropTypes.number,
   iconHeight: PropTypes.number,
   iconWidth: PropTypes.number,
 };
