@@ -51,6 +51,7 @@ const CartScreen = ({navigation}) => {
   return (
     <View style={styles.page}>
       <HeaderGradient title="Cart" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
+      <ScrollView vertical>
       {stateCart.length > 0 &&
         <View style={styles.container}>
         {stateCart.length > 0 && stateCart.map((cur, key) => {
@@ -60,7 +61,7 @@ const CartScreen = ({navigation}) => {
                   <View style={styles.contentWrapper}>
                     <View style={styles.boxWrapper}>
                       <Text style={styles.nameService}>{cur.name}</Text>
-                      <Text style={styles.price}> IDR {cur.price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                      <Text style={styles.price}> IDR {cur.price}</Text>
                     </View>
                     <View style={styles.buttonsWrapper}>
                     <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => deleteCart({id: cur.id, name: cur.name, price: cur.price, parent: cur.parent})} />
@@ -72,6 +73,8 @@ const CartScreen = ({navigation}) => {
           })}
         </View>
       }
+      </ScrollView>
+
 
       {stateCart.length <= 0 &&
         <EmptyCart />
@@ -162,7 +165,9 @@ const styles = StyleSheet.create({
   containerEmpty: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: deviceHeight * 0.20,
+    marginTop: deviceHeight * 0.30,
+    marginLeft: deviceWidth * 0.15,
+    position: 'absolute',
   },
   imageCarts: {
     width: deviceWidth * 0.70,
