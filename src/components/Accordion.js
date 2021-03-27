@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import { List } from 'react-native-paper';
 import { Button } from 'react-native-paper';
@@ -7,7 +7,7 @@ import { ToggleButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import {showError, showSuccess} from '../util/ShowMessage';
 
-const Accordions = ({datas, isFlag}) => {
+const Accordions = ({datas, isFlag, key}) => {
 
   const [data, setData] = useState([]);
   const carts = useSelector(state => state.cartReducer.cart);
@@ -15,9 +15,8 @@ const Accordions = ({datas, isFlag}) => {
   
   useEffect(() => {
     const expanding = () => {
-     
       if(carts || carts.length > 0) {
-        const newState = datas.data.map((cur, i) => {
+        const newState = datas.services.map((cur, i) => {
           cur.subService.map((current, key) => {
           
             const idx = carts.findIndex((el) => {
@@ -41,7 +40,7 @@ const Accordions = ({datas, isFlag}) => {
          setData(newState);
       } else {
 
-        const newState = datas.data.map((cur, i) => {
+        const newState = datas.services.map((cur, i) => {
           cur.subService.map((current, key) => {
             current.isAdds = true;
             current.isMins = false;
@@ -101,12 +100,13 @@ const Accordions = ({datas, isFlag}) => {
 
   return (
     <>
-      {data.length > 0 && data.map((current, i) => {
+    <ScrollView vertical>
+    {data.length > 0 && data.map((current, i) => {
         return (
           <React.Fragment key={i}>
-            <List.AccordionGroup>
+            <List.AccordionGroup key={i}>
               <List.Accordion title={current.name} id="1">
-              {current.subService.length > 0 && current.subService.map((cur, key) => {
+              {current.subService && current.subService.map((cur, key) => {
                 return (
                   <List.Item title={cur.name} key={key} right={props => 
                     <>
@@ -122,6 +122,7 @@ const Accordions = ({datas, isFlag}) => {
           </React.Fragment> 
         );
      })}
+    </ScrollView>
     </>
   );
 }
