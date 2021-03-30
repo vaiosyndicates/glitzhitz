@@ -6,6 +6,7 @@ import { Button } from 'react-native-paper';
 import { ToggleButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import {showError, showSuccess} from '../util/ShowMessage';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 const Accordions = ({datas, isFlag, key, parents}) => {
 
@@ -108,10 +109,17 @@ const Accordions = ({datas, isFlag, key, parents}) => {
               <List.Accordion title={current.name} id="1">
               {current.subService && current.subService.map((cur, key) => {
                 return (
-                  <List.Item title={cur.name} key={key} right={props => 
+                  <List.Item style={styles.titleAccordion} title={cur.name} key={key} right={props => 
                     <>
-                      {cur.isMins && <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => handleMinService({id: cur.id, name: `${parents} ${cur.name}`, price: cur.price, parent: current.name})} /> }
-                      {cur.isAdds && <Button icon={require('../../img/glitz/adds.png')} mode="outlined" style={styles.buttons} onPress={() => handleAddService({id: cur.id, name: `${parents} ${cur.name}`, price: cur.price, parent: current.name})} /> }
+                      <Grid style={styles.grid}>
+                        <Row size={50}>
+                          <Text>Rp. {cur.price}</Text>							
+                        </Row>
+                        <Row size={50}>
+                          {cur.isMins && <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => handleMinService({id: cur.id, name: `${parents} ${cur.name}`, price: cur.price, parent: current.name})} /> }
+                          {cur.isAdds && <Button icon={require('../../img/glitz/adds.png')} mode="outlined" style={styles.buttons} onPress={() => handleAddService({id: cur.id, name: `${parents} ${cur.name}`, price: cur.price, parent: current.name})} /> }							
+                        </Row>
+                      </Grid>
                     </>
                   }
                   />
@@ -142,5 +150,17 @@ const styles = StyleSheet.create({
   },
   buttons: {
     borderWidth: 0,
+  },
+  grid: {
+	  position: 'absolute',
+	  right: 10,
+	  alignItems: 'center',
+	  textAlignVertical: 'top',
+	  top: 0
+  },
+  titleAccordion: {
+	  height: 80,
+	  justifyContent: 'center',
+	  textAlignVertical: 'center'
   }
 })

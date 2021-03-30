@@ -15,6 +15,7 @@ import {showError, showSuccess} from '../util/ShowMessage';
 import CommonStyles from '../styles/CommonStyles';
 import { deviceHeight, deviceWidth, shadowOpt } from '../styles/variables';
 import GradientButton from '../elements/GradientButton';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const MapScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -52,7 +53,68 @@ const MapScreen = ({navigation}) => {
   }, [dispatch]);
 
   return (
-    <View style={{flex: 1}}>
+    <>
+    <View style={{flex: 1}}> 
+    <GooglePlacesAutocomplete
+          placeholder='Enter Location'
+          minLength={2}
+          autoFocus={false}
+          fetchDetails
+          listViewDisplayed='auto'
+          query={{
+              key: 'AIzaSyDQSCNZgLm3P4mGA826_GRh86aIC3TDV-s',
+              language: 'en',
+              types: 'geocode',
+          }}    
+          styles={{
+            container: {
+              flex: 1,
+              zIndex:100,
+              maxWidth: '90%',
+              justifyContent: 'center',
+              left:20,
+              top: 80
+            },
+            textInputContainer: {
+              flexDirection: 'row',
+            },
+            textInput: {
+              backgroundColor: '#FFFFFF',
+              height: 44,
+              borderRadius: 5,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              fontSize: 15,
+              flex: 1,
+            },
+            poweredContainer: {
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              borderBottomRightRadius: 5,
+              borderBottomLeftRadius: 5,
+              borderColor: '#c8c7cc',
+              borderTopWidth: 0.5,
+            },
+            powered: {},
+            listView: {},
+            row: {
+              backgroundColor: '#FFFFFF',
+              padding: 13,
+              height: 44,
+              flexDirection: 'row',
+            },
+            separator: {
+              height: 0.5,
+              backgroundColor: '#c8c7cc',
+            },
+            description: {},
+            loader: {
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              height: 20,
+            },
+          }}              
+          currentLocation={false} />      
       <MapView
         provider={PROVIDER_GOOGLE}
         style={{flex: 1}}
@@ -86,6 +148,7 @@ const MapScreen = ({navigation}) => {
         />
       </View>
     </View>
+    </>
   );
 };
 

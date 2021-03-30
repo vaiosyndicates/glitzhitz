@@ -17,6 +17,7 @@ const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         cart: state.cart,
+        count: state.cart.length
       };
 
       case 'DELETE_CART':
@@ -32,6 +33,7 @@ const cartReducer = (state = initialState, action) => {
         return {
           ...state,
           cart: state.cart.filter(cart => cart.id !== id),
+          count: state.cart.length
         };
 
         case 'CLEAR_CART':

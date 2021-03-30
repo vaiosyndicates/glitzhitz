@@ -23,6 +23,7 @@ class MainServiceScreen extends Component {
     this.state = {
       didLoaded: true,
       data: [],
+	  name: '',
     }
   }
 
@@ -47,6 +48,7 @@ class MainServiceScreen extends Component {
             gender: response.data.data.user[1].gender,
             birth: response.data.data.user[1].birth,
           }
+		  this.setState({name: data.name});
           this.props.profile(data);
 
         } else {
@@ -128,7 +130,7 @@ class MainServiceScreen extends Component {
           end={{ x: 1, y: 1 }}
         />
         <View style={styles.personal}>
-          <Text style={styles.personalHellos}>Hello User</Text>
+          <Text style={styles.personalHellos}>Hello {this.state.name}</Text>
           <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
         <View style={{height: deviceHeight * 0.03}} />

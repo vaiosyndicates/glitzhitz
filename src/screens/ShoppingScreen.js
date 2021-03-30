@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, ImageBackground,  Dimensions } from 'react-native'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Accordions from '../components/Accordion';
 import Accordion from 'react-native-collapsible/Accordion';
 import GradientButton from '../elements/GradientButton';
@@ -20,6 +20,7 @@ const ShoppingScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const [detailServices, setDetailServices] = useState([]);
+  const count = useSelector(state => state.cartReducer.count);
 
   useEffect(() => {
     _isMounted = true;
@@ -97,6 +98,7 @@ const ShoppingScreen = ({navigation}) => {
           onPressButton={()=> toLocation()}
           setting={shadowOpt}
           btnText="Go To Cart"
+          disabled={count < 1 || count === undefined}
         />
       }
       </View>
