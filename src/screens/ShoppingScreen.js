@@ -53,9 +53,13 @@ const ShoppingScreen = ({navigation}) => {
         }
         
       } catch (error) {
-        dispatch({type: 'SET_LOADING', value: false});
-        showError('Failed');
-        console.log(error);
+        if (axios.isCancel(error)) {
+          dispatch({type: 'SET_LOADING', value: false});
+          console.log('Error: ', error.message);
+        } else {
+          dispatch({type: 'SET_LOADING', value: false});
+          showError('Failed');
+        }
       }
     }
 
@@ -65,26 +69,32 @@ const ShoppingScreen = ({navigation}) => {
     }
 
     return () => {
-      console.log('unmount');
       _isMounted = false;
     }
 
   }, [])
 
+  const toLocation = () => {
+    const data = {
+      flag: 'normal'
+    }
+    navigation.navigate('CartScreen', data);
+  };
+
   return (
     <View style={styles.page}>
       <ImageBackground source={require('../../img/glitz/massageBanner.png')} style={styles.background}>
         <View style={styles.blurry}>
-          <Text style={styles.pageTitle}>Body Massage</Text>
+          <Text style={styles.pageTitle}>{navigation.state.params.name}</Text>
         </View>
       </ImageBackground>
       <View style={styles.content}>
-        {detailServices.services && <Accordions datas={detailServices} />}
+        {detailServices.services && <Accordions datas={detailServices} parents={navigation.state.params.name} />}
       </View>
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
       {detailServices.services && 
         <GradientButton
-          onPressButton={()=> navigation.navigate('CartScreen')}
+          onPressButton={()=> toLocation()}
           setting={shadowOpt}
           btnText="Go To Cart"
         />

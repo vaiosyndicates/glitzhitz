@@ -13,29 +13,29 @@ export default class CustomTabBar extends Component {
       <PrimeTabBar
         isActive={this.props.isActive}
         tabOneBtn={{
-          active: require('../../img/healer/activeDrugs.png'),
-          inactive: require('../../img/healer/drugs.png'),
+          active: require('../../img/glitz/home_able.png'),
+          inactive: require('../../img/glitz/home_disable.png'),
           width: 24,
           height: 24,
           action: this. _onHomeIconClick.bind(this),
         }}
         tabTwoBtn={{
-          active: require('../../img/healer/activeDoctors.png'),
-          inactive: require('../../img/healer/doctors.png'),
+          active: require('../../img/glitz/history_able.png'),
+          inactive: require('../../img/glitz/history_disable.png'),
           width: 18,
           height: 24,
           // action: this._onDoctorsIconClick.bind(this),
         }}
         tabThreeBtn={{
-          active: require('../../img/healer/activeDashboard.png'),
-          inactive: require('../../img/healer/dashboard.png'),
+          active: require('../../img/glitz/cart_able.png'),
+          inactive: require('../../img/glitz/cart_disable.png'),
           width: 24,
           height: 20,
-          // action: this._onDashboardIconClick.bind(this),
+          action: this._onCartsClick.bind(this),
         }}
         tabFourBtn={{
-          active: require('../../img/healer/activeProfile.png'),
-          inactive: require('../../img/healer/profile.png'),
+          active: require('../../img/glitz/profile_able.png'),
+          inactive: require('../../img/glitz/profil_disable.png'),
           width: 20,
           height: 24,
           action: this._onProfileIconClick.bind(this),
@@ -49,8 +49,11 @@ export default class CustomTabBar extends Component {
     this.props.navigation.navigate('MainServiceScreen');
   }
 
-  _onDrugsIconClick() {
-    this.props.navigation.navigate('DrugScreen');
+  _onCartsClick() {
+    const data = {
+      flag: 'main'
+    }
+    this.props.navigation.navigate('CartScreen', data);
   }
 
   _onDoctorsIconClick() {

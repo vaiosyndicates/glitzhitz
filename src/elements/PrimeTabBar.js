@@ -13,7 +13,8 @@ import CommonStyles from '../styles/CommonStyles';
 import {
   deviceWidth,
   deviceHeight,
-  TAB_HEIGHT
+  TAB_HEIGHT,
+  colors
 } from '../styles/variables';
 
 export default class PrimeTabBar extends Component {
@@ -137,6 +138,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: TAB_HEIGHT,
     marginTop: 50,
+    elevation: 5,
+    backgroundColor: colors.white,
   },
   btn: {
     width: deviceWidth / 4,

@@ -6,6 +6,7 @@ import CartShop from '../components/Carts/CartShop';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
 import GradientButton from '../elements/GradientButton';
 import HeaderGradient from '../components/Header';
+import CustomTabBar from '../components/CustomTabBar';
 import Constants from 'expo-constants';
 import {
   deviceWidth,
@@ -23,6 +24,7 @@ const CartScreen = ({navigation}) => {
   
   const dispatch = useDispatch();
   const stateCart = useSelector(state => state.cartReducer.cart);
+  const flag = navigation.state.params.flag;
   
   const deleteCart = (obj) => {
     try {
@@ -95,6 +97,13 @@ const CartScreen = ({navigation}) => {
       }
 
       </View>
+      {flag === 'main'  &&
+        <CustomTabBar
+          navigation={navigation}
+          isActive='tabThree'
+        />
+      }
+
     </View>
   );
 }

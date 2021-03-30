@@ -92,8 +92,10 @@ const styles = StyleSheet.create({
   },
   header: {
     color: colors.white,
-    fontSize: fontSize.itemHeader,
+    fontSize: fontSize.normal,
     fontFamily: fontFamily.extraBold,
+    flexWrap: 'wrap',
+    maxWidth: deviceWidth * 0.20,
   },
   subHeader: {
     color: colors.white,
@@ -111,8 +113,8 @@ const styles = StyleSheet.create({
     marginTop: deviceHeight * 0.085,
     width: deviceWidth * 0.39,
     height: deviceHeight * 0.08,
-    paddingLeft: deviceWidth * 0.11,
-    paddingTop: deviceHeight * 0.01,
+    paddingLeft: deviceWidth * 0.10,
+    justifyContent: 'center',
     borderRadius: 5,
   }
 });
