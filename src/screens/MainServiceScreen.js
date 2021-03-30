@@ -99,14 +99,14 @@ class MainServiceScreen extends Component {
 
   findMiddle(){
     const datas = this.state.data;
-    let mid = datas[Math.round((datas.length - 1) / 2)];
+    let mid = datas[Math.ceil((datas.length - 1) / 2)];
     return datas.indexOf(mid);
   }
 
   splitArray() {
     const datas = this.state.data;
     let first = datas.slice(0, this.findMiddle());
-    let second = datas.slice(this.findMiddle() + 1);
+    let second = datas.slice(- this.findMiddle());
     return [first, second] ;
   }
   
@@ -145,7 +145,7 @@ class MainServiceScreen extends Component {
                     iconWidth={150}
                     iconHeight={150}
                     ids={current.id_service}
-                    onPressCard={() => this._handleClickShopping(current.id_service)}
+                    onPressCard={() => this._handleClickShopping(current.id_service, current.name)}
                   />
                 </React.Fragment>
               );
@@ -162,7 +162,7 @@ class MainServiceScreen extends Component {
                       iconWidth={150}
                       iconHeight={150}
                       ids={current.id_service}
-                      onPressCard={() => this._handleClickShopping(current.id_service)}
+                      onPressCard={() => this._handleClickShopping(current.id_service, current.name)}
                     />
                   </React.Fragment>
                 );
@@ -173,7 +173,7 @@ class MainServiceScreen extends Component {
         <View style={{height: 55}} />
         <CustomTabBar
           navigation={this.props.navigation}
-          isActive='tabHome'
+          isActive='tabOne'
         />
       </View>
     )
@@ -207,9 +207,10 @@ class MainServiceScreen extends Component {
     this.props.navigation.navigate("ServicePriceScreen");
   }
 
-  _handleClickShopping(ids) {
+  _handleClickShopping(ids, name) {
     const data = {
-      ids: ids
+      ids: ids,
+      name: name,
     };
     this.props.navigation.navigate('ShoppingScreen', data);
   }
