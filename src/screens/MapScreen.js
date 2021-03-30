@@ -70,10 +70,11 @@ const MapScreen = ({navigation}) => {
             container: {
               flex: 1,
               zIndex:100,
-              maxWidth: '90%',
               justifyContent: 'center',
               left:20,
-              top: 80
+              top: 80,
+              position: 'absolute',
+              width: '90%'
             },
             textInputContainer: {
               flexDirection: 'row',
