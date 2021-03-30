@@ -12,7 +12,7 @@ import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } fr
 const DetailsScreen = ({navigation}) => {
   const stateMaps = useSelector(state => state.mapsReducer.maps);
   const stateCarts = useSelector(state => state.cartReducer.cart);
-  const totalPrice = stateCarts.map(item => item.price).reduce((prev, next) => prev + next);
+  const totalPrice = stateCarts.reduce((accum,item) => accum + parseFloat(item.price), 0)
 
   const [load, setLoad] = useState(false);
 
@@ -33,7 +33,7 @@ const DetailsScreen = ({navigation}) => {
             <View style={styles.box}>
               <View style={styles.boxDate}>
                 <Text style={styles.boxDateTitle}>Date</Text>
-                <Text style={styles.boxDateDate}>12 mar</Text>
+                <Text style={styles.boxDateDate}>{`${navigation.state.params.book_date} / ${navigation.state.params.book_time}`}</Text>
               </View>
               <View style={styles.mapSection}>
                 <Text style={styles.mapTitle}>ADDRESS</Text>
@@ -53,7 +53,7 @@ const DetailsScreen = ({navigation}) => {
                     }}
                   />
                 </MapView>
-                <Text style={styles.detailAddress}>Sudirman Park Suites, 18 Floor. Central Jakarta</Text>
+                <Text style={styles.detailAddress}>{navigation.state.params.fullAddress}</Text>
               </View>
               <View style={styles.bookingSection}>
                 <Text style={styles.bookingTitle}>YOUR BOOKING</Text>
@@ -62,7 +62,7 @@ const DetailsScreen = ({navigation}) => {
                     <React.Fragment key={cur.id}>
                     <View style={styles.bookingCart}>
                       <Text style={styles.service}>{cur.name}</Text>
-                      <Text style={styles.price}>{cur.price}</Text>
+                      <Text style={styles.price}>{cur.price.replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                     </View>
                     </React.Fragment>
                   );
@@ -74,7 +74,7 @@ const DetailsScreen = ({navigation}) => {
                   <Text style={styles.totalTitle}>Total</Text>
                 </View>
                 <View style={styles.totalWrap}>
-                  <Text style={styles.totalPrice}>Rp. {totalPrice}</Text>
+                  <Text style={styles.totalPrice}>Rp. {totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                 </View>
               </View>
             </View>

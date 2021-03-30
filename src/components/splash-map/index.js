@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
   imageCarts: {
     width: deviceWidth * 0.30,
     height: deviceHeight * 0.20,
-    left: deviceWidth * 0.15,
+    left: deviceWidth * 0.16,
+    marginTop: deviceHeight * 0.05,
   },
   titleCarts: {
     textAlign: 'center',
