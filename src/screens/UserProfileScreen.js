@@ -15,10 +15,20 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetLogout } from '../util/ResetRouting';
 import HeaderGradient from '../components/Header';
-import { colors } from '../styles/variables';
+import { colors, fontFamily, fontSize } from '../styles/variables';
 class UserProfileScreen extends Component {
+  _isMounted = false;
+  signal = axios.CancelToken.source();
+  
   constructor(props) {
     super(props);
+    this.state = {
+      name: '',
+      address: '',
+      email: '',
+      phone: '',
+      gender: '',
+    }
   }
 
   render() {
@@ -29,45 +39,39 @@ class UserProfileScreen extends Component {
           <View style={CommonStyles.itemWhiteBox}>
             <View style={styles.rowTop}>
               <ProfileCard
-                header='Age'
-                content='48'
-                unit='years'
+                header='Name'
+                content={this.state.name}
                 hasPaddingTop={false}
               />
               <ProfileCard
-                header='Blood'
-                content='AB'
+                header='Phone'
+                content={this.state.phone}
                 unit=''
                 hasPaddingTop={false}
               />
               <ProfileCard
                 header='Gender'
-                content='Female'
+                content={this.state.gender}
                 unit=''
                 hasPaddingTop={false}
                 hasBorderRight={false}
               />
             </View>
             <View style={styles.rowBottom}>
-              <ProfileCard
-                header='Height'
-                content='198'
-                unit='cm'
-              />
-              <ProfileCard
-                header='Weight'
-                content='66'
-                unit='kg'
-              />
-              <ProfileCard
-                header='Goal'
-                content='78'
-                unit='%'
-                hasBorderRight={false}
-              />
+              <Text header grey regular style={styles.headerAddress}>Address</Text>
+              <Text header black reguler style={styles.contentAddress}>{this.state.address}</Text>
             </View>
           </View>
           <View style={styles.otherCont}>
+          <ItemWithDetail
+              image={{
+                url: require('../../img/glitz/logout.png'),
+                width: 22,
+                height: 25 
+              }}
+              header='Edit Profile'
+              onPressItem={() => this.onClickEdit()}
+            />            
             <ItemWithDetail
               image={{
                 url: require('../../img/glitz/logout.png'),
@@ -87,23 +91,14 @@ class UserProfileScreen extends Component {
     );
   }
 
-  onClickSettingButton() {
-    this.props.navigation.navigate("SettingsScreen");
-  }
-
-  // Go to GoalSettingsScreen 
-  _handleClickGoalSettings() {
-    this.props.navigation.navigate("GoalSettingsScreen");
-  }
-
-  // Go to DoctorFavoritesScreenr
-  _handleClickDoctorFavorites() {
-    this.props.navigation.navigate("DoctorFavoritesScreen");
-  }
-
-  // Go to InsurranceScreen 
-  _handleClickInsurrance() {
-    this.props.navigation.navigate("InsurranceScreen");
+  onClickEdit() {
+    const data = {
+      name: this.state.name,
+      email: this.state.email,
+      address: this.state.address,
+      phone: this.state.phone,
+    }
+    this.props.navigation.navigate("EditProfileScreen", data);
   }
 
   async _handleClickLogOut() {
@@ -146,6 +141,55 @@ class UserProfileScreen extends Component {
       console.log(e);
       showError('Logout Failed');
     }
+  }
+
+  async componentDidMount(){
+    this._isMounted = true;
+    this.props.loading(true);
+
+    if(this._isMounted === true) {
+      try {
+
+        const tokenizer = await AsyncStorage.getItem('token');
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
+          headers: {
+            Authorization: tokenizer,
+          },
+          cancelToken: this.signal.token,
+        });
+
+        if(response.status === 200){
+          this.props.loading(false);
+          this.setState({name: response.data.data.user[0].name});
+          this.setState({address: response.data.data.user[0].address});
+          this.setState({email: response.data.data.user[0].email});
+          this.setState({phone: response.data.data.user[0].phone});
+          this.setState({gender: response.data.data.user[0].gender});
+
+        } else{
+          this.props.loading(false);
+          showError('Fetching Data Failed');
+        }
+
+      } catch (error) {
+
+        if (axios.isCancel(error)) {
+          this.props.loading(false);
+          console.log('Error: ', error.message);
+        } else {
+          this.props.loading(false);
+          console.log(error);
+          showError('Failed');
+        }
+        
+      }
+    }
+
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.signal.cancel('Api is being canceled');
   }
 }
 
@@ -194,10 +238,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   rowBottom: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingBottom: 20,
   },
   otherCont: {
     marginBottom: 28,
   },
+  headerAddress: {
+    textAlign: 'center',
+  },
+  contentAddress: {
+    textAlign: 'center',
+  }
 });

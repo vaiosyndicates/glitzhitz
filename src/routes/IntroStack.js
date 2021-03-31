@@ -61,6 +61,7 @@ import { connect, useSelector } from 'react-redux';
 import ShoppingScreen from '../screens/ShoppingScreen';
 import DetailScreen from '../screens/DetailScreen';
 import DetailsScreen from '../screens/DetailScreen';
+import UpdateProfile from '../screens/UpdateProfile';
 
 const AppRouter = StackRouter(
   {
@@ -133,6 +134,10 @@ const AppRouter = StackRouter(
       screen: UserProfileScreen,
       path: 'profile',
     },
+    EditProfileScreen: {
+      screen: UpdateProfile,
+      path: 'edit_profile',
+    },    
     AppointmentScreen: {
       screen: AppointmentScreen,
       path: 'appointment',
