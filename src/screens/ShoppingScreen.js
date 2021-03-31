@@ -21,6 +21,7 @@ const ShoppingScreen = ({navigation}) => {
 
   const [detailServices, setDetailServices] = useState([]);
   const count = useSelector(state => state.cartReducer.count);
+  const image = {uri : navigation.state.params.image};
 
   useEffect(() => {
     _isMounted = true;
@@ -84,7 +85,7 @@ const ShoppingScreen = ({navigation}) => {
 
   return (
     <View style={styles.page}>
-      <ImageBackground source={require('../../img/glitz/massageBanner.png')} style={styles.background}>
+      <ImageBackground source={image} style={styles.background}>
         <View style={styles.blurry}>
           <Text style={styles.pageTitle}>{navigation.state.params.name}</Text>
         </View>

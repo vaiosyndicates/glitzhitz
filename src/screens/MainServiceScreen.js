@@ -32,21 +32,20 @@ class MainServiceScreen extends Component {
     if(this._isMounted === true) {
       try {
         const tokenizer = await AsyncStorage.getItem('token')
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/User', {
+        const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
           headers: {
             Authorization: tokenizer,
           },
           cancelToken: this.signal.token,
         });
-        
         if(response.status === 200){
           const data = {
-            name: response.data.data.user[1].name,
-            phone: response.data.data.user[1].phone,
-            address: response.data.data.user[1].address,
-            email: response.data.data.user[1].email,
-            gender: response.data.data.user[1].gender,
-            birth: response.data.data.user[1].birth,
+            name: response.data.data.user[0].name,
+            phone: response.data.data.user[0].phone,
+            address: response.data.data.user[0].address,
+            email: response.data.data.user[0].email,
+            gender: response.data.data.user[0].gender,
+            birth: response.data.data.user[0].birth,
           }
 		  this.setState({name: data.name});
           this.props.profile(data);
@@ -147,7 +146,7 @@ class MainServiceScreen extends Component {
                     iconWidth={150}
                     iconHeight={150}
                     ids={current.id_service}
-                    onPressCard={() => this._handleClickShopping(current.id_service, current.name)}
+                    onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
                   />
                 </React.Fragment>
               );
@@ -164,7 +163,7 @@ class MainServiceScreen extends Component {
                       iconWidth={150}
                       iconHeight={150}
                       ids={current.id_service}
-                      onPressCard={() => this._handleClickShopping(current.id_service, current.name)}
+                      onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
                     />
                   </React.Fragment>
                 );
@@ -209,10 +208,11 @@ class MainServiceScreen extends Component {
     this.props.navigation.navigate("ServicePriceScreen");
   }
 
-  _handleClickShopping(ids, name) {
+  _handleClickShopping(ids, name, image) {
     const data = {
       ids: ids,
       name: name,
+      image: image
     };
     this.props.navigation.navigate('ShoppingScreen', data);
   }

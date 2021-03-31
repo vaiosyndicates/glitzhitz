@@ -52,6 +52,14 @@ const MapScreen = ({navigation}) => {
     accessPermission();
   }, [dispatch]);
 
+ const onRegionChange = (region, latitude, longitude) => {
+   const data = {
+     longitude: longitude,
+     latitude: latitude
+   }
+  dispatch({type: 'ADD_COORDINATE', value: data});
+ }
+
   return (
     <>
     <View style={{flex: 1}}> 
@@ -74,7 +82,8 @@ const MapScreen = ({navigation}) => {
               left:20,
               top: 80,
               position: 'absolute',
-              width: '90%'
+              width: '90%',
+              marginTop: spaceHeight * 0.001, marginVertical: deviceHeight * 0.001, marginHorizontal: deviceWidth * 0.001              
             },
             textInputContainer: {
               flexDirection: 'row',
@@ -114,7 +123,18 @@ const MapScreen = ({navigation}) => {
               justifyContent: 'flex-end',
               height: 20,
             },
-          }}              
+          }}
+          onPress={(data, details = null) => {
+            console.log(data.description);
+            const dt = {
+              latitude: details.geometry.location.lat,
+              longitude: details.geometry.location.lng,
+              // latitudeDelta: 0.00922 * 1.5,
+              // longitudeDelta: 0.00421 * 1.5
+            };
+            dispatch({type: 'ADD_COORDINATE', value: dt});
+            onRegionChange(dt, dt.latitude, dt.longitude);
+          }}                      
           currentLocation={false} />      
       <MapView
         provider={PROVIDER_GOOGLE}
