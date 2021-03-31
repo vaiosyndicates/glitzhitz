@@ -153,7 +153,6 @@ const styles = StyleSheet.create({
 	  top: 0
   },
   titleAccordion: {
-	  height: 80,
 	  justifyContent: 'center',
 	  textAlignVertical: 'center'
   }
