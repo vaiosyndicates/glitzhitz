@@ -65,13 +65,13 @@ class UserProfileScreen extends Component {
           <View style={styles.otherCont}>
           <ItemWithDetail
               image={{
-                url: require('../../img/glitz/logout.png'),
+                url: require('../../img/healer/avatar.png'),
                 width: 22,
                 height: 25 
               }}
               header='Edit Profile'
               onPressItem={() => this.onClickEdit()}
-            />            
+            />
             <ItemWithDetail
               image={{
                 url: require('../../img/glitz/logout.png'),
@@ -108,14 +108,13 @@ class UserProfileScreen extends Component {
     };
 
     try {
-      this.props.loading(true);
-      const response =  await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/add', data, {
+      // this.props.loading(true);
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post('http://api.glitzandhitz.com/index.php/User/logout', {}, {
           headers: {
-            Accept: 'application/json',
+            'Authorization': tokenizer
           }
-        }
-      );
+        });
 
       if(response.status === 200) {
         this.props.loading(false);
@@ -138,7 +137,7 @@ class UserProfileScreen extends Component {
       }
 
     } catch(e) {
-      console.log(e);
+      console.log(e.response.data);
       showError('Logout Failed');
     }
   }
