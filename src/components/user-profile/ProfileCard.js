@@ -11,6 +11,7 @@ import {
   colors,
   fontSize,
   fontFamily,
+  deviceWidth,
 } from '../../styles/variables';
 
 export default class ProfileCard extends Component {
@@ -26,7 +27,7 @@ export default class ProfileCard extends Component {
         this.props.hasPaddingTop == false && styles.itemBoxNoPaddingTop
       ]}>
         <Text header grey regular style={{marginBottom: 8}}>{this.props.header}</Text>
-        <Text header black regular>{this.props.content}
+        <Text header black normal>{this.props.content}
           <Text small grey light>{this.props.unit}</Text>
         </Text>
       </View>
@@ -37,7 +38,7 @@ export default class ProfileCard extends Component {
 
 const styles = StyleSheet.create({
   itemBox: {
-    width: 110,
+    width: deviceWidth * 0.32,
     height: 110,
     borderRightWidth: 1,
     borderStyle: 'solid',
