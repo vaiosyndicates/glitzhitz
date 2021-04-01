@@ -72,19 +72,6 @@ const UpdateProfile = ({navigation}) => {
       <View style={styles.content}>
         <View style={CommonStyles.textInputField}>
           <Image
-            source={require('../../img/healer/avatar.png')}
-            style={{position:'absolute',bottom: 12,left: 20,width: 19, height: 22}}
-          />
-          <TextInput
-            placeholder='Fullname'
-            style={CommonStyles.textInput}
-            underlineColorAndroid='transparent'
-            value={name}
-            onChangeText={text => setName(text)}
-          />
-        </View>
-        <View style={CommonStyles.textInputField}>
-          <Image
             source={require('../../img/healer/envelope.png')}
             style={{position:'absolute',bottom: 12,left: 20,width: 20, height: 22}}
           />
