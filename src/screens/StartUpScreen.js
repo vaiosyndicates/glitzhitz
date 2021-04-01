@@ -7,7 +7,7 @@ import IntroOneScreen from './IntroOneScreen';
 import StartHeightScreen from './StartHeightScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { connect } from 'react-redux';
-import { resetLogin } from '../util/ResetRouting';
+import { resetLogin, resetLogout } from '../util/ResetRouting';
 
 class StartUpScreen extends Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class StartUpScreen extends Component {
         this.props.token(data);
         this.props.navigation.dispatch(resetLogin);
       } else {
-        this.props.navigation.navigate('GetStartedScreen');
+        this.props.navigation.dispatch(resetLogout);
       }
     } catch (error) {
       console.log(error);
