@@ -53,7 +53,8 @@ const DetailsScreen = ({navigation}) => {
                     }}
                   />
                 </MapView>
-                <Text style={styles.detailAddress}>{navigation.state.params.fullAddress}</Text>
+                <Text style={styles.detailAddress}>{stateMaps.address} ({navigation.state.params.fullAddress})</Text>
+                
               </View>
               <View style={styles.bookingSection}>
                 <Text style={styles.bookingTitle}>YOUR BOOKING</Text>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.light,
     fontSize: fontSize.small,
     flexWrap: 'wrap',
-    maxWidth: deviceWidth * 0.50,
+    maxWidth: deviceWidth * 0.90,
    },
    bookingSection: {
     marginTop: deviceHeight * 0.30,

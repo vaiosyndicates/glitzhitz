@@ -16,6 +16,8 @@ import CommonStyles from '../styles/CommonStyles';
 import { deviceHeight, deviceWidth, shadowOpt } from '../styles/variables';
 import GradientButton from '../elements/GradientButton';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MapScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -33,11 +35,11 @@ const MapScreen = ({navigation}) => {
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           Geolocation.getCurrentPosition(info => {
-           const data = {
-             latitude: info.coords.latitude,
-             longitude: info.coords.longitude,
-           }
-           dispatch({type: 'ADD_COORDINATE', value: data});
+            const data = {
+              latitude: info.coords.latitude,
+              longitude: info.coords.longitude,
+            }
+            getAddress(data);       
           });
         } else {
           showError('Geolocation permission denied');
@@ -52,10 +54,40 @@ const MapScreen = ({navigation}) => {
     accessPermission();
   }, [dispatch]);
 
+ const getAddress = async (data) => {
+  try {
+    const signal = axios.CancelToken.source();
+    const tokenizer = await AsyncStorage.getItem('token')
+    const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/coordinate2address', {
+      headers: {
+        Authorization: tokenizer,
+      },
+      params: {
+        logitude: data.longitude,
+        latitude: data.latitude
+      },
+      cancelToken: signal.token,
+    });
+    if(response.status === 200){
+      onRegionChange(response.data.data, data.latitude, data.longitude);
+    } else {
+      showError('Failed');
+    }
+  } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log('Error: ', error.message);
+    } else {
+      showError(error);
+    }        
+  }
+ }
+
  const onRegionChange = (region, latitude, longitude) => {
+   console.log(region.address);
    const data = {
      longitude: longitude,
-     latitude: latitude
+     latitude: latitude,
+     address: region.address
    }
   dispatch({type: 'ADD_COORDINATE', value: data});
  }
@@ -125,12 +157,10 @@ const MapScreen = ({navigation}) => {
             },
           }}
           onPress={(data, details = null) => {
-            console.log(data.description);
             const dt = {
               latitude: details.geometry.location.lat,
               longitude: details.geometry.location.lng,
-              // latitudeDelta: 0.00922 * 1.5,
-              // longitudeDelta: 0.00421 * 1.5
+              address: data.description,
             };
             dispatch({type: 'ADD_COORDINATE', value: dt});
             onRegionChange(dt, dt.latitude, dt.longitude);
@@ -155,6 +185,7 @@ const MapScreen = ({navigation}) => {
             const data = {
               latitude: e.nativeEvent.coordinate.latitude,
               longitude: e.nativeEvent.coordinate.longitude,
+              address: '',
             };
             dispatch({type: 'ADD_COORDINATE', value: data});
             showSuccess('Location Set');

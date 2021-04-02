@@ -13,6 +13,7 @@ const mapsReducer = (state = initialState, action) => {
         maps: {
           latitude: action.value.latitude,
           longitude: action.value.longitude,
+          address: action.value.address
         },
       };
 
