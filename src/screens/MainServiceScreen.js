@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight, ScrollView } from 'react-native';
+import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight, ScrollView, RefreshControl } from 'react-native';
 
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
@@ -23,74 +23,91 @@ class MainServiceScreen extends Component {
     this.state = {
       didLoaded: true,
       data: [],
-	  name: '',
+	    name: '',
+      refreshing: false,
     }
   }
 
   async componentDidMount() {
     this._isMounted = true;
     if(this._isMounted === true) {
-      try {
-        const tokenizer = await AsyncStorage.getItem('token')
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
-          headers: {
-            Authorization: tokenizer,
-          },
-          cancelToken: this.signal.token,
-        });
-        if(response.status === 200){
-          const data = {
-            name: response.data.data.user[0].name,
-            phone: response.data.data.user[0].phone,
-            address: response.data.data.user[0].address,
-            email: response.data.data.user[0].email,
-            gender: response.data.data.user[0].gender,
-            birth: response.data.data.user[0].birth,
-          }
-		  this.setState({name: data.name});
-          this.props.profile(data);
-
-        } else {
-          showError('Failed');
-        }
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log('Error: ', error.message);
-        } else {
-          showError(error);
-        }        
-      }
-
-      try {
-        this.props.loading(true);
-        const tokenizer = await AsyncStorage.getItem('token')
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/category', {
-          headers: {
-            Authorization: tokenizer,
-          },
-          cancelToken: this.signal.token,
-        });
-        // console.log(response);
-        if(response.status === 200){
-          this.props.loading(false);
-          this.setState({data: response.data.data.services})
-        } else {
-          this.props.loading(false);
-          this.setState({data: []})
-          showError('Failed');
-        }
-
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          this.props.loading(false);
-          console.log('Error: ', error.message);
-        } else {
-          this.props.loading(false);
-          showError('Failed');
-        }        
-      }
-     }
+      this.getProfiles();
+      this.getCategory();
+    }
   }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getProfiles();
+    this.getCategory();
+  }
+
+  async getProfiles() {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: this.signal.token,
+      });
+      if(response.status === 200){
+        const data = {
+          name: response.data.data.user[0].name,
+          phone: response.data.data.user[0].phone,
+          address: response.data.data.user[0].address,
+          email: response.data.data.user[0].email,
+          gender: response.data.data.user[0].gender,
+          birth: response.data.data.user[0].birth,
+        }
+    this.setState({name: data.name});
+        this.props.profile(data);
+
+      } else {
+        showError('Failed');
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Error: ', error.message);
+      } else {
+        showError(error);
+      }
+    }
+  }
+
+  async getCategory() {
+    try {
+      this.props.loading(true);
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/category', {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: this.signal.token,
+      });
+      // console.log(response);
+      if(response.status === 200){
+        this.props.loading(false);
+        this.setState({data: response.data.data.services})
+        this.setState({refreshing: false});
+      } else {
+        this.props.loading(false);
+        this.setState({data: []})
+        showError('Failed');
+      }
+
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        this.props.loading(false);
+        console.log('Error: ', error.message);
+      } else {
+        this.props.loading(false);
+        showError('Failed');
+      }
+    }
+  }
+
+
 
   componentWillUnmount() {
     this.setState({didLoaded: false});
@@ -133,27 +150,17 @@ class MainServiceScreen extends Component {
           <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
         <View style={{height: deviceHeight * 0.03}} />
-        <ScrollView vertical showsVerticalScrollIndicator={false}>
-        <View style={styles.fullField}>
-          <View style={styles.colMainLeft}>
-            {first.length > 0 && first.map((current, i) => {
-              return (
-                <React.Fragment key={current.id_service}>
-                  <MenuItemBox
-                    header={current.name}
-                    // subHeader='113 Doctors'
-                    icon={current.image}
-                    iconWidth={150}
-                    iconHeight={150}
-                    ids={current.id_service}
-                    onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </View>
-          <View style={styles.colMainRight}>
-            {second.length > 0 && second.map((current, i) => {
+        <ScrollView vertical 
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }>
+          <View style={styles.fullField}>
+            <View style={styles.colMainLeft}>
+              {first.length > 0 && first.map((current, i) => {
                 return (
                   <React.Fragment key={current.id_service}>
                     <MenuItemBox
@@ -168,8 +175,25 @@ class MainServiceScreen extends Component {
                   </React.Fragment>
                 );
               })}
+            </View>
+            <View style={styles.colMainRight}>
+              {second.length > 0 && second.map((current, i) => {
+                  return (
+                    <React.Fragment key={current.id_service}>
+                      <MenuItemBox
+                        header={current.name}
+                        // subHeader='113 Doctors'
+                        icon={current.image}
+                        iconWidth={150}
+                        iconHeight={150}
+                        ids={current.id_service}
+                        onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
+                      />
+                    </React.Fragment>
+                  );
+                })}
+            </View>
           </View>
-        </View>
         </ScrollView>
         <View style={{height: 55}} />
         <CustomTabBar
