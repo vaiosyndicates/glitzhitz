@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import * as Font from 'expo-font';
-import { Dimensions, StatusBar, View, Platform, AppRegistry } from 'react-native';
+import { Dimensions, StatusBar, View, Platform, AppRegistry, Alert } from 'react-native';
 import { createNavigator, createAppContainer, addNavigationHelpers } from 'react-navigation';
 import ScalingDrawer from './elements/ScalingDrawer';
 
@@ -11,8 +11,6 @@ import store from './redux';
 import Loading from './components/loading';
 import FlashMessage from 'react-native-flash-message';
 import messaging from '@react-native-firebase/messaging';
-// import firebase from '@react-native-firebase/app';
-import firebase from 'react-native-firebase';
 
 const {width, height} = Dimensions.get('window');
 
@@ -31,63 +29,6 @@ class CustomDrawerView extends Component {
     }
   }
 
-  async getFcmToken() {
-    const fcmToken = await firebase.messaging().getToken();
-    if (fcmToken) {
-      console.log('Your Firebase Token is:', fcmToken);
-    } else {
-      console.log('Failed', 'No token received');
-    }
-  }
-
-  checkNotificationPermission = () => {
-    firebase
-      .messaging()
-      .hasPermission()
-      .then(enabled => {
-        console.log('enabled => '+enabled);
-        if (!enabled) {
-          this.promptForNotificationPermission();
-        }
-      });
-   };
-
-   promptForNotificationPermission = () => {
-    firebase
-      .messaging()
-      .requestPermission({provisional: true})
-      .then(() => {
-        console.log('Permission granted.');
-      })
-      .catch(() => {
-        console.log('Permission rejected.');
-      });
-    };
-    
-    createAndroidNotificationChannel() {
-      const channel = new firebase.notifications.Android.Channel(
-        'channelId',
-        'Push Notification',
-        firebase.notifications.Android.Importance.Max,
-      ).setDescription('Turn on to receive push notification');
-  
-      firebase.notifications().android.createChannel(channel);
-    }
-   foregroundState = () => {
-      const unsubscribe = messaging().onMessage(async notification => {
-        console.log('Message handled in the foregroundState!', notification);
-      });
-  
-      return unsubscribe;
-    };
-  
-    // Register background handler
-    backgroundState = () => {
-      messaging().setBackgroundMessageHandler(async notification => {
-        console.log('Message handled in the background!', notification);
-      });
-    };    
-
   async componentDidMount() {
     await Font.loadAsync({
       'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
@@ -97,16 +38,6 @@ class CustomDrawerView extends Component {
       'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf')
     });
     this.setState({ fontLoaded: true });
-    this.checkNotificationPermission();
-    await messaging().requestPermission({provisional: true});
-    await messaging().registerDeviceForRemoteMessages();
-    await  this.getFcmToken();
-    if (Platform.OS === 'android') {
-      this.createAndroidNotificationChannel();
-    }
-
-    this.backgroundState();
-    this.foregroundState();    
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -166,8 +97,54 @@ class CustomDrawerView extends Component {
 const AppNavigator = createNavigator(CustomDrawerView, HealerRouter, {});
 const AppContainer = createAppContainer(AppNavigator);
 
+//handle notif background. di luar ui state
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
+
+
 const MainApp = () => {
   const stateLoading = useSelector(state => state.loadingReducer.loading)
+
+  useEffect(() => {
+    //foreground notif
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    //handle notif ketika notif bar di click
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log( 'Notification caused app to open from background state:', remoteMessage, );
+    });
+
+    // componen unmount
+    requestUserPermission();
+
+    return unsubscribe;
+  }, []);
+
+  const requestUserPermission = async() => {
+    const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  
+      if (enabled) {
+        getFcmToken();
+        console.log('Authorization status:', authStatus);
+      }
+  }
+
+  const getFcmToken = async() => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+     console.log(fcmToken);
+     console.log("Your Firebase Token is:", fcmToken);
+    } else {
+     console.log("Failed", "No token received");
+    }
+  }
+
   return (
     <>
       <AppContainer />
