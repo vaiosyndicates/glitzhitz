@@ -16,7 +16,7 @@ import { showError } from '../util/ShowMessage';
 import ImageButton from '../elements/ImageButton';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-// import SignInScreen from './SignInScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -190,10 +190,11 @@ class SignUpScreen extends Component {
       gender: this.state.gender,
       password: this.state.password,
       birth: this.state.birth,
-      android_device_id: DeviceInfo.getUniqueId(),
+      // android_device_id: DeviceInfo.getUniqueId(),
+      android_device_id: await AsyncStorage.getItem('fcmToken'),
       action: 'register',
     };
-    // console.log(data);
+    console.log(data);
     try {
       this.props.loading(true);
       const response = await axios.post(
@@ -203,7 +204,7 @@ class SignUpScreen extends Component {
           }
         }
       );
-
+        
       if (response.data.status === 200) {
 
         this.props.loading(false);
@@ -216,6 +217,7 @@ class SignUpScreen extends Component {
       }
 
     } catch (error) {
+      console.log(error);
       this.props.loading(false);
       showError(error.message);
     }

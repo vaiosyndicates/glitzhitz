@@ -126,6 +126,7 @@ class SignInScreen extends Component {
 
         this.props.loading(false);
         try {
+          await AsyncStorage.setItem('email', data.email);
           await AsyncStorage.setItem('token', response.data.data.token)
           this.props.setToken(response.data.data.token);
           this.props.navigation.dispatch(resetLogin); 
