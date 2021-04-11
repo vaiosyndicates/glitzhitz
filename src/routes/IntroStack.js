@@ -62,6 +62,8 @@ import ShoppingScreen from '../screens/ShoppingScreen';
 import DetailScreen from '../screens/DetailScreen';
 import DetailsScreen from '../screens/DetailScreen';
 import UpdateProfile from '../screens/UpdateProfile';
+import MessagesScreen from '../screens/MessagesScreen';
+import ChattingScreen from '../screens/ChattingScreen';
 
 const AppRouter = StackRouter(
   {
@@ -137,7 +139,11 @@ const AppRouter = StackRouter(
     EditProfileScreen: {
       screen: UpdateProfile,
       path: 'edit_profile',
-    },    
+    },
+    MessagesScreen: {
+      screen: MessagesScreen,
+      path: 'messages_screen',
+    },
     AppointmentScreen: {
       screen: AppointmentScreen,
       path: 'appointment',
@@ -197,6 +203,10 @@ const AppRouter = StackRouter(
     ChatScreen: {
       screen: ChatScreen,
       path: 'chat',
+    },
+    ChattingScreen: {
+      screen: ChattingScreen,
+      path: 'chatting',
     },
     ResultFindHospitalScreen: {
       screen: ResultFindHospitalScreen,

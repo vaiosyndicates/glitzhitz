@@ -31,6 +31,7 @@ const colors = {
   black2: 'rgba(0,0,0,0.5)',
   darkWhite: 'rgba(255,255,255,0.6)',
   grey: 'rgb(105,105,105)',
+  grey3: '#8092AF',
   lightGrey: 'rgb(150,150,150)',
   softBlue: 'rgb(75,102,234)',
   darkSkyBlue: 'rgb(63,103,230)',
