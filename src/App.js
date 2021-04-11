@@ -11,10 +11,7 @@ import store from './redux';
 import Loading from './components/loading';
 import FlashMessage from 'react-native-flash-message';
 import messaging from '@react-native-firebase/messaging';
-<<<<<<< HEAD
-=======
 import AsyncStorage from '@react-native-async-storage/async-storage';
->>>>>>> push_notif2
 
 const {width, height} = Dimensions.get('window');
 
@@ -113,12 +110,8 @@ const MainApp = () => {
   useEffect(() => {
     //foreground notif
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-<<<<<<< HEAD
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-=======
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
->>>>>>> push_notif2
     });
 
     //handle notif ketika notif bar di click
@@ -147,11 +140,7 @@ const MainApp = () => {
   const getFcmToken = async() => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
-<<<<<<< HEAD
-     console.log(fcmToken);
-=======
      await AsyncStorage.setItem('fcmToken', fcmToken);
->>>>>>> push_notif2
      console.log("Your Firebase Token is:", fcmToken);
     } else {
      console.log("Failed", "No token received");
