@@ -1,5 +1,6 @@
 const initialState = {
   profile: {
+    id: null,
     name: null,
     address : null,
     phone_number: null,
@@ -18,6 +19,7 @@ const profileReducer = (state = initialState, action) => {
         isLogin: true,
         profile: {
           ...state.profile,
+          id: action.value.id,
           name: action.value.name,
           address: action.value.address,
           phone_number: action.value.phone,
