@@ -82,7 +82,8 @@ const DetailsScreen = ({navigation}) => {
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
             <GradientButton
-              onPressButton={()=> setSplash()}
+              // onPressButton={()=> setSplash()}
+              onPressButton={()=> navigation.navigate('FaspayScreen')}
               setting={shadowOpt}
               btnText="Booking Now"
             />

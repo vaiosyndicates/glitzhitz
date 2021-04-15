@@ -62,8 +62,7 @@ import ShoppingScreen from '../screens/ShoppingScreen';
 import DetailScreen from '../screens/DetailScreen';
 import DetailsScreen from '../screens/DetailScreen';
 import UpdateProfile from '../screens/UpdateProfile';
-import MessagesScreen from '../screens/MessagesScreen';
-import ChattingScreen from '../screens/ChattingScreen';
+import FaspayScreen from '../screens/FaspayScreen';
 
 const AppRouter = StackRouter(
   {
@@ -284,6 +283,9 @@ const AppRouter = StackRouter(
       screen: VerifyPhoneScreen,
       path: 'verifyphone'
     },
+    FaspayScreen: {
+      screen: FaspayScreen,
+    },    
   },
   {
     initialRouteName: 'StartUpScreen',
