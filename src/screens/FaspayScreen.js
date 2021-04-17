@@ -26,23 +26,30 @@ const FaspayScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const stateCart = useSelector(state => state.cartReducer.cart);
 
+  const handleBack = () => {
+    const data = {
+      book_date: '11-01-2011',
+      book_time: '10:23',
+      fullAddress: 'alexis',
+      status: 'Success',
+      payWith: 'OVO',
+      flag: 2,
+    }
+    navigation.navigate('DetailScreen', data);
+  }
+
   return (
     <View style={styles.page}>
-      <HeaderGradient title="Payment" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
-      <WebView source={{ uri: 'https://dev.faspay.co.id/pws/100003/0830000010100000/5a1a32323eeb214a92a753f9687f975d1dc9b01e?trx_id=5000370200000745&merchant_id=50003&bill_no=1234' }} />
+      <HeaderGradient title="Payment" onPress={()=> navigation.goBack(null)} dMarginLeft={0.25} />
+      <WebView source={{ uri: `${navigation.state.params.url}`}} />
 
 
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
       {stateCart.length > 0 &&
         <GradientButton
-          onPressButton={()=> navigation.navigate('MapScreen')}
+          onPressButton={() => handleBack()}
           setting={shadowOpt}
-          disabled={
-            stateCart.length <= 0
-              ? true
-              : false
-          }
-          btnText="Back to Cart"
+          btnText="Confirmation Booking"
         />
       }
 

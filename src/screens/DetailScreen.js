@@ -1,20 +1,28 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import React, { PureComponent, useState } from 'react'
+import React, { PureComponent, useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import HeaderGradient from '../components/Header'
 import SplashMap from '../components/splash-map'
 import GradientButton from '../elements/GradientButton'
 import CommonStyles from '../styles/CommonStyles'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables'
+import { resetLogin } from '../util/ResetRouting'
+import { showError } from '../util/ShowMessage'
 
 const DetailsScreen = ({navigation}) => {
   const stateMaps = useSelector(state => state.mapsReducer.maps);
   const stateCarts = useSelector(state => state.cartReducer.cart);
   const totalPrice = stateCarts.reduce((accum,item) => accum + parseFloat(item.price), 0)
+  const flag = navigation.state.params.flag
+  const dispatch = useDispatch();
+  let signal = axios.CancelToken.source();
 
   const [load, setLoad] = useState(false);
+  const [trx, setTrx] = useState([]);
+  const [seconds, setSeconds] = useState(1);
 
   const setSplash = () => {
     setLoad(true);
@@ -23,10 +31,141 @@ const DetailsScreen = ({navigation}) => {
     }, 4000)
   };
 
+  useEffect(() => {
+    const flag = navigation.state.params.flag;
+    if(flag === 2) {
+      getOrderActive();
+    }
+  }, [])
+
+  useEffect(() => {
+    const flag = navigation.state.params.flag;
+    if(flag === 2) {
+      const timer = setInterval(() => {
+        getOrderActiveBackground();
+        setSeconds(seconds + 1);
+      }, 5000);
+                 // clearing interval
+      return () => clearInterval(timer);      
+    }
+  }); 
+  
+  const getOrderActiveBackground = async() => {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+      });
+
+      if(response.status === 200) {
+        dispatch({type: 'SET_LOADING', value: false});
+        console.log('1');
+        setTrx(response.data.data)
+      } else {
+        showError('Failed')
+      }
+    } catch (error) {
+      showError('Network Error')
+      console.log('error')
+    }
+  }  
+
+  const getOrderActive = async() => {
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+      });
+
+      if(response.status === 200) {
+        dispatch({type: 'SET_LOADING', value: false});
+        setTrx(response.data.data)
+      } else {
+        showError('Failed')
+      }
+    } catch (error) {
+      showError('Network Error')
+      console.log('error')
+    }
+  }
+
+  const handlePayment = async() => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    const data = {
+      longitude: stateMaps.longitude,
+      latitude: stateMaps.latitude,
+      address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
+      date: navigation.state.params.book_date,
+      time: navigation.state.params.book_time,
+      cart: stateCarts
+    };
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/Payment/checkout', data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      console.log('aaa');
+      console.log(response.data);
+      dispatch({type: 'SET_LOADING', value: false});
+      const datas = {
+        url: response.data.data.redirect_url
+      }      
+      navigation.navigate('FaspayScreen', datas);
+    } catch (error) {
+    dispatch({type: 'SET_LOADING', value: false});
+     if(error.response.status === 401) {
+      console.log('------------------');      
+      let res = error.response.data;
+      res = res.replace(/<\/?[^>]+>/gi, '');
+      let js = res.split('data')[1];
+      js = js.slice(2, js.length - 1);
+      let real = JSON.parse(js);
+       const datas = {
+         url: real.redirect_url
+       }
+      //  navigation.navigate('FaspayScreen', datas)
+     }
+    }
+    // const tokenizer = await AsyncStorage.getItem('token');
+    // const headers = {
+    //   Accept: 'application/json',
+    //   Authorization: tokenizer,
+    // }
+
+    // console.log(headers);
+
+    // axios.post('http://api.glitzandhitz.com/index.php/Payment/checkout', data, {
+    //   headers: headers
+    // })
+    // .then((response) => {
+    //   console.log(response)
+    // })
+    // .catch((error) => {
+    //   console.log('masuk catch')
+    //   console.log(error.response.data);
+    // })
+  };
+
   return (
     <>
+      {console.log(trx.hasOwnProperty('order'))}
       <View style={styles.page}>
-        <HeaderGradient title="Detail" onPress={()=> navigation.goBack(null)} dMarginLeft={0.28} />
+        <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? navigation.dispatch(resetLogin)  : navigation.goBack(null))} dMarginLeft={0.28} />
         <View style={styles.container}>
           <View style={styles.boxContainer}>
             <Text style={styles.textHeader}>Review Booking</Text>
@@ -78,16 +217,49 @@ const DetailsScreen = ({navigation}) => {
                   <Text style={styles.totalPrice}>Rp. {totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                 </View>
               </View>
+              {flag === 2 && trx.hasOwnProperty('order') &&
+                <>
+                <View style={styles.confirmSection}>
+                  <View>
+                    <Text style={styles.payTitle}>PAY WITH</Text>
+                  </View>
+                  <View></View>
+                  <View>
+                    <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text>
+                  </View>
+                </View>
+                <View style={styles.statusSection}>
+                  <View>
+                    <Text style={styles.statusTitle}>STATUS</Text>
+                  </View>
+                  <View></View>
+                  <View>
+                    <Text style={styles.statusMessage}>{trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].status: 'undefined'}</Text>
+                  </View>
+                </View>
+                </>
+              }
             </View>
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+          {flag === 1  &&
             <GradientButton
-              // onPressButton={()=> setSplash()}
-              onPressButton={()=> navigation.navigate('FaspayScreen')}
-              setting={shadowOpt}
-              btnText="Booking Now"
-            />
+            // onPressButton={()=> setSplash()}
+            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+            onPressButton={()=> handlePayment()}
+            setting={shadowOpt}
+            btnText="Pay Now"
+          />
+          }
 
+          {flag === 2 && trx.hasOwnProperty('order') &&
+            <GradientButton
+            disabled={trx.order[0].status === 'Menuggu Pembayaran'}
+            onPressButton={()=> setSplash()}
+            setting={shadowOpt}
+            btnText="Search Mitra"
+          />
+          }
           </View>
         </View>
       </View>
@@ -208,5 +380,37 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontFamily: fontFamily.medium,
     fontSize: fontSize.normal,
-  }  
+  },
+  confirmSection: {
+    flexDirection: 'row',
+    marginTop: deviceHeight * 0.02,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  statusSection: {
+    flexDirection: 'row',
+    marginTop: deviceHeight * 0.03,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  payTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
+  },
+  statusTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
+  },
+  merchantTitle: {
+    fontSize: fontSize.small,
+    color: colors.borderViolet,
+    fontFamily: fontFamily.medium,
+  },
+  statusMessage: {
+    fontSize: fontSize.small,
+    color: colors.borderViolet,
+    fontFamily: fontFamily.medium,
+  }
 })

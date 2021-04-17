@@ -24,7 +24,7 @@ export default class CustomTabBar extends Component {
           inactive: require('../../img/glitz/history_disable.png'),
           width: 18,
           height: 24,
-          action: this._onDoctorsIconClick.bind(this),
+          // action: this._onDoctorsIconClick.bind(this),
         }}
         tabThreeBtn={{
           active: require('../../img/glitz/cart_able.png'),
