@@ -138,7 +138,11 @@ const AppRouter = StackRouter(
     EditProfileScreen: {
       screen: UpdateProfile,
       path: 'edit_profile',
-    },    
+    },
+    MessagesScreen: {
+      screen: MessagesScreen,
+      path: 'messages_screen',
+    },
     AppointmentScreen: {
       screen: AppointmentScreen,
       path: 'appointment',
@@ -198,6 +202,10 @@ const AppRouter = StackRouter(
     ChatScreen: {
       screen: ChatScreen,
       path: 'chat',
+    },
+    ChattingScreen: {
+      screen: ChattingScreen,
+      path: 'chatting',
     },
     ResultFindHospitalScreen: {
       screen: ResultFindHospitalScreen,

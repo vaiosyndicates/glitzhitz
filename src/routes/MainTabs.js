@@ -17,6 +17,7 @@ import ListDoctorsScreen from '../screens/ListDoctorsScreen';
 import DashboardTestIndicatorsScreen from '../screens/DashboardTestIndicatorsScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
 import DrawerView from '../components/DrawerView';
+import MessagesScreen from '../screens/MessagesScreen';
 
 const MainTabs = TabRouter(
   {
@@ -39,6 +40,10 @@ const MainTabs = TabRouter(
     UserProfileScreen : {
       screen: UserProfileScreen,
       path: 'profile',
+    },
+    MessageScreen : {
+      screen: MessagesScreen,
+      path: 'messages_screen',
     },
   },
   {

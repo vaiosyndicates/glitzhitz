@@ -23,7 +23,7 @@
       "**/*"
     ],
     "android": {
-      "package": "com.glitzandhitz.devapp",
+      "package": "vn.timistudio.healer",
       "intentFilters": [
         {
           "action": "VIEW",
