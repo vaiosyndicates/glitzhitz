@@ -63,6 +63,8 @@ import DetailScreen from '../screens/DetailScreen';
 import DetailsScreen from '../screens/DetailScreen';
 import UpdateProfile from '../screens/UpdateProfile';
 import FaspayScreen from '../screens/FaspayScreen';
+import MessagesScreen from '../screens/MessagesScreen';
+import ChattingScreen from '../screens/ChattingScreen';
 
 const AppRouter = StackRouter(
   {

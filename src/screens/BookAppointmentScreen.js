@@ -183,6 +183,7 @@ export default class BookAppointmentScreen extends Component {
       book_date: currentDate,
       book_time: this.state.time,
       fullAddress: this.state.address,
+      flag: 1,
     }
     this.props.navigation.navigate('DetailScreen', data);
   }
