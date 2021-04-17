@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { PureComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import HeaderGradient from '../components/Header'
@@ -62,8 +62,8 @@ const DetailsScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log('1');
-        setTrx(response.data.data)
+        console.log(response.data.data.order[0])
+        setTrx(response.data.data);
       } else {
         showError('Failed')
       }
@@ -225,9 +225,19 @@ const DetailsScreen = ({navigation}) => {
                   </View>
                   <View></View>
                   <View>
-                    <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text>
+                    <Image style={{width: 75, height: 25}} source={{uri: `data:image/png;base64,${trx.order[0].payment_icon}`}} />
+                    {/* <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text> */}
                   </View>
                 </View>
+                <View style={styles.confirmSection}>
+                  <View>
+                    <Text style={styles.payTitle}>PAYMENT CODE</Text>
+                  </View>
+                  <View></View>
+                  <View>
+                    <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_code : 'undefined'}</Text>
+                  </View>
+                </View>                
                 <View style={styles.statusSection}>
                   <View>
                     <Text style={styles.statusTitle}>STATUS</Text>
@@ -254,7 +264,7 @@ const DetailsScreen = ({navigation}) => {
 
           {flag === 2 && trx.hasOwnProperty('order') &&
             <GradientButton
-            disabled={trx.order[0].status === 'Menuggu Pembayaran'}
+            disabled={trx.order[0].status === 'Menuggu Pembayaran' || trx.order[0].status === 'Menunggu Pembayaran'}
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
             btnText="Search Mitra"
