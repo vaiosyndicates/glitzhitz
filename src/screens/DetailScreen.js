@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { PureComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import HeaderGradient from '../components/Header'
@@ -22,6 +22,7 @@ const DetailsScreen = ({navigation}) => {
 
   const [load, setLoad] = useState(false);
   const [trx, setTrx] = useState([]);
+  const [seconds, setSeconds] = useState(1);
 
   const setSplash = () => {
     setLoad(true);
@@ -35,8 +36,42 @@ const DetailsScreen = ({navigation}) => {
     if(flag === 2) {
       getOrderActive();
     }
-
   }, [])
+
+  useEffect(() => {
+    const flag = navigation.state.params.flag;
+    if(flag === 2) {
+      const timer = setInterval(() => {
+        getOrderActiveBackground();
+        setSeconds(seconds + 1);
+      }, 5000);
+                 // clearing interval
+      return () => clearInterval(timer);      
+    }
+  }); 
+  
+  const getOrderActiveBackground = async() => {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+      });
+
+      if(response.status === 200) {
+        dispatch({type: 'SET_LOADING', value: false});
+        console.log(response.data.data.order[0])
+        setTrx(response.data.data);
+      } else {
+        showError('Failed')
+      }
+    } catch (error) {
+      showError('Network Error')
+      console.log('error')
+    }
+  }  
 
   const getOrderActive = async() => {
     dispatch({type: 'SET_LOADING', value: true});
@@ -84,17 +119,26 @@ const DetailsScreen = ({navigation}) => {
         }
       );
 
-      console.log('response')
+      console.log('aaa');
+      console.log(response.data);
+      dispatch({type: 'SET_LOADING', value: false});
+      const datas = {
+        url: response.data.data.redirect_url
+      }      
+      navigation.navigate('FaspayScreen', datas);
     } catch (error) {
-       dispatch({type: 'SET_LOADING', value: false});
-
-    //  console.log(error.response.status)
+    dispatch({type: 'SET_LOADING', value: false});
      if(error.response.status === 401) {
+      console.log('------------------');      
+      let res = error.response.data;
+      res = res.replace(/<\/?[^>]+>/gi, '');
+      let js = res.split('data')[1];
+      js = js.slice(2, js.length - 1);
+      let real = JSON.parse(js);
        const datas = {
-         url: error.response.data.data.redirect_url
+         url: real.redirect_url
        }
-      //  console.log(error.response.data.data.redirect_url);
-       navigation.navigate('FaspayScreen', datas)
+      //  navigation.navigate('FaspayScreen', datas)
      }
     }
     // const tokenizer = await AsyncStorage.getItem('token');
@@ -119,6 +163,7 @@ const DetailsScreen = ({navigation}) => {
 
   return (
     <>
+      {console.log(trx.hasOwnProperty('order'))}
       <View style={styles.page}>
         <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? navigation.dispatch(resetLogin)  : navigation.goBack(null))} dMarginLeft={0.28} />
         <View style={styles.container}>
@@ -184,9 +229,19 @@ const DetailsScreen = ({navigation}) => {
                   </View>
                   <View></View>
                   <View>
-                    <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text>
+                    <Image style={{width: 75, height: 25}} source={{uri: `data:image/png;base64,${trx.order[0].payment_icon}`}} />
+                    {/* <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text> */}
                   </View>
                 </View>
+                <View style={styles.confirmSection}>
+                  <View>
+                    <Text style={styles.payTitle}>PAYMENT CODE</Text>
+                  </View>
+                  <View></View>
+                  <View>
+                    <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_code : 'undefined'}</Text>
+                  </View>
+                </View>                
                 <View style={styles.statusSection}>
                   <View>
                     <Text style={styles.statusTitle}>STATUS</Text>
@@ -211,8 +266,9 @@ const DetailsScreen = ({navigation}) => {
           />
           }
 
-          {flag === 2  &&
+          {flag === 2 && trx.hasOwnProperty('order') &&
             <GradientButton
+            disabled={trx.order[0].status === 'Menuggu Pembayaran' || trx.order[0].status === 'Menunggu Pembayaran'}
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
             btnText="Search Mitra"

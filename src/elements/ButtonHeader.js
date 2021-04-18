@@ -5,7 +5,7 @@ const ButtonHeader = ({onPress, dWidth, dHeight}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.buttons(dWidth, dHeight)}>
       <Image
-        source={require('../../img/glitz/navigator.png')}
+        source={require('../../img/glitz/backbutton.png')}
         style={styles.images(dWidth, dHeight)}
       />
     </TouchableOpacity>
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     marginTop: h * 0.02,
   }),
   images: (w, h) => ({
-    width: w * 0.07,
-    height: h * 0.025,
+    width: w * 0.05,
+    height: h * 0.020,
   }),
 })

@@ -30,14 +30,14 @@ export default class CustomTabBar extends Component {
           active: require('../../img/glitz/cart_able.png'),
           inactive: require('../../img/glitz/cart_disable.png'),
           width: 24,
-          height: 20,
+          height: 22,
           action: this._onCartsClick.bind(this),
         }}
         tabFourBtn={{
           active: require('../../img/glitz/profile_able.png'),
           inactive: require('../../img/glitz/profil_disable.png'),
           width: 20,
-          height: 24,
+          height: 26,
           action: this._onProfileIconClick.bind(this),
         }}
       />
