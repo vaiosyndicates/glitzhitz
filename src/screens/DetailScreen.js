@@ -86,13 +86,14 @@ const DetailsScreen = ({navigation}) => {
 
       console.log('response')
     } catch (error) {
-    dispatch({type: 'SET_LOADING', value: false});
+       dispatch({type: 'SET_LOADING', value: false});
 
     //  console.log(error.response.status)
      if(error.response.status === 401) {
        const datas = {
          url: error.response.data.data.redirect_url
        }
+      //  console.log(error.response.data.data.redirect_url);
        navigation.navigate('FaspayScreen', datas)
      }
     }
@@ -118,7 +119,6 @@ const DetailsScreen = ({navigation}) => {
 
   return (
     <>
-      {console.log(trx.hasOwnProperty('order'))}
       <View style={styles.page}>
         <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? navigation.dispatch(resetLogin)  : navigation.goBack(null))} dMarginLeft={0.28} />
         <View style={styles.container}>
@@ -127,6 +127,10 @@ const DetailsScreen = ({navigation}) => {
             <View style={styles.box}>
               <View style={styles.boxDate}>
                 <Text style={styles.boxDateTitle}>Date</Text>
+                {flag === 2 && trx.hasOwnProperty('order') &&
+
+                  <Text style={styles.boxDateTitle}>Trx ID : {trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].trx_id : 'undefined'}  </Text>
+                }
                 <Text style={styles.boxDateDate}>{`${navigation.state.params.book_date} / ${navigation.state.params.book_time}`}</Text>
               </View>
               <View style={styles.mapSection}>
