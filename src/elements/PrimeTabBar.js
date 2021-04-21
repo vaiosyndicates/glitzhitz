@@ -24,6 +24,7 @@ export default class PrimeTabBar extends Component {
 
   render() {
     return (
+      
       <View style={[this.props.outerContainerStyle, styles.outerContainer]}>
         <View style={[this.props.innerContainerStyle, styles.innerContainer]}>
           <TouchableOpacity
@@ -31,6 +32,7 @@ export default class PrimeTabBar extends Component {
             style={styles.btn}
             onPress={this.props.tabOneBtn.action}>
             {this.props.isActive == 'tabOne' &&
+            <>
               <Image
                 source={this.props.tabOneBtn.active}
                 style={{
@@ -38,15 +40,20 @@ export default class PrimeTabBar extends Component {
                   height: this.props.tabOneBtn.height
                 }}
               />
+              <Text>{this.props.tabOneBtn.title}</Text>
+              </>
             }
             {this.props.isActive != 'tabOne' &&
-              <Image
-                source={this.props.tabOneBtn.inactive}
-                style={{
-                  width: this.props.tabOneBtn.width,
-                  height: this.props.tabOneBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabOneBtn.inactive}
+                  style={{
+                    width: this.props.tabOneBtn.width,
+                    height: this.props.tabOneBtn.height
+                  }}
+                />
+                <Text>{this.props.tabOneBtn.title}</Text>
+              </>
             }
           </TouchableOpacity>
           <TouchableOpacity
@@ -54,22 +61,28 @@ export default class PrimeTabBar extends Component {
             style={styles.btn}
             onPress={this.props.tabTwoBtn.action}>
             {this.props.isActive == 'tabTwo' &&
-              <Image
-                source={this.props.tabTwoBtn.active}
-                style={{
-                  width: this.props.tabTwoBtn.width,
-                  height: this.props.tabTwoBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabTwoBtn.active}
+                  style={{
+                    width: this.props.tabTwoBtn.width,
+                    height: this.props.tabTwoBtn.height
+                  }}
+                />
+                <Text>{this.props.tabTwoBtn.title}</Text>
+              </>
             }
             {this.props.isActive != 'tabTwo' &&
-              <Image
-                source={this.props.tabTwoBtn.inactive}
-                style={{
-                  width: this.props.tabTwoBtn.width,
-                  height: this.props.tabTwoBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabTwoBtn.inactive}
+                  style={{
+                    width: this.props.tabTwoBtn.width,
+                    height: this.props.tabTwoBtn.height
+                  }}
+                />
+                 <Text>{this.props.tabTwoBtn.title}</Text>
+              </>
             }
           </TouchableOpacity>
           <TouchableOpacity
@@ -77,39 +90,48 @@ export default class PrimeTabBar extends Component {
             style={styles.btn}
             onPress={this.props.tabThreeBtn.action}>
             {this.props.isActive == 'tabThree' &&
-              <Image
-                source={this.props.tabThreeBtn.active}
-                style={{
-                  width: this.props.tabThreeBtn.width,
-                  height: this.props.tabThreeBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabThreeBtn.active}
+                  style={{
+                    width: this.props.tabThreeBtn.width,
+                    height: this.props.tabThreeBtn.height
+                  }}
+                />
+                <Text>{this.props.tabThreeBtn.title}</Text>
+              </>
             }
             {this.props.isActive != 'tabThree' &&
-              <Image
-                source={this.props.tabThreeBtn.inactive}
-                style={{
-                  width: this.props.tabThreeBtn.width,
-                  height: this.props.tabThreeBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabThreeBtn.inactive}
+                  style={{
+                    width: this.props.tabThreeBtn.width,
+                    height: this.props.tabThreeBtn.height
+                  }}
+                />
+                <Text>{this.props.tabThreeBtn.title}</Text>
+              </>
             }
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.6}
             style={styles.btn}
-            onPress={this.props.tabFourBtn.action}
-        >
+            onPress={this.props.tabFourBtn.action}>
             {this.props.isActive == 'tabFour' &&
-              <Image
-                source={this.props.tabFourBtn.active}
-                style={{
-                  width: this.props.tabFourBtn.width,
-                  height: this.props.tabFourBtn.height
-                }}
-              />
+              <>
+                <Image
+                  source={this.props.tabFourBtn.active}
+                  style={{
+                    width: this.props.tabFourBtn.width,
+                    height: this.props.tabFourBtn.height
+                  }}
+                />
+                <Text>{this.props.tabFourBtn.title}</Text>
+              </>
             }
             {this.props.isActive != 'tabFour' &&
+            <>
               <Image
                 source={this.props.tabFourBtn.inactive}
                 style={{
@@ -117,6 +139,8 @@ export default class PrimeTabBar extends Component {
                   height: this.props.tabFourBtn.height
                 }}
               />
+              <Text>{this.props.tabFourBtn.title}</Text>
+            </>
             }
           </TouchableOpacity>
         </View>

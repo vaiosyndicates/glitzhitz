@@ -18,13 +18,15 @@ export default class CustomTabBar extends Component {
           width: 24,
           height: 24,
           action: this. _onHomeIconClick.bind(this),
+          title: 'Home'
         }}
         tabTwoBtn={{
           active: require('../../img/glitz/history_able.png'),
           inactive: require('../../img/glitz/history_disable.png'),
           width: 18,
           height: 24,
-          // action: this._onDoctorsIconClick.bind(this),
+          action: this._onDoctorsIconClick.bind(this),
+          title: 'Activity'
         }}
         tabThreeBtn={{
           active: require('../../img/glitz/cart_able.png'),
@@ -32,6 +34,7 @@ export default class CustomTabBar extends Component {
           width: 24,
           height: 22,
           action: this._onCartsClick.bind(this),
+          title: 'Cart'
         }}
         tabFourBtn={{
           active: require('../../img/glitz/profile_able.png'),
@@ -39,6 +42,7 @@ export default class CustomTabBar extends Component {
           width: 20,
           height: 26,
           action: this._onProfileIconClick.bind(this),
+          title: 'Profile'
         }}
       />
     );
@@ -57,7 +61,7 @@ export default class CustomTabBar extends Component {
   }
 
   _onDoctorsIconClick() {
-    this.props.navigation.navigate('MessagesScreen');
+    this.props.navigation.navigate('ActivityScreen');
   }
   
   _onProfileIconClick() {

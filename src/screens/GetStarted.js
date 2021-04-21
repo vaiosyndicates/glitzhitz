@@ -23,7 +23,7 @@ const GetStarted = ({navigation}) => {
         </View>
         <View style={styles.body}>
           <LinearGradient
-            colors={['#C32DBC', '#AC25AF', '#981EA3', '#650C85', '#450072' ]}
+            colors={['#FF5ED2', '#E200CC', '#7A0189', '#350057' ]}
             style={styles.linearGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
