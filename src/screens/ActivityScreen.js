@@ -50,6 +50,7 @@ const ActivityScreen = ({navigation}) => {
       
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
+        // console.log(response.data.data.order[0].item)
         setData(response.data.data);
       } else {
         dispatch({type: 'SET_LOADING', value: false});
@@ -59,7 +60,6 @@ const ActivityScreen = ({navigation}) => {
       if (axios.isCancel(error)) {
         dispatch({type: 'SET_LOADING', value: false});
         console.log('Error: ', error.message);
-      } else {
         dispatch({type: 'SET_LOADING', value: false});
         console.log(error);
       }
@@ -67,6 +67,14 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
+      const item = [];
+      Object.keys(datas.item).map(key => {
+      item.push(
+        datas.item[key],
+      );
+    });
+    // console.log(datas);
+
     return (
       <View style={styles.listData}>
         <View style={styles.headers}>
@@ -87,7 +95,7 @@ const ActivityScreen = ({navigation}) => {
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
           <View>
-            <TouchableOpacity onPress={() => handleDetail()} style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
           </View>
@@ -107,8 +115,8 @@ const ActivityScreen = ({navigation}) => {
     );
   };
 
-  const handleDetail = () => {
-    console.log('tes');
+  const handleDetail = (obj) => {
+    navigation.navigate('DetailActivityScreen', obj);
   }
 
 

@@ -66,6 +66,7 @@ import FaspayScreen from '../screens/FaspayScreen';
 import MessagesScreen from '../screens/MessagesScreen';
 import ChattingScreen from '../screens/ChattingScreen';
 import ActivityScreen from '../screens/ActivityScreen';
+import DetailActivity from '../screens/DetailActivity';
 
 const AppRouter = StackRouter(
   {
@@ -291,7 +292,10 @@ const AppRouter = StackRouter(
     },
     ActivityScreen: {
       screen: ActivityScreen,
-    },   
+    },
+    DetailActivityScreen: {
+      screen: DetailActivity,
+    },       
   },
   {
     initialRouteName: 'StartUpScreen',
