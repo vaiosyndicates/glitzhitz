@@ -7,6 +7,7 @@ import HeaderGradient from '../components/Header'
 import { colors, deviceHeight, deviceWidth } from '../styles/variables'
 import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
+import { Button } from 'react-native-paper';
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false
@@ -98,6 +99,7 @@ const ActivityScreen = ({navigation}) => {
             <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
+            <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat() } />
           </View>
         </View>
       </View>
@@ -117,6 +119,10 @@ const ActivityScreen = ({navigation}) => {
 
   const handleDetail = (obj) => {
     navigation.navigate('DetailActivityScreen', obj);
+  }
+
+  const handleChat = () => {
+    navigation.navigate('ChattingScreen');
   }
 
 
@@ -243,5 +249,8 @@ const styles = StyleSheet.create({
   textButton: {
     textAlign: 'center',
     marginTop: deviceHeight * 0.01,
+  },
+  buttonsChat: {
+    borderWidth: 0,
   }
 })

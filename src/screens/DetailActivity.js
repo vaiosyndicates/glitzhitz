@@ -1,8 +1,9 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { color } from 'react-native-reanimated'
 import HeaderGradient from '../components/Header'
-import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styles/variables'
+import GradientButton from '../elements/GradientButton'
+import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables'
 
 const DetailActivity = ({navigation}) => {
 
@@ -14,6 +15,7 @@ const DetailActivity = ({navigation}) => {
     <View style={styles.page}>
       <HeaderGradient title="Detail" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
       <View style={styles.container}>
+        <ScrollView style={styles.scrolls}>
         <View style={styles.boxContainer}>
           <Text style={styles.textHeader}>Review Booking</Text>
           <View style={styles.box}>
@@ -55,7 +57,7 @@ const DetailActivity = ({navigation}) => {
                     </View>
                   </React.Fragment>
                 )
-              })}
+              })}                                                          
             </View>
             <View style={styles.totalSection}>
               <View></View>
@@ -78,6 +80,24 @@ const DetailActivity = ({navigation}) => {
             </View>
           </View>
         </View>
+        </ScrollView>
+
+      </View>
+      <View style={styles.buttonConfirmSection}>
+        <View>
+          <GradientButton
+            onPressButton={()=> console.log('tes')}
+            setting={shadowButton}
+            btnText="DONE"
+          />
+        </View>
+        <View>
+          <GradientButton
+            onPressButton={()=> console.log('tes')}
+            setting={shadowButton}
+            btnText="CANCEL ORDER"
+          />
+        </View>
       </View>
     </View>
   )
@@ -90,11 +110,14 @@ const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 
 const styles = StyleSheet.create({
   page: {
-    flex: 1,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
+    flex: 2,
+    height: deviceHeight * 0.10,
+
   },
   container: {
     marginHorizontal: deviceWidth * 0.05,
+    flex: 1,
   },
   box: {
     marginTop: deviceHeight * 0.01,
@@ -105,14 +128,14 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.light,
   },
   boxContainer: {
-    marginTop: deviceHeight * 0.04,
+    marginTop: deviceHeight * 0.03,
     marginBottom: deviceHeight * 0.04,
     paddingHorizontal: deviceWidth * 0.01,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 5,
+    // elevation: 5,
   },
   boxDate: {
     flexDirection: 'row',
@@ -138,7 +161,6 @@ const styles = StyleSheet.create({
   },
   mapSection: {
     flex: 1,
-    backgroundColor: 'red',
     marginTop: deviceHeight * 0.03,
   },
    detailAddress: {
@@ -149,7 +171,7 @@ const styles = StyleSheet.create({
     maxWidth: deviceWidth * 0.90,
    },
    bookingSection: {
-    marginTop: deviceHeight * 0.12,
+    marginTop: deviceHeight * 0.03,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderBottomColor: colors.violet2,
@@ -276,5 +298,10 @@ const styles = StyleSheet.create({
   },
   buttonSection: {
    marginTop: deviceWidth * 0.06,
-  }
+  },
+  buttonConfirmSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    height: deviceHeight * 0.10,
+  },
 })

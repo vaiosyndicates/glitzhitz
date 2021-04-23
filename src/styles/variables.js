@@ -13,6 +13,11 @@ const shadowOpt = {
   btnHeight: 45
 }
 
+const shadowButton = {
+  btnWidth: deviceWidth * 0.40,
+  btnHeight: deviceHeight * 0.05,
+}
+
 // Only for FindDoctors, FindHospital, Appointment screens
 const spaceHeight = deviceHeight -  375 - 45;
 // Only for Intro screens
@@ -45,6 +50,8 @@ const colors = {
   violet1: '#7224AC',
   violet2: 'rgba(193, 109, 255, 0.4)',
   blurry: 'rgba(0,0,0,0.35)',
+  chat: '#D6B5EE',
+  gradient: ['#FF5ED2', '#E200CC', '#7A0189', '#350057' ],
 } 
 
 const fontFamily = {
@@ -102,6 +109,7 @@ export {
   deviceHeight,
   deviceWidth,
   shadowOpt,
+  shadowButton,
 
   spaceHeight,
   introSpaceHeight,

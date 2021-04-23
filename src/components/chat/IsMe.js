@@ -18,7 +18,7 @@ export default IsMe
 const styles = StyleSheet.create({
   chatContent: {
     maxWidth: '70%',
-    backgroundColor: colors.green1,
+    backgroundColor: colors.chat,
     padding: 12,
     paddingRight: 18,
     borderRadius: 10,

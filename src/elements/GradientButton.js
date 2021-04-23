@@ -75,7 +75,7 @@ export default class GradientButton extends Component {
         </View>
         <LinearGradient
           start={{x: 0.2, y: 0.4}} end={{x: 1.0, y: 1.0}}
-          colors={disabled ? ['rgb(105,105,105)', 'rgb(105,105,105)']  : ['rgba(255,48,197,1)', 'rgba(181,9,242,0.68)'] }
+          colors={disabled ? colors.gradient  : colors.gradient  }
           style={[styles.button, {position: 'relative'}]}>
           <TouchableHighlight
             underlayColor={'rgb(105,105,105)'}

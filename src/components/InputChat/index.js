@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     flexDirection: 'row',
+    backgroundColor: colors.white,
   },
   input: {
     backgroundColor: colors.lightGreyChat,
