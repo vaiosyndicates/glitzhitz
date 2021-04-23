@@ -44,7 +44,7 @@ export default class MenuItemBox extends Component {
                 source={{uri: `${this.props.icon}`}}
                 style={[
                   styles.icon,
-                  {width: deviceWidth * 0.39, height:this.props.iconHeight, marginTop: deviceHeight * -0.02, marginLeft: deviceWidth * -0.03, borderRadius: 5, }
+                  {width: 149, height: 149, marginTop: deviceHeight * -0.02, marginLeft: deviceWidth * -0.03, borderRadius: 15, }
                 ]}
               />
               <View style={styles.titleSection}>
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: deviceHeight * 0.01,
     marginBottom: deviceHeight * 0.03,
-    borderRadius: 5,
     ...Platform.select({
       ios: {
         shadowColor: 'rgba(0,0,0,0.6)',
@@ -83,9 +82,10 @@ const styles = StyleSheet.create({
   },
   highLightCard: {
     height: deviceHeight * 0.19,
+    width: deviceWidth * 0.35,
     backgroundColor: 'transparent',
     borderWidth: 0,
-    borderRadius: 9,
+    borderRadius: 15,
     paddingTop: 20,
     paddingLeft: 10,
     paddingRight: 10,
@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginLeft: deviceWidth * -0.03,
     marginTop: deviceHeight * 0.085,
-    width: deviceWidth * 0.39,
+    width: deviceWidth * 0.36,
     height: deviceHeight * 0.08,
     paddingLeft: deviceWidth * 0.10,
     justifyContent: 'center',
-    borderRadius: 5,
+    borderRadius: 15,
   }
 });
 

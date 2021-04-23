@@ -19,7 +19,7 @@ const GetStarted = ({navigation}) => {
       </View>
       <View style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.textHeader}>QUICK REGISTRATION</Text>
+          <Text style={styles.textHeader}>“Make You Feel Beauty is Our Duty”</Text>
         </View>
         <View style={styles.body}>
           <LinearGradient
@@ -27,9 +27,8 @@ const GetStarted = ({navigation}) => {
             style={styles.linearGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-          />
+          >
           <View style={styles.footer}>
-            <Text style={styles.textFooter}>No more long and exhausted registration. Description of this apps</Text>
             <View style={styles.buttonGroup}>
               <GradientButton
                 setting={shadowOpt}
@@ -44,6 +43,7 @@ const GetStarted = ({navigation}) => {
                 disabled= {false}/>
             </View>
           </View>
+          </LinearGradient>
         </View>
       </View>
     </View>
@@ -54,7 +54,8 @@ export default GetStarted
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, 
+
     backgroundColor: colors.white,
   },
   page: {
@@ -71,11 +72,19 @@ const styles = StyleSheet.create({
   linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderTopLeftRadius: 90,
-    borderTopRightRadius: 90,
-    height: '100%',
-    width: '100%',
+    height: deviceHeight * 0.89,
+    width: deviceWidth * 1.5,
+    borderRadius: deviceHeight * 0.89 /2,
+    marginLeft: deviceWidth * -0.25
   },
+  linearGradientOval: {
+
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: deviceHeight * 0.10,
+    width: '100%',
+    borderRadius: deviceHeight * 0.10 /2
+  },  
   header: {
     position: 'absolute',
     zIndex: 1,
@@ -86,21 +95,26 @@ const styles = StyleSheet.create({
     fontSize: fontSize.extraLarge,
     fontFamily: fontFamily.regular,
     color: colors.white,
+    flexWrap: 'wrap',
+    width: deviceWidth * 0.70,
+    textAlign: 'center',
   },
   footer: {
     position: 'absolute',
+    width: deviceWidth * 0.85,
     zIndex: 1,
   },
   textFooter: {
     color: colors.white,
+    position: 'absolute',
     fontSize: fontSize.itemHeader,
     fontFamily: fontFamily.regular,
     marginLeft: deviceWidth * 0.01,
-    marginTop: deviceHeight * 0.20,
     marginBottom: deviceHeight * 0.05,
+    marginTop: deviceHeight * -0.30,
     textAlign: 'center',
   },
   buttonGroup: {
-    marginLeft: deviceWidth * 0.07,
+    marginTop: deviceHeight * 0.02,
   }
 })
