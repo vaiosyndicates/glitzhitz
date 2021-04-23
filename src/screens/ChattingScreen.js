@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
 import ChatItem from '../components/chat'
 import HeaderGradient from '../components/Header'
 import InputChat from '../components/InputChat'
-import { colors, deviceHeight, fontFamily, fontSize } from '../styles/variables'
+import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styles/variables'
 import { useSelector } from 'react-redux';
 import database, { firebase } from '@react-native-firebase/database';
 import Fire from '../util/FirebaseConfig'
 import { chatDate, chatTime } from '../util/DateTime'
 import { showError } from '../util/ShowMessage'
+import { LinearGradient } from 'expo-linear-gradient'
+import { color } from 'react-native-reanimated'
 
 
 const ChattingScreen = ({navigation}) => {
@@ -112,7 +114,12 @@ const ChattingScreen = ({navigation}) => {
 
   return (
       <View style={styles.page}>
-        <HeaderGradient title="Chat Screen" dMarginLeft={0.20} onPress={() => navigation.goBack(null)} />
+        {/* <HeaderGradient title="Chat Screen" dMarginLeft={0.20} onPress={() => navigation.goBack(null)} /> */}
+        <LinearGradient
+          colors={colors.gradient}
+          style={styles.linearGradient}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}>
         <View style={styles.container}>
           <ScrollView vertical 
             showsVerticalScrollIndicator={false} 
@@ -120,6 +127,19 @@ const ChattingScreen = ({navigation}) => {
             onContentSizeChange={() =>
               scrollViewRef.current.scrollToEnd({animated: true})
             }>
+            <View style={styles.mitraSection}>
+              <View>
+                  <View>
+                    <Image 
+                      source={{uri: 'https://reactjs.org/logo-og.png'}}
+                      style={styles.avatar} />
+                  </View>
+                  <View>
+                    <Text style={styles.mitraName}>Hala Madrid</Text>
+                    <Text style={styles.mitraSpeciality}>Indomie Special</Text>
+                  </View>
+              </View>
+            </View>
             {chat.length > 0 && chat.map(cur => {
               return (
                 <View key={cur.date}>
@@ -140,7 +160,9 @@ const ChattingScreen = ({navigation}) => {
           </ScrollView>
         </View>
         <InputChat value={chatContent} onChangeText={value => setChatContent(value)} onButtonPress={() => handleSend()} />
+        </LinearGradient>
       </View>
+      
   )
 }
 
@@ -149,16 +171,45 @@ export default ChattingScreen
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.blurry,
   },
   container: {
     flex: 1,
-    marginTop: deviceHeight * 0.02,
+    marginTop: deviceHeight * 0.12,
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   date: {
     fontSize: fontSize.small,
     fontFamily: fontFamily.light,
     color: colors.black,
     textAlign: 'center',
+  },
+  linearGradient: {
+    height: '100%',
+    width: '100%',
+  },
+  avatar: {
+    width: deviceWidth * 0.20,
+    height: deviceHeight * 0.10,
+    borderRadius: deviceWidth * 0.20 / 2 ,
+    marginBottom: deviceHeight * 0.01,
+  },
+  mitraSection: {
+    alignItems: 'center',
+    marginVertical: deviceHeight * 0.03,
+  },
+  mitraName: {
+    textAlign: 'center',
+    fontSize: fontSize.header,
+    color: colors.black,
+    fontFamily: fontFamily.regular,
+  },
+  mitraSpeciality: {
+    textAlign: 'center',
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.regular,
   }
 })

@@ -12,7 +12,7 @@ const HeaderGradient = ({title, onPress, dMarginLeft}) => {
   return (
     <View style={styles.pages}>
       <LinearGradient
-        colors={['#C32DBC', '#AC25AF', '#981EA3', '#650C85', '#450072' ]}
+        colors={colors.gradient}
         style={styles.linearGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
