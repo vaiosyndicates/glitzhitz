@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { PureComponent, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, BackHandler, Alert } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import HeaderGradient from '../components/Header'
@@ -36,6 +36,29 @@ const DetailsScreen = ({navigation}) => {
     if(flag === 2) {
       getOrderActive();
     }
+  }, [])
+
+  useEffect(() => {
+    if(flag === 2) {
+      const backAction = () => {
+        Alert.alert("Hold on!", "Are you sure you want to go back?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () => navigation.dispatch(resetLogin)}
+        ]);
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+     
+      return () => backHandler.remove();
+    } 
   }, [])
 
   useEffect(() => {
@@ -94,6 +117,17 @@ const DetailsScreen = ({navigation}) => {
       showError('Network Error')
       console.log('error')
     }
+  }
+
+  const handleBackNavigation = () => {
+    Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "YES", onPress: () => navigation.dispatch(resetLogin)}
+    ]);
   }
 
   const handlePayment = async() => {
@@ -165,7 +199,7 @@ const DetailsScreen = ({navigation}) => {
     <>
       {console.log(trx.hasOwnProperty('order'))}
       <View style={styles.page}>
-        <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? navigation.dispatch(resetLogin)  : navigation.goBack(null))} dMarginLeft={0.28} />
+        <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.28} />
         <View style={styles.container}>
           <View style={styles.boxContainer}>
             <Text style={styles.textHeader}>Review Booking</Text>
