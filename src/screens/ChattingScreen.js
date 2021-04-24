@@ -27,7 +27,7 @@ const ChattingScreen = ({navigation}) => {
   useEffect(() => {
     _isMounted = true;
     if(_isMounted == true) {
-      const id_mitra = 'dOGKQnceRm-NQPJsnAmiTh:APA91bG8_Nm9rznWeATfmsG2kenBWlAkd2OtCqO5O-uXptzwCYM5TtIYdLb7Bsx5jYqopl_Q6nFa73ItJUaucjPZf1nDa7Pso4pvVIf0kXZhKThu3JBFAMZZ_eWDId9bJ2WMUXAUdDAD';
+      const id_mitra = 53;
       const chatIds = `${id}_${id_mitra}`;
       const urlChatting = `chatting/${chatIds}/allChat`;
 
@@ -65,13 +65,12 @@ const ChattingScreen = ({navigation}) => {
     }
 
     return () => {
-      console.log('unmount');
       _isMounted = false;
     }
   }, [_isMounted, id])
 
   const handleSend = () => {
-    const id_mitra = 'dOGKQnceRm-NQPJsnAmiTh:APA91bG8_Nm9rznWeATfmsG2kenBWlAkd2OtCqO5O-uXptzwCYM5TtIYdLb7Bsx5jYqopl_Q6nFa73ItJUaucjPZf1nDa7Pso4pvVIf0kXZhKThu3JBFAMZZ_eWDId9bJ2WMUXAUdDAD';
+    const id_mitra = 53;
     const chatIds = `${id}_${id_mitra}`;
 
     const urlChatting = `chatting/${chatIds}/allChat/${chatDate(today)}`;
@@ -151,6 +150,7 @@ const ChattingScreen = ({navigation}) => {
                         isSender={isMe}
                         text={curr.data.chatContent}
                         date={curr.data.chatTime}
+                        id={cur.id}
                       />
                     )
                   })}
