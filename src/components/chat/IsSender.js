@@ -1,15 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image} from 'react-native'
-import { colors, fontFamily, fontSize } from '../../styles/variables'
+import { colors, deviceWidth, fontFamily, fontSize } from '../../styles/variables'
 
 const IsSender = ({text, date, photo, id}) => {
   return (
     <View style={styles.container} key={id}>
-       <Image 
+       {/* <Image 
         source={{
           uri: 'https://reactnative.dev/img/tiny_logo.png',
         }} 
-        style={styles.avatar} />
+        style={styles.avatar} /> */}
       <View>
         <View style={styles.chatContent}>
           <Text style={styles.text}>{text}</Text>
@@ -24,7 +24,7 @@ export default IsSender
 
 const styles = StyleSheet.create({
   chatContent: {
-    maxWidth: '80%',
+    maxWidth: deviceWidth * 0.70,
     backgroundColor: colors.green1,
     padding: 12,
     paddingRight: 18,
@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
     color: colors.grey,
     marginTop: 8,
   },
-  avatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 30 / 2,
-  },
+  // avatar: {
+  //   width: 30,
+  //   height: 30,
+  //   borderRadius: 30 / 2,
+  // },
 });

@@ -18,7 +18,7 @@ const ActivityScreen = ({navigation}) => {
   useEffect(() => {
     _isMounted = true
 
-    if(_isMounted) {
+    if(_isMounted === true) {
       // const data = {
       //   order: [
       //     {trx_id: 1, status: 'Completed', order_time: '11-01-2011' },
@@ -51,7 +51,7 @@ const ActivityScreen = ({navigation}) => {
       
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        // console.log(response.data.data.order[0].item)
+        // console.log(response.data.data.order)
         setData(response.data.data);
       } else {
         dispatch({type: 'SET_LOADING', value: false});
@@ -99,7 +99,7 @@ const ActivityScreen = ({navigation}) => {
             <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
-            <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat() } />
+            <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({id_mitra: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra}) } />
           </View>
         </View>
       </View>
@@ -121,8 +121,12 @@ const ActivityScreen = ({navigation}) => {
     navigation.navigate('DetailActivityScreen', obj);
   }
 
-  const handleChat = () => {
-    navigation.navigate('ChattingScreen');
+  const handleChat = (obj) => {
+    const data = {
+      id_mitra: obj.id_mitra,
+      nama_mitra: obj.nama_mitra,
+    }
+    navigation.navigate('ChattingScreen', data);
   }
 
 
