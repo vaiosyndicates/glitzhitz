@@ -16,7 +16,7 @@ import { color } from 'react-native-reanimated'
 const ChattingScreen = ({navigation}) => {
   let _isMounted = false;
   const [chatContent, setChatContent] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(true)
   const [chat, setChat] = useState([])
   const scrollViewRef = useRef();
   const profile = useSelector(state => state.profileReducer.profile)
@@ -26,10 +26,13 @@ const ChattingScreen = ({navigation}) => {
 
   useEffect(() => {
     _isMounted = true;
-    if(_isMounted == true) {
-      const id_mitra = 53;
+    setMounted(true);
+    if( _isMounted === true && mounted === true ) {
+      const id_mitra = navigation.state.params.id_mitra;
       const chatIds = `${id}_${id_mitra}`;
       const urlChatting = `chatting/${chatIds}/allChat`;
+
+      // console.log(chatIds)
 
       Fire.ref(urlChatting)
       .on('value', snapshot => {
@@ -66,11 +69,13 @@ const ChattingScreen = ({navigation}) => {
 
     return () => {
       _isMounted = false;
+      setMounted(false);
+      // console.log(mounted)
     }
   }, [_isMounted, id])
 
   const handleSend = () => {
-    const id_mitra = 53;
+    const id_mitra = navigation.state.params.id_mitra;
     const chatIds = `${id}_${id_mitra}`;
 
     const urlChatting = `chatting/${chatIds}/allChat/${chatDate(today)}`;
@@ -120,25 +125,25 @@ const ChattingScreen = ({navigation}) => {
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}>
         <View style={styles.container}>
+          <View style={styles.mitraSection}>
+              <View>
+                  <View>
+                    {/* <Image 
+                      source={{uri: 'https://reactjs.org/logo-og.png'}}
+                      style={styles.avatar} /> */}
+                  </View>
+                  <View>
+                    <Text style={styles.mitraName}>{navigation.state.params.nama_mitra}</Text>
+                    {/* <Text style={styles.mitraSpeciality}>Indomie Special</Text> */}
+                  </View>
+              </View>
+            </View>
           <ScrollView vertical 
             showsVerticalScrollIndicator={false} 
             ref={scrollViewRef}
             onContentSizeChange={() =>
               scrollViewRef.current.scrollToEnd({animated: true})
             }>
-            <View style={styles.mitraSection}>
-              <View>
-                  <View>
-                    <Image 
-                      source={{uri: 'https://reactjs.org/logo-og.png'}}
-                      style={styles.avatar} />
-                  </View>
-                  <View>
-                    <Text style={styles.mitraName}>Hala Madrid</Text>
-                    <Text style={styles.mitraSpeciality}>Indomie Special</Text>
-                  </View>
-              </View>
-            </View>
             {chat.length > 0 && chat.map(cur => {
               return (
                 <View key={cur.date}>
@@ -190,12 +195,12 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  avatar: {
-    width: deviceWidth * 0.20,
-    height: deviceHeight * 0.10,
-    borderRadius: deviceWidth * 0.20 / 2 ,
-    marginBottom: deviceHeight * 0.01,
-  },
+  // avatar: {
+  //   width: deviceWidth * 0.20,
+  //   height: deviceHeight * 0.10,
+  //   borderRadius: deviceWidth * 0.20 / 2 ,
+  //   marginBottom: deviceHeight * 0.01,
+  // },
   mitraSection: {
     alignItems: 'center',
     marginVertical: deviceHeight * 0.03,

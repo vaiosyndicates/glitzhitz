@@ -6,9 +6,10 @@ import IsSender from './IsSender'
 const ChatItem = ({isSender, text, date, photo, id}) => {
   if(isSender){
     return <IsMe date={date} text={text} id={id} />
-  }
-  
-  return <IsSender text={text} date={date} id={id} photo={photo} />
+  } else {
+    return <IsSender text={text} date={date} id={id} photo={photo} />
+
+  }  
 }
 
 export default ChatItem

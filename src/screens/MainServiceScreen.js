@@ -33,6 +33,7 @@ class MainServiceScreen extends Component {
     if(this._isMounted === true) {
       this.getProfiles();
       this.getCategory();
+      this.changeKey();
     }
   }
 
@@ -61,7 +62,7 @@ class MainServiceScreen extends Component {
           gender: response.data.data.user[0].gender,
           birth: response.data.data.user[0].birth,
         }
-    this.setState({name: data.name});
+        this.setState({name: data.name});
         this.props.profile(data);
 
       } else {
@@ -105,6 +106,35 @@ class MainServiceScreen extends Component {
         this.props.loading(false);
         showError('Failed');
       }
+    }
+  }
+
+  async changeKey() {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const fcmToken = await AsyncStorage.getItem('fcmToken');
+
+      const data = {
+        android_device_id: fcmToken
+      }
+
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/update_key', data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      if(response.status === 200){
+        console.log(response.status);
+      } else {
+        showError('Error change key');
+      }
+
+    } catch (error) {
+      showError('Network Error')
     }
   }
 
