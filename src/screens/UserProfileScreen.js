@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetLogout } from '../util/ResetRouting';
 import HeaderGradient from '../components/Header';
 import { colors, fontFamily, fontSize } from '../styles/variables';
+import apiUrl from '../util/API'
 class UserProfileScreen extends Component {
   _isMounted = false;
   signal = axios.CancelToken.source();
@@ -110,7 +111,7 @@ class UserProfileScreen extends Component {
     try {
       // this.props.loading(true);
       const tokenizer = await AsyncStorage.getItem('token');
-      const response = await axios.post('http://api.glitzandhitz.com/index.php/User/logout', {}, {
+      const response = await axios.post(`${apiUrl}/User/logout`, {}, {
           headers: {
             'Authorization': tokenizer
           }
@@ -150,7 +151,7 @@ class UserProfileScreen extends Component {
       try {
 
         const tokenizer = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
+        const response = await axios.get(`${apiUrl}/User/profile`, {
           headers: {
             Authorization: tokenizer,
           },

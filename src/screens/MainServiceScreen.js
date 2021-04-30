@@ -13,6 +13,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiUrl from '../util/API';
 
 class MainServiceScreen extends Component {
   _isMounted = false;
@@ -46,7 +47,7 @@ class MainServiceScreen extends Component {
   async getProfiles() {
     try {
       const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/profile', {
+      const response = await axios.get(`${apiUrl}/User/profile`, {
         headers: {
           Authorization: tokenizer,
         },
@@ -81,7 +82,7 @@ class MainServiceScreen extends Component {
     try {
       this.props.loading(true);
       const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/category', {
+      const response = await axios.get(`${apiUrl}/Service/category`, {
         headers: {
           Authorization: tokenizer,
         },
@@ -119,7 +120,7 @@ class MainServiceScreen extends Component {
       }
 
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/update_key', data, {
+        `${apiUrl}/User/update_key`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,

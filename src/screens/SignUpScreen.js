@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { TextInput, View, StyleSheet, Image, ScrollView, Platform, StatusBar, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  Image, 
+  ScrollView, 
+  Platform, 
+  StatusBar, 
+  TouchableOpacity,
+  TouchableHighlight,
+  KeyboardAvoidingView ,
+} from 'react-native';
 
 import Text from '../elements/Text';
 import GradientButton from '../elements/GradientButton';
@@ -24,6 +35,7 @@ class SignUpScreen extends Component {
     this.state = {
       name: '',
       phone: '',
+      username: '',
       address: '',
       email: '',
       gender: 'Male',
@@ -40,10 +52,10 @@ class SignUpScreen extends Component {
     ];
     return (
       <View style={CommonStyles.normalSinglePage}>
+        <View style={styles.titleBox}>
+          <Text extraLarge black extraBold>SIGN UP</Text>
+        </View>
         <ScrollView contentContainerStyle={{height: deviceHeight}} showsVerticalScrollIndicator={false}>
-          <View style={styles.titleBox}>
-            <Text extraLarge black extraBold>SIGN UP</Text>
-          </View>
           <View style={styles.formBox}>
             <View style={CommonStyles.textInputField}>
               <Image
@@ -55,6 +67,18 @@ class SignUpScreen extends Component {
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
                 onChangeText={text => this.setState({name: text})}
+              />
+            </View>
+            <View style={CommonStyles.textInputField}>
+              <Image
+                source={require('../../img/healer/avatar.png')}
+                style={{position:'absolute',bottom: 12,left: 20,width: 19, height: 22}}
+              />
+              <TextInput
+                placeholder='Username'
+                style={CommonStyles.textInput}
+                underlineColorAndroid='transparent'
+                onChangeText={text => this.setState({username: text})}
               />
             </View>
             <View style={CommonStyles.textInputField}>
@@ -136,9 +160,8 @@ class SignUpScreen extends Component {
                   buttonColor={colors.borderViolet}
                   selectedButtonColor= {colors.borderViolet}
                   style={styles.radio}
-                />               
+                />
               </View>
-               
             </View>
             <DateTimePickerModal
               isVisible={this.state.isDatePickerVisible}
@@ -146,36 +169,37 @@ class SignUpScreen extends Component {
               onConfirm={this._handleConfirm.bind(this)}
               onCancel={this._hideDatePicker.bind(this)}
             />
-            <View style={CommonStyles.buttonBox}>
-              <GradientButton
-                onPressButton={this._handleClickSignUpButton.bind(this)}
-                setting={shadowOpt}
-                btnText="SIGN UP"
-                disabled={
-                  this.state.name.length < 3 ||
-                  this.state.phone.length < 3 ||
-                  this.state.address.length < 3 ||
-                  this.state.email.length < 3 ||
-                  this.state.gender.length < 3 ||
-                  this.state.birth.length < 3 ||
-                  this.state.password.length < 3
-                    ? true
-                    : false
-                }/>
-            </View>
-            <View style={styles.noteBox}>
-              <Text normal lightGrey regular>
-                Have an account?
-                <Text> </Text>
-                <Text
-                  style={{color: colors.softBlue}}
-                  onPress={() => this._handleClickSignIn()}>
-                  SIGN IN
-                </Text>
-              </Text>
-            </View>
           </View>
         </ScrollView>
+        <View style={CommonStyles.buttonBox}>
+          <GradientButton
+            onPressButton={this._handleClickSignUpButton.bind(this)}
+            setting={shadowOpt}
+            btnText="SIGN UP"
+            disabled={
+              this.state.name.length < 3 ||
+              this.state.username.length < 3 ||
+              this.state.phone.length < 3 ||
+              this.state.address.length < 3 ||
+              this.state.email.length < 3 ||
+              this.state.gender.length < 3 ||
+              this.state.birth.length < 3 ||
+              this.state.password.length < 3
+                ? true
+                : false
+            }/>
+        </View>
+        <View style={styles.noteBox}>
+          <Text normal lightGrey regular>
+            Have an account?
+            <Text> </Text>
+            <Text
+              style={{color: colors.softBlue}}
+              onPress={() => this._handleClickSignIn()}>
+              SIGN IN
+            </Text>
+          </Text>
+        </View>
       </View>
     );
   }
@@ -184,6 +208,7 @@ class SignUpScreen extends Component {
     // this.props.loading(true);
     const data = {
       name: this.state.name,
+      username: this.state.username,
       phone: this.state.phone,
       address: this.state.address,
       email: this.state.email,
@@ -194,7 +219,7 @@ class SignUpScreen extends Component {
       android_device_id: await AsyncStorage.getItem('fcmToken'),
       action: 'register',
     };
-    console.log(data);
+    // console.log(data);
     try {
       this.props.loading(true);
       const response = await axios.post(
@@ -271,8 +296,8 @@ const styles = StyleSheet.create({
         marginBottom: spaceHeight * 0.24,
       },
       android: {
-        marginTop: spaceHeight * 0.32,
-        marginBottom: spaceHeight * 0.18,
+        marginTop: spaceHeight * 0.15,
+        marginBottom: spaceHeight * 0.08,
       },
     }),
     justifyContent: 'center',

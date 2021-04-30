@@ -28,13 +28,10 @@ const FaspayScreen = ({navigation}) => {
 
   const handleBack = () => {
     const data = {
-      book_date: '11-01-2011',
-      book_time: '10:23',
-      fullAddress: 'alexis',
-      status: 'Success',
-      payWith: 'OVO',
+      id_order: navigation.state.params.id_order,
       flag: 2,
     }
+    // console.log(data);
     navigation.navigate('DetailScreen', data);
   }
 

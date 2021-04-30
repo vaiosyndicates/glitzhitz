@@ -8,11 +8,13 @@ import { colors, deviceHeight, deviceWidth } from '../styles/variables'
 import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
+import apiUrl from '../util/API'
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false
   let signal = axios.CancelToken.source();
   const [data, setData] = useState([])
+  const [visibilty, setVisibility] = useState(false)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,7 +44,7 @@ const ActivityScreen = ({navigation}) => {
     dispatch({type: 'SET_LOADING', value: true});
     try {
       const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+      const response = await axios.get(`${apiUrl}/User/order`, {
         headers: {
           Authorization: tokenizer,
         },
@@ -95,11 +97,13 @@ const ActivityScreen = ({navigation}) => {
             <Text style={styles.descStatus}>{datas.status}</Text>
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
-          <View>
-            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon})} style={styles.buttons}>
+          <View style={styles.buttonsGroup}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
-            <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({id_mitra: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra}) } />
+            {datas.status !== 'Completed' &&
+              <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({id_mitra: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order}) } />
+            }
           </View>
         </View>
       </View>
@@ -118,6 +122,7 @@ const ActivityScreen = ({navigation}) => {
   };
 
   const handleDetail = (obj) => {
+    // console.log(obj)
     navigation.navigate('DetailActivityScreen', obj);
   }
 
@@ -125,6 +130,8 @@ const ActivityScreen = ({navigation}) => {
     const data = {
       id_mitra: obj.id_mitra,
       nama_mitra: obj.nama_mitra,
+      trx_id: obj.trx_id,
+      id_order: obj.id_order,
     }
     navigation.navigate('ChattingScreen', data);
   }
@@ -223,7 +230,7 @@ const styles = StyleSheet.create({
   },
   flatList: {
     paddingHorizontal: deviceWidth * 0.02,
-    height: deviceHeight * 0.35,
+    height: deviceHeight * 0.45,
     flexGrow: 0,
   },
   headerSection: {
@@ -256,5 +263,9 @@ const styles = StyleSheet.create({
   },
   buttonsChat: {
     borderWidth: 0,
-  }
+  },
+  buttonsGroup: {
+    width: deviceWidth * 0.15, 
+    alignItems: 'center',
+  },
 })
