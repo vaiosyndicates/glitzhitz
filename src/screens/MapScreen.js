@@ -18,6 +18,7 @@ import GradientButton from '../elements/GradientButton';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiUrl from '../util/API'
 
 const MapScreen = ({navigation}) => {
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const MapScreen = ({navigation}) => {
   try {
     const signal = axios.CancelToken.source();
     const tokenizer = await AsyncStorage.getItem('token')
-    const response = await axios.get('http://api.glitzandhitz.com/index.php/Service/coordinate2address', {
+    const response = await axios.get(`${apiUrl}/Service/coordinate2address`, {
       headers: {
         Authorization: tokenizer,
       },
@@ -90,6 +91,10 @@ const MapScreen = ({navigation}) => {
      address: region.address
    }
   dispatch({type: 'ADD_COORDINATE', value: data});
+ }
+
+ const handleAppointments = () => {
+  navigation.navigate('BookAppointmentScreen', navigation.state.params)
  }
 
   return (
@@ -187,6 +192,7 @@ const MapScreen = ({navigation}) => {
               longitude: e.nativeEvent.coordinate.longitude,
               address: '',
             };
+            console.log(data);
             dispatch({type: 'ADD_COORDINATE', value: data});
             showSuccess('Location Set');
           }}
@@ -194,7 +200,7 @@ const MapScreen = ({navigation}) => {
       </MapView>
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15, marginVertical: deviceHeight * 0.90, marginHorizontal: deviceWidth * 0.06, position: 'absolute'}]}>
         <GradientButton
-          onPressButton={()=> navigation.navigate('BookAppointmentScreen')}
+          onPressButton={()=> handleAppointments()}
           setting={shadowOpt}
           btnText="Set Date and Time"
         />

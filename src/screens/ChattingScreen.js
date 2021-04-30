@@ -29,7 +29,7 @@ const ChattingScreen = ({navigation}) => {
     setMounted(true);
     if( _isMounted === true && mounted === true ) {
       const id_mitra = navigation.state.params.id_mitra;
-      const chatIds = `${id}_${id_mitra}`;
+      const chatIds = `${navigation.state.params.trx_id}_${navigation.state.params.id_order}`;
       const urlChatting = `chatting/${chatIds}/allChat`;
 
       // console.log(chatIds)
@@ -76,7 +76,7 @@ const ChattingScreen = ({navigation}) => {
 
   const handleSend = () => {
     const id_mitra = navigation.state.params.id_mitra;
-    const chatIds = `${id}_${id_mitra}`;
+    const chatIds = `${navigation.state.params.trx_id}_${navigation.state.params.id_order}`;
 
     const urlChatting = `chatting/${chatIds}/allChat/${chatDate(today)}`;
     const urlMessagesUser = `messages/${id}/${chatIds}`;

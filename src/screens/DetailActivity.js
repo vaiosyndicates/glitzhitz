@@ -1,14 +1,70 @@
-import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { color } from 'react-native-reanimated'
 import HeaderGradient from '../components/Header'
 import GradientButton from '../elements/GradientButton'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables'
+import { showError, showSuccess } from '../util/ShowMessage'
 
 const DetailActivity = ({navigation}) => {
 
+  const [disabled, setDisabled] = useState(false)
+  const [visible, setVisible] = useState(false)
+
   const handleReorder = () => {
-    console.log('tes');
+    const data = {
+      items: navigation.state.params.item,
+      totals:  navigation.state.params.total_price,
+      flag: 3,
+    }
+   navigation.navigate('MapScreen', data);
+
+  }
+
+  useEffect(() => {
+    checkDisabled()
+    return () => {
+      checkDisabled()
+    }
+  }, [])
+
+  const checkDisabled = () => {
+    const status = navigation.state.params.status;
+    if(status !== 'Completed') {
+      setDisabled(true);
+      setVisible(true);
+    }
+  };
+
+  const handleDone = async() => {
+    const data = {
+      id_order: navigation.state.params.id_order,
+    }
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        'http://api.glitzandhitz.com/index.php/User/order_confirmation', data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      if(response.status === 200) {
+        showSuccess('Order Complete')
+        setDisabled(false)
+        setVisible(false)
+      } else {
+        showError('Error')
+      }
+
+    } catch (error) {
+      console.log(error.response)
+    }
   }
 
   return (
@@ -37,7 +93,7 @@ const DetailActivity = ({navigation}) => {
                 </View>
                 <View></View>
                 <View style={styles.buttonSection}>
-                  <TouchableOpacity onPress={() => handleReorder()} style={styles.buttons}>
+                  <TouchableOpacity onPress={() => handleReorder()} style={styles.buttons} disabled={disabled}>
                     <Text style={styles.textButton}>REORDER</Text>
                   </TouchableOpacity>
                 </View>
@@ -52,12 +108,12 @@ const DetailActivity = ({navigation}) => {
                 return (
                   <React.Fragment key={cur.id_service}>
                     <View style={styles.bookingCart}>
-                      <Text style={styles.service}>{cur.item}</Text>
+                      <Text style={styles.service}>{cur.name}</Text>
                       <Text style={styles.price}>{cur.price}</Text>
                     </View>
                   </React.Fragment>
                 )
-              })}                                                          
+              })}
             </View>
             <View style={styles.totalSection}>
               <View></View>
@@ -83,22 +139,26 @@ const DetailActivity = ({navigation}) => {
         </ScrollView>
 
       </View>
-      <View style={styles.buttonConfirmSection}>
-        <View>
-          <GradientButton
-            onPressButton={()=> console.log('tes')}
-            setting={shadowButton}
-            btnText="DONE"
-          />
+      {visible &&
+        <View style={styles.buttonConfirmSection}>
+          <View>
+            <GradientButton
+              onPressButton={()=> handleDone()}
+              setting={shadowButton}
+              btnText="DONE"
+            />
+          </View>
+          <View>
+            <GradientButton
+              onPressButton={()=> console.log('tes')}
+              setting={shadowButton}
+              btnText="CANCEL ORDER"
+            />
+          </View>
         </View>
-        <View>
-          <GradientButton
-            onPressButton={()=> console.log('tes')}
-            setting={shadowButton}
-            btnText="CANCEL ORDER"
-          />
-        </View>
-      </View>
+      }
+
+
     </View>
   )
 }

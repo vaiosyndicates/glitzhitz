@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { showError, showSuccess } from '../util/ShowMessage';
 import { resetLogin } from '../util/ResetRouting';
+import apiUrl from '../util/API';
 
 const UpdateProfile = ({navigation}) => {
   const [name, setName] = useState('')
@@ -39,7 +40,7 @@ const UpdateProfile = ({navigation}) => {
     try {
       const tokenizer = await AsyncStorage.getItem('token');
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/user/update', data, {
+        `${apiUrl}/user/update`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,

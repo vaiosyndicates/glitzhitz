@@ -9,6 +9,7 @@ import SplashMap from '../components/splash-map'
 import GradientButton from '../elements/GradientButton'
 import CommonStyles from '../styles/CommonStyles'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables'
+import apiUrl from '../util/API'
 import { resetLogin } from '../util/ResetRouting'
 import { showError } from '../util/ShowMessage'
 
@@ -16,7 +17,7 @@ const DetailsScreen = ({navigation}) => {
   const stateMaps = useSelector(state => state.mapsReducer.maps);
   const stateCarts = useSelector(state => state.cartReducer.cart);
   const totalPrice = stateCarts.reduce((accum,item) => accum + parseFloat(item.price), 0)
-  const flag = navigation.state.params.flag
+  const flag = navigation.state.params.flag;
   const dispatch = useDispatch();
   let signal = axios.CancelToken.source();
 
@@ -33,6 +34,7 @@ const DetailsScreen = ({navigation}) => {
 
   useEffect(() => {
     const flag = navigation.state.params.flag;
+    // console.log(navigation.state.params);
     if(flag === 2) {
       getOrderActive();
     }
@@ -68,24 +70,29 @@ const DetailsScreen = ({navigation}) => {
         getOrderActiveBackground();
         setSeconds(seconds + 1);
       }, 5000);
-                 // clearing interval
+      // clearing interval
       return () => clearInterval(timer);      
     }
   }); 
   
   const getOrderActiveBackground = async() => {
+    const data = {
+      id_order: navigation.state.params.id_order ,
+    }
+
     try {
       const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
         headers: {
           Authorization: tokenizer,
         },
         cancelToken: signal.token,
+        params: data
       });
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(response.data.data.order[0])
+        // console.log(response.data.data.order[0].status)
         setTrx(response.data.data);
       } else {
         showError('Failed')
@@ -98,24 +105,39 @@ const DetailsScreen = ({navigation}) => {
 
   const getOrderActive = async() => {
     dispatch({type: 'SET_LOADING', value: true});
+
+    const data = {
+      id_order: navigation.state.params.id_order ,
+    }
+
     try {
       const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://api.glitzandhitz.com/index.php/User/order', {
+      const headers = {
+        Authorization: tokenizer,
+        Accept: 'application/json',
+      };
+
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
         headers: {
           Authorization: tokenizer,
         },
         cancelToken: signal.token,
+        params: data
       });
+
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
+        // console.log(response.data.data)
         setTrx(response.data.data)
       } else {
+        dispatch({type: 'SET_LOADING', value: false});
         showError('Failed')
       }
     } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
       showError('Network Error')
-      console.log('error')
+      console.log(error.response)
     }
   }
 
@@ -139,13 +161,15 @@ const DetailsScreen = ({navigation}) => {
       address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
       date: navigation.state.params.book_date,
       time: navigation.state.params.book_time,
-      cart: stateCarts
+      cart: flag === 3 ?  navigation.state.params.items : stateCarts
     };
+
+    // console.log(data);
 
     try {
       const tokenizer = await AsyncStorage.getItem('token');
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/Payment/checkout', data, {
+        `${apiUrl}/Payment/checkout`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,
@@ -153,51 +177,28 @@ const DetailsScreen = ({navigation}) => {
         }
       );
 
-      console.log('aaa');
-      console.log(response.data);
-      dispatch({type: 'SET_LOADING', value: false});
-      const datas = {
-        url: response.data.data.redirect_url
-      }      
-      navigation.navigate('FaspayScreen', datas);
+        // console.log(response.data.data)
+      if(response.status === 200 ) {
+        dispatch({type: 'SET_LOADING', value: false});
+        const datas = {
+          id_order: response.data.data.id_order,
+          url: response.data.data.redirect_url
+        }
+        // console.log(response.data);
+        navigation.navigate('FaspayScreen', datas);
+      } else {
+        showError('Failed Booking')
+      }
+
     } catch (error) {
-    dispatch({type: 'SET_LOADING', value: false});
-     if(error.response.status === 401) {
-      console.log('------------------');      
-      let res = error.response.data;
-      res = res.replace(/<\/?[^>]+>/gi, '');
-      let js = res.split('data')[1];
-      js = js.slice(2, js.length - 1);
-      let real = JSON.parse(js);
-       const datas = {
-         url: real.redirect_url
-       }
-      //  navigation.navigate('FaspayScreen', datas)
-     }
+      dispatch({type: 'SET_LOADING', value: false});
+      console.log(error.response)
     }
-    // const tokenizer = await AsyncStorage.getItem('token');
-    // const headers = {
-    //   Accept: 'application/json',
-    //   Authorization: tokenizer,
-    // }
-
-    // console.log(headers);
-
-    // axios.post('http://api.glitzandhitz.com/index.php/Payment/checkout', data, {
-    //   headers: headers
-    // })
-    // .then((response) => {
-    //   console.log(response)
-    // })
-    // .catch((error) => {
-    //   console.log('masuk catch')
-    //   console.log(error.response.data);
-    // })
   };
 
   return (
     <>
-      {console.log(trx.hasOwnProperty('order'))}
+      {/* {console.log(trx.hasOwnProperty('order'))} */}
       <View style={styles.page}>
         <HeaderGradient title="Detail" onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.28} />
         <View style={styles.container}>
@@ -235,7 +236,7 @@ const DetailsScreen = ({navigation}) => {
               </View>
               <View style={styles.bookingSection}>
                 <Text style={styles.bookingTitle}>YOUR BOOKING</Text>
-                {stateCarts.length > 0 && stateCarts.map((cur, key) => {
+                { flag === 1 && stateCarts.length > 0 && stateCarts.map((cur, key) => {
                   return (
                     <React.Fragment key={cur.id}>
                     <View style={styles.bookingCart}>
@@ -245,6 +246,30 @@ const DetailsScreen = ({navigation}) => {
                     </React.Fragment>
                   );
                 })}
+
+                { flag === 3 && navigation.state.params.items.length > 0 && navigation.state.params.items.map((cur, key) => {
+                  return (
+                    <React.Fragment key={cur.id_service}>
+                      <View style={styles.bookingCart}>
+                        <Text style={styles.service}>{cur.name}</Text>
+                        <Text style={styles.price}>{cur.price.replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                      </View>
+                    </React.Fragment>
+                  );
+                })}
+
+
+                { flag === 2 && trx.hasOwnProperty('order') && trx.order[0].item.map((cur, key) => {
+                  // console.log(trx.order[0].item)
+                  return(
+                    <React.Fragment key={key}>
+                      <View style={styles.bookingCart}>
+                        <Text style={styles.service}>{cur.name}</Text>
+                        <Text style={styles.price}>{cur.price.replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                      </View>
+                    </React.Fragment>
+                  )
+                })}
               </View>
               <View style={styles.totalSection}>
                 <View></View>
@@ -252,7 +277,7 @@ const DetailsScreen = ({navigation}) => {
                   <Text style={styles.totalTitle}>Total</Text>
                 </View>
                 <View style={styles.totalWrap}>
-                  <Text style={styles.totalPrice}>Rp. {totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
+                  <Text style={styles.totalPrice}>Rp. {flag === 3 ? parseFloat(navigation.state.params.totals).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : totalPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }</Text>
                 </View>
               </View>
               {flag === 2 && trx.hasOwnProperty('order') &&
@@ -290,7 +315,17 @@ const DetailsScreen = ({navigation}) => {
             </View>
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
-          {flag === 1  &&
+          {flag === 1 &&
+            <GradientButton
+            // onPressButton={()=> setSplash()}
+            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+            onPressButton={()=> handlePayment()}
+            setting={shadowOpt}
+            btnText="Pay Now"
+          />
+          }
+
+          {flag === 3 &&
             <GradientButton
             // onPressButton={()=> setSplash()}
             // onPressButton={()=> navigation.navigate('FaspayScreen')}
@@ -302,7 +337,7 @@ const DetailsScreen = ({navigation}) => {
 
           {flag === 2 && trx.hasOwnProperty('order') &&
             <GradientButton
-            disabled={trx.order[0].status === 'Menuggu Pembayaran' || trx.order[0].status === 'Menunggu Pembayaran'}
+            disabled={trx.order[0].status === 'Waiting for payment' || trx.order[0].status === 'Menunggu Pembayaran'}
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
             btnText="Search Mitra"

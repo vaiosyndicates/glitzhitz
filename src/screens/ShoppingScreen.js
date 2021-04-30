@@ -10,6 +10,7 @@ import CommonStyles from '../styles/CommonStyles';
 import { colors, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 import { showError } from '../util/ShowMessage';
 import { List } from 'react-native-paper';
+import apiUrl from '../util/API';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
@@ -34,7 +35,7 @@ const ShoppingScreen = ({navigation}) => {
         };
 
         const tokenizer = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://api.glitzandhitz.com/index.php/Service',{
+        const response = await axios.get(`${apiUrl}/Service`,{
           params: {
             id_category: navigation.state.params.ids
           },

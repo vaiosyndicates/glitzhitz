@@ -39,6 +39,10 @@ export default class BookAppointmentScreen extends Component {
     }
   }
 
+  componentDidMount() {
+    console.log(this.props.navigation.state)
+  }
+
   render() {
     return (
       <View style={styles.pages}>
@@ -178,13 +182,18 @@ export default class BookAppointmentScreen extends Component {
   _handleBookAppoitment() {
     // TODO:
     let date = Moment(this.state.date).toDate()
+    const flag = typeof this.props.navigation.state.params != "undefined" ? this.props.navigation.state.params.flag : 1 ;
     let currentDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     const data = {
       book_date: currentDate,
       book_time: this.state.time,
       fullAddress: this.state.address,
-      flag: 1,
+      items: flag === 3 ? this.props.navigation.state.params.items : [] ,
+      totals: flag === 3 ? this.props.navigation.state.params.totals : 0 ,
+      flag: flag === 3 ? 3 : 1,
     }
+
+    // console.log(data);
     this.props.navigation.navigate('DetailScreen', data);
   }
 
