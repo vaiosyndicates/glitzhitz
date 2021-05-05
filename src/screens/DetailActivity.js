@@ -3,9 +3,11 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { color } from 'react-native-reanimated'
+import {AddressList, MitraInfo, PaySection, ProductList} from '../components/atom'
 import HeaderGradient from '../components/Header'
 import GradientButton from '../elements/GradientButton'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables'
+import apiUrl from '../util/API'
 import { showError, showSuccess } from '../util/ShowMessage'
 
 const DetailActivity = ({navigation}) => {
@@ -14,6 +16,7 @@ const DetailActivity = ({navigation}) => {
   const [visible, setVisible] = useState(false)
 
   const handleReorder = () => {
+    // console.log('tes');
     const data = {
       items: navigation.state.params.item,
       totals:  navigation.state.params.total_price,
@@ -46,7 +49,7 @@ const DetailActivity = ({navigation}) => {
     try {
       const tokenizer = await AsyncStorage.getItem('token');
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/order_confirmation', data, {
+        `${apiUrl}/User/order_confirmation`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,
@@ -71,7 +74,7 @@ const DetailActivity = ({navigation}) => {
     <View style={styles.page}>
       <HeaderGradient title="Detail" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
       <View style={styles.container}>
-        <ScrollView style={styles.scrolls}>
+        <ScrollView style={styles.scrolls} showsVerticalScrollIndicator={false}>
         <View style={styles.boxContainer}>
           <Text style={styles.textHeader}>Review Booking</Text>
           <View style={styles.box}>
@@ -80,40 +83,15 @@ const DetailActivity = ({navigation}) => {
               <Text style={styles.boxDateDate}>{navigation.state.params.date_order}</Text>
             </View>
             <View style={styles.mitraSection}>
-                <View style={styles.mitraInfo}>
-                  <View>
-                    <Image 
-                      source={{uri: 'https://reactjs.org/logo-og.png'}}
-                      style={styles.avatar} />
-                  </View>
-                  <View style={styles.mitraAbility}>
-                    <Text style={styles.mitraName}>Hala Madrid</Text>
-                    <Text style={styles.mitraSpeciality}>Sepsialis Indomie</Text>
-                  </View>
-                </View>
-                <View></View>
-                <View style={styles.buttonSection}>
-                  <TouchableOpacity onPress={() => handleReorder()} style={styles.buttons} disabled={disabled}>
-                    <Text style={styles.textButton}>REORDER</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+              {/* <MitraInfo onPress={()=> handleReorder()} disabled={disabled}/> */}
+              <MitraInfo onPress={()=> handleReorder()}/>
+
+            </View>
             <View style={styles.mapSection}>
-              <Text style={styles.mapTitle}>ADDRESS</Text>
-              <Text style={styles.detailAddress}>{navigation.state.params.address}</Text>
+              <AddressList title='ADDRESS' data={navigation.state.params.address}/>
             </View>
             <View style={styles.bookingSection}>
-              <Text style={styles.bookingTitle}>YOUR BOOKING</Text>
-              {navigation.state.params.item.map((cur, i) => {
-                return (
-                  <React.Fragment key={cur.id_service}>
-                    <View style={styles.bookingCart}>
-                      <Text style={styles.service}>{cur.name}</Text>
-                      <Text style={styles.price}>{cur.price}</Text>
-                    </View>
-                  </React.Fragment>
-                )
-              })}
+              <ProductList title= 'YOUR BOOKING' data={navigation.state.params.item} flag={3} />
             </View>
             <View style={styles.totalSection}>
               <View></View>
@@ -125,14 +103,7 @@ const DetailActivity = ({navigation}) => {
               </View>
             </View>
             <View style={styles.confirmSection}>
-              <View>
-                <Text style={styles.payTitle}>PAY WITH</Text>
-              </View>
-              <View></View>
-              <View>
-                <Image style={{width: 75, height: 25}} source={{uri: `data:image/png;base64,${navigation.state.params.payment_icon}`}} />
-                {/* <Text style={styles.merchantTitle}>{ trx.hasOwnProperty('order') && trx.order.length > 0 ? trx.order[0].payment_channel : 'undefined'}</Text> */}
-              </View>
+              <PaySection title='PAY WITH' data={navigation.state.params.payment} />
             </View>
           </View>
         </View>
@@ -221,7 +192,7 @@ const styles = StyleSheet.create({
   },
   mapSection: {
     flex: 1,
-    marginTop: deviceHeight * 0.03,
+    marginTop: deviceHeight * 0.01,
   },
    detailAddress: {
     color: colors.black,

@@ -6,6 +6,7 @@ import tokenReducer from './token'
 import loadingReducer from './loading'
 import cartReducer from './cart'
 import mapsReducer from './maps'
+import serviceReducer from './service'
 
 const reducer =  combineReducers({
   profileReducer,
@@ -13,6 +14,7 @@ const reducer =  combineReducers({
   loadingReducer,
   cartReducer,
   mapsReducer,
+  serviceReducer,
 })
 const store = createStore(reducer)
 export default store

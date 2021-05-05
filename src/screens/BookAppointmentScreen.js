@@ -5,7 +5,8 @@ import {
   Image,
   Platform,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Calendar from 'react-native-calendar-datepicker';
 import Moment from 'moment';
@@ -27,15 +28,22 @@ import {
 } from '../styles/variables';
 import HeaderGradient from '../components/Header';
 import { TextInput } from 'react-native-gesture-handler';
+import ScrollPicker from '../elements/ScrollPicker';
+import { Timepickers } from '../components/molekul';
+import DatePicker from 'react-native-date-picker'
 
 export default class BookAppointmentScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       date: Date(),
+      newDate: Date('2021-05-3T00:00:00'),
       isTimeVisible: false,
       time: '00:00',
       address: '',
+      show: false,
+      hours: 0,
+      minutes: 0,
     }
   }
 
@@ -44,11 +52,17 @@ export default class BookAppointmentScreen extends Component {
   }
 
   render() {
+    let hour = []
+    for (let index = 1; index <= 24; index++) {
+      hour.push(index)      
+    }
+    const scrollHeight = 130;
     return (
+      <>
       <View style={styles.pages}>
         <HeaderGradient title="Date Time" onPress={()=> this.props.navigation.goBack(null)} dMarginLeft={0.22} />
-
-        <ScrollView style={CommonStyles.noTabScrollView}>
+        <KeyboardAvoidingView behavior="padding" style={Platform.OS !== 'android' && { flex: 1 }}>
+        <ScrollView vertical>
           <View style={CommonStyles.wrapperBox}>
             <View style={[
               CommonStyles.itemWhiteBox,
@@ -146,6 +160,10 @@ export default class BookAppointmentScreen extends Component {
                   />
                 </TouchableOpacity>
               </View>
+              {/* <DatePicker
+                date={new Date()}
+                mode="time"
+              /> */}
               <DateTimePickerModal
                 isVisible={this.state.isTimeVisible}
                 mode="time"
@@ -173,9 +191,25 @@ export default class BookAppointmentScreen extends Component {
                 btnText="Review Booking"
               />
             </View>
-          </View>
+          </View> 
         </ScrollView>
+        </KeyboardAvoidingView>
       </View>
+      {this.state.show && 
+        <Timepickers 
+          onChanged = {date => {
+            let myDate = new Date(date);
+            let hours = myDate.getHours();
+            let minutes = ( myDate.getMinutes()<10?'0':'') + myDate.getMinutes();
+
+            this.setState({hours: hours});
+            this.setState({minutes: minutes});
+            this.setState({time: `${hours}:${minutes}`})
+          }}
+          onPress={() => this._hideTimePicker()} 
+        />}
+
+      </>
     );
   }
 
@@ -194,7 +228,7 @@ export default class BookAppointmentScreen extends Component {
     }
 
     // console.log(data);
-    this.props.navigation.navigate('DetailScreen', data);
+    this.props.navigation.navigate('DetailOrderScreen', data);
   }
 
   _handleConfirm(time) {
@@ -205,11 +239,18 @@ export default class BookAppointmentScreen extends Component {
   }
 
   _hideTimePicker() {
-    this.setState({isTimeVisible: false})
+    // this.setState({isTimeVisible: false})
+    this.setState({show: false})
   }
 
   _showTimePicker() {
-    this.setState({isTimeVisible: true})
+    // this.setState({isTimeVisible: true})
+    this.setState({show: true})
+  }
+
+  _handleChange = (value) => {
+    this.setState({hours: value.hours});
+    this.setState({minutes: value.minutes});
   }
 }
 
@@ -249,5 +290,8 @@ const styles = StyleSheet.create({
     borderColor: colors.grey,
     fontSize: fontSize.small,
     marginBottom: deviceHeight * 0.06,
-  }
+  },
+  container: {
+    flex: 1,
+  },
 });

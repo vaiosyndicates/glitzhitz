@@ -40,6 +40,7 @@
     "react-native-calendar-datepicker": "^1.2.2",
     "react-native-collapsible": "^1.5.3",
     "react-native-confirmation-code-input": "^1.0.4",
+    "react-native-date-picker": "^3.2.10",
     "react-native-device-info": "^8.0.2",
     "react-native-easy-grid": "^0.2.2",
     "react-native-firebase": "5.5.5",

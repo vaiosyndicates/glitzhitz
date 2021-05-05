@@ -32,7 +32,7 @@ const FaspayScreen = ({navigation}) => {
       flag: 2,
     }
     // console.log(data);
-    navigation.navigate('DetailScreen', data);
+    navigation.navigate('DetailOrderScreen', data);
   }
 
   return (
@@ -42,13 +42,11 @@ const FaspayScreen = ({navigation}) => {
 
 
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
-      {stateCart.length > 0 &&
-        <GradientButton
-          onPressButton={() => handleBack()}
-          setting={shadowOpt}
-          btnText="Confirmation Booking"
-        />
-      }
+      <GradientButton
+        onPressButton={() => handleBack()}
+        setting={shadowOpt}
+        btnText="Confirmation Booking"
+      />
 
       </View>
 
