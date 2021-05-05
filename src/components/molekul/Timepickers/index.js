@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     top: deviceHeight * 0.35,
     left: deviceWidth * 0.05,
+    borderRadius: 10,
   },
   container: {
     width: deviceWidth * 0.90,

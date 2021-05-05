@@ -205,8 +205,8 @@ class MainServiceScreen extends Component {
               {first.length > 0 && first.map((current, i) => {
                 return (
                   <React.Fragment key={current.id_service}>
-                    {/* <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}> */}
-                    <TouchableOpacity onPress={() => this._handleClickEmailButton()}>
+                    <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                    {/* <TouchableOpacity onPress={() => this._handleClickEmailButton()}> */}
                       <ImageBackground 
                         source={{ uri: current.image }}
                         imageStyle={{ borderRadius: 6}}
