@@ -45,6 +45,7 @@ export default class BookAppointmentScreen extends Component {
       show: false,
       hours: 0,
       minutes: 0,
+      curDate: new Date(),
     }
   }
 
@@ -213,7 +214,8 @@ export default class BookAppointmentScreen extends Component {
             this.setState({minutes: minutes});
             this.setState({time: `${hours}:${minutes}`})
           }}
-          onPress={() => this._hideTimePicker()} 
+          onPress={() => this._hideTimePicker()}
+          curDate= {this.state.curDate}
         />}
 
       </>
@@ -259,6 +261,19 @@ export default class BookAppointmentScreen extends Component {
     this.setState({hours: value.hours});
     this.setState({minutes: value.minutes});
   }
+
+  // _changeTime = () => {
+  //   let myDate = this.state.date;
+  //   let parsed = Date.parse(myDate)
+
+  //   let hours = new Date(parsed).getHours();
+  //   let minutes = ( new Date(parsed).getMinutes()<10?'0':'') + new Date(parsed).getMinutes();
+
+  //   this.setState({hours: hours});
+  //   this.setState({minutes: minutes});
+  //   this.setState({time: `${hours}:${minutes}`})   
+  // }
+
 }
 
 const styles = StyleSheet.create({

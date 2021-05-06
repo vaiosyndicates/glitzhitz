@@ -5,7 +5,7 @@ import ScrollPicker from '../../../elements/ScrollPicker'
 import CommonStyles from '../../../styles/CommonStyles'
 import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
 
-const Timepickers = ({onChanged, onPress}) => {
+const Timepickers = ({onChanged, onPress, curDate}) => {
 
   return (
     <View style={styles.page}>
@@ -16,7 +16,7 @@ const Timepickers = ({onChanged, onPress}) => {
       </View>
       <View style={styles.container}>
         <DatePicker
-          date={new Date()}
+          date={curDate}
           mode="time"
           androidVariant="nativeAndroid"
           textColor={colors.white}
