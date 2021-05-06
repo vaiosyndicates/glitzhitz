@@ -71,12 +71,19 @@ const ActivityScreen = ({navigation}) => {
 
   const SetFlat = ({datas, idx}) => {
       const item = [];
+      const payWith = {
+        status: datas.status,
+        payment_icon: datas.payment_icon,
+        payment_code: datas.payment_code,
+      }
+      const paySections = [payWith];
+
       Object.keys(datas.item).map(key => {
       item.push(
         datas.item[key],
       );
     });
-    // console.log(datas);
+    console.log(paySections);
 
     return (
       <View style={styles.listData}>
@@ -94,11 +101,11 @@ const ActivityScreen = ({navigation}) => {
             
           </View>
           <View style={styles.descSection}>
-            <Text style={styles.descStatus}>{datas.status}</Text>
+            <Text style={styles.descStatus}>{datas.status.slice(0, 15).concat('...')}</Text>
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
           <View style={styles.buttonsGroup}>
-            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order})} style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
             {datas.status !== 'Completed' &&
@@ -124,6 +131,8 @@ const ActivityScreen = ({navigation}) => {
   const handleDetail = (obj) => {
     // console.log(obj)
     navigation.navigate('DetailActivityScreen', obj);
+    // navigation.navigate('DetailOrderScreen');
+
   }
 
   const handleChat = (obj) => {

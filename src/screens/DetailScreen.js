@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { PureComponent, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image, BackHandler, Alert } from 'react-native'
+import { getFingerprint, getProduct } from 'react-native-device-info'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import HeaderGradient from '../components/Header'
@@ -12,6 +13,7 @@ import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } fr
 import apiUrl from '../util/API'
 import { resetLogin } from '../util/ResetRouting'
 import { showError } from '../util/ShowMessage'
+import {ProductList} from '../components/atom'
 
 const DetailsScreen = ({navigation}) => {
   const stateMaps = useSelector(state => state.mapsReducer.maps);
@@ -359,9 +361,9 @@ const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.white
   },
   container: {
+    flex: 1,
     marginHorizontal: deviceWidth * 0.05,
   },
   box: {

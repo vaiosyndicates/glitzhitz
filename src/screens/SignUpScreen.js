@@ -115,6 +115,7 @@ class SignUpScreen extends Component {
                 placeholder='Phone'
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
+                keyboardType="number-pad"
                 onChangeText={text => this.setState({phone: text})}
               />
             </View>
@@ -136,6 +137,8 @@ class SignUpScreen extends Component {
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
                 value={this.state.birth}
+                caretHidden={true}
+                editable={false}
               />
               <ImageButton
                 appearance={{

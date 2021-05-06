@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
-import { TextInput, View, StyleSheet, Image, Platform, TouchableHighlight, ScrollView, RefreshControl } from 'react-native';
+import { 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  Image, 
+  Platform, 
+  TouchableHighlight, 
+  ScrollView, 
+  RefreshControl,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
 import CommonStyles from '../styles/CommonStyles';
-import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT, fontSize, colors, fontFamily, deviceWidth } from '../styles/variables';
+import { deviceHeight, NAV_HEIGHT, TAB_HEIGHT, STATUSBAR_HEIGHT, fontSize, colors, fontFamily, deviceWidth, lineHeight } from '../styles/variables';
 
 import MenuItemBox from '../components/MenuItemBox';
 import CustomTabBar from '../components/CustomTabBar';
@@ -79,8 +90,8 @@ class MainServiceScreen extends Component {
   }
 
   async getCategory() {
+    console.log(this.props.getService)
     try {
-      this.props.loading(true);
       const tokenizer = await AsyncStorage.getItem('token')
       const response = await axios.get(`${apiUrl}/Service/category`, {
         headers: {
@@ -90,21 +101,18 @@ class MainServiceScreen extends Component {
       });
       // console.log(response);
       if(response.status === 200){
-        this.props.loading(false);
         this.setState({data: response.data.data.services})
+        this.props.service(response.data.data.services)
         this.setState({refreshing: false});
       } else {
-        this.props.loading(false);
         this.setState({data: []})
         showError('Failed');
       }
 
     } catch (error) {
       if (axios.isCancel(error)) {
-        this.props.loading(false);
         console.log('Error: ', error.message);
       } else {
-        this.props.loading(false);
         showError('Failed');
       }
     }
@@ -148,13 +156,15 @@ class MainServiceScreen extends Component {
   }
 
   findMiddle(){
-    const datas = this.state.data;
+    const rdx = this.props.getService;
+    const datas = (rdx === null || typeof rdx == 'undefined' ? this.state.data : this.props.getService);
     let mid = datas[Math.ceil((datas.length - 1) / 2)];
     return datas.indexOf(mid);
   }
 
   splitArray() {
-    const datas = this.state.data;
+    const rdx = this.props.getService;
+    const datas = (rdx === null || typeof rdx == 'undefined' ? this.state.data : this.props.getService);
     let first = datas.slice(0, this.findMiddle());
     let second = datas.slice(- this.findMiddle());
     return [first, second] ;
@@ -178,7 +188,7 @@ class MainServiceScreen extends Component {
           end={{ x: 1, y: 1 }}
         />
         <View style={styles.personal}>
-          <Text style={styles.personalHellos}>Hello {this.state.name}</Text>
+          <Text style={styles.personalHellos}>Hello {(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
           <Text style={styles.personalAsk}>How we can help you today ?</Text>
         </View>
         <View style={{height: deviceHeight * 0.03}} />
@@ -195,15 +205,19 @@ class MainServiceScreen extends Component {
               {first.length > 0 && first.map((current, i) => {
                 return (
                   <React.Fragment key={current.id_service}>
-                    <MenuItemBox
-                      header={current.name}
-                      // subHeader='113 Doctors'
-                      icon={current.image}
-                      iconWidth={150}
-                      iconHeight={150}
-                      ids={current.id_service}
-                      onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
-                    />
+                    <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                    {/* <TouchableOpacity onPress={() => this._handleClickEmailButton()}> */}
+                      <ImageBackground 
+                        source={{ uri: current.image }}
+                        imageStyle={{ borderRadius: 6}}
+                        style={styles.image}
+                      >
+                          <View style={styles.bannerSection}>
+                            <Text style={styles.textBanner}>{ current.name}</Text>
+                          </View>
+                      </ImageBackground>
+                    </TouchableOpacity>
+
                   </React.Fragment>
                 );
               })}
@@ -212,15 +226,17 @@ class MainServiceScreen extends Component {
               {second.length > 0 && second.map((current, i) => {
                   return (
                     <React.Fragment key={current.id_service}>
-                      <MenuItemBox
-                        header={current.name}
-                        // subHeader='113 Doctors'
-                        icon={current.image}
-                        iconWidth={150}
-                        iconHeight={150}
-                        ids={current.id_service}
-                        onPressCard={() => this._handleClickShopping(current.id_service, current.name, current.image)}
-                      />
+                      <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                        <ImageBackground 
+                          source={{ uri: current.image }} 
+                          style={styles.image}
+                          imageStyle={{ borderRadius: 6}}
+                        >
+                            <View style={styles.bannerSection}>
+                              <Text style={styles.textBanner}>{ current.name}</Text>
+                            </View>
+                        </ImageBackground>
+                      </TouchableOpacity>
                     </React.Fragment>
                   );
                 })}
@@ -247,6 +263,7 @@ class MainServiceScreen extends Component {
 
   // Click email button
   _handleClickEmailButton() {
+    this.props.navigation.navigate("StartBirthdayScreen");
   }
 
   // Go to FindDoctorScreen
@@ -276,13 +293,15 @@ class MainServiceScreen extends Component {
 
 const mapStateToProps = (state) => ({
   getProfile: state.profileReducer.profile,
-  getToken: state.tokenReducer.authToken
+  getToken: state.tokenReducer.authToken,
+  getService: state.serviceReducer.service
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     profile: value => dispatch({ type: 'SAVE_USER', value: value }),
-    loading: value => dispatch({ type: 'SET_LOADING', value: value })
+    loading: value => dispatch({ type: 'SET_LOADING', value: value }),
+    service: value => dispatch({ type: 'SAVE_SERVICE', value: value })
   }
 }
 
@@ -342,5 +361,27 @@ const styles = StyleSheet.create({
   },
   page: {
     flex: 1,
+  },
+  image: {
+    width: deviceWidth * 0.40,
+    height: deviceHeight * 0.20,
+    marginVertical: deviceHeight * 0.02,
+    resizeMode: "cover",
+    justifyContent: "flex-end"
+  },
+  bannerSection: {
+    backgroundColor: colors.blurry,
+    height: deviceHeight * 0.05,
+    justifyContent: 'center',
+    borderRadius: 6,
+  },
+  textBanner: {
+    color: colors.white,
+    flexWrap: 'wrap',
+    textAlign: 'center',
+    fontSize: fontSize.medium,
+    maxWidth: deviceWidth * 0.20,
+    marginLeft: deviceWidth * 0.09,
+    fontFamily: fontFamily.medium,
   }
 });

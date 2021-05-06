@@ -67,6 +67,7 @@ import MessagesScreen from '../screens/MessagesScreen';
 import ChattingScreen from '../screens/ChattingScreen';
 import ActivityScreen from '../screens/ActivityScreen';
 import DetailActivity from '../screens/DetailActivity';
+import DetailOrderScreen from '../screens/DetailOrderScreen';
 
 const AppRouter = StackRouter(
   {
@@ -295,7 +296,10 @@ const AppRouter = StackRouter(
     },
     DetailActivityScreen: {
       screen: DetailActivity,
-    },       
+    },
+    DetailOrderScreen: {
+      screen: DetailOrderScreen
+    },
   },
   {
     initialRouteName: 'StartUpScreen',
