@@ -31,6 +31,13 @@ const DetailOrderScreen = ({navigation}) => {
   const [trx, setTrx] = useState([]);
   const [seconds, setSeconds] = useState(1);
 
+  const setSplash = () => {
+    setLoad(true);
+    setTimeout(function () {
+      setLoad(false);
+    }, 4000)
+  };
+
   useEffect(() => {
     const flag = navigation.state.params.flag;
     if(flag === 2) {
