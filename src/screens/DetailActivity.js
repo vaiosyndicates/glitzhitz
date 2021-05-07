@@ -94,6 +94,7 @@ const DetailActivity = ({navigation}) => {
         showSuccess('Order Cancelled')
         setDisabled(false)
         setVisible(false)
+        navigation.navigate('ActivityScreen')
       } else {
         showError('Error')
       }
