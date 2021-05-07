@@ -16,7 +16,7 @@ const DetailActivity = ({navigation}) => {
   const [visible, setVisible] = useState(false)
 
   const handleReorder = () => {
-    // console.log('tes');
+    
     const data = {
       items: navigation.state.params.item,
       totals:  navigation.state.params.total_price,
@@ -35,9 +35,12 @@ const DetailActivity = ({navigation}) => {
 
   const checkDisabled = () => {
     const status = navigation.state.params.status;
-    if(status !== 'Completed') {
+    if(status !== 'Completed' && status !== 'Canceled') {
       setDisabled(true);
       setVisible(true);
+    } else {
+      setDisabled(false);
+      setVisible(false);
     }
   };
 
@@ -70,6 +73,36 @@ const DetailActivity = ({navigation}) => {
     }
   }
 
+  const handleCancel = async() => {
+    const data = {
+      bill_no: navigation.state.params.id_order,
+      trx_id: navigation.state.params.trx_id,
+    }
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${apiUrl}/Payment/cancel_payment`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      if(response.status === 200) {
+        showSuccess('Order Cancelled')
+        setDisabled(false)
+        setVisible(false)
+      } else {
+        showError('Error')
+      }
+    } catch (error) {
+      showError('Network Error')
+      console.log(error.response)
+    }
+  }
+
   return (
     <View style={styles.page}>
       <HeaderGradient title="Detail" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
@@ -83,8 +116,8 @@ const DetailActivity = ({navigation}) => {
               <Text style={styles.boxDateDate}>{navigation.state.params.date_order}</Text>
             </View>
             <View style={styles.mitraSection}>
-              {/* <MitraInfo onPress={()=> handleReorder()} disabled={disabled}/> */}
-              <MitraInfo onPress={()=> handleReorder()}/>
+              <MitraInfo onPress={()=> handleReorder()} disabled={disabled}/>
+              {/* <MitraInfo onPress={()=> handleReorder()}/> */}
 
             </View>
             <View style={styles.mapSection}>
@@ -121,15 +154,13 @@ const DetailActivity = ({navigation}) => {
           </View>
           <View>
             <GradientButton
-              onPressButton={()=> console.log('tes')}
+              onPressButton={()=> handleCancel()}
               setting={shadowButton}
               btnText="CANCEL ORDER"
             />
           </View>
         </View>
       }
-
-
     </View>
   )
 }

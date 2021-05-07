@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { colors, deviceHeight, fontFamily, fontSize } from '../../../styles/variables'
 
 const ProductList = ({title, flag, data}) => {
-  console.log(data);
+  // console.log(data);
   return (
     <View style={styles.page}>
       <View style={styles.container}>
