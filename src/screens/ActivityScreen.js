@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
 import CustomTabBar from '../components/CustomTabBar'
 import HeaderGradient from '../components/Header'
-import { colors, deviceHeight, deviceWidth } from '../styles/variables'
+import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styles/variables'
 import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
@@ -53,7 +53,7 @@ const ActivityScreen = ({navigation}) => {
       
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        // console.log(response.data.data.order)
+        // console.log(response.data.data.order.length)
         setData(response.data.data);
       } else {
         dispatch({type: 'SET_LOADING', value: false});
@@ -83,7 +83,7 @@ const ActivityScreen = ({navigation}) => {
         datas.item[key],
       );
     });
-    console.log(paySections);
+    // console.log(paySections);
 
     return (
       <View style={styles.listData}>
@@ -108,11 +108,19 @@ const ActivityScreen = ({navigation}) => {
             <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
-            {datas.status !== 'Completed' &&
+            {datas.status !== 'Completed' && datas.status !== 'Canceled' &&
               <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({id_mitra: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order}) } />
             }
           </View>
         </View>
+      </View>
+    )
+  }
+
+  const EmptyOrder = () => {
+    return (
+      <View style={styles.emptySection}>
+        <Text style={styles.emptyText}>No Data Available</Text>
       </View>
     )
   }
@@ -164,7 +172,7 @@ const ActivityScreen = ({navigation}) => {
             </View>
             <View></View>
           </View>
-          {data.hasOwnProperty('order') &&
+          {data.hasOwnProperty('order') && 
             
             <FlatList
               showsVerticalScrollIndicator={false}
@@ -172,6 +180,7 @@ const ActivityScreen = ({navigation}) => {
               initialNumToRender={data.order.length}
               keyExtractor={item => item.trx_id.toString()}
               ItemSeparatorComponent={renderSeparator}
+              ListEmptyComponent={EmptyOrder()}
               style={styles.flatList}
               renderItem={({item, index}) => {
                 return <SetFlat datas={item} idx={index} />
@@ -277,4 +286,14 @@ const styles = StyleSheet.create({
     width: deviceWidth * 0.15, 
     alignItems: 'center',
   },
+  emptySection: {
+    marginTop: deviceHeight * 0.02,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: fontSize.medium,
+    fontFamily: fontFamily.medium,
+    color: colors.lightGrey,
+  }
 })

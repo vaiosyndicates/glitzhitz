@@ -63,14 +63,14 @@ const DetailOrderScreen = ({navigation}) => {
 
   useEffect(() => {
     const flag = navigation.state.params.flag;
-    // if(flag === 2) {
-    //   const timer = setInterval(() => {
-    //     getOrderActiveBackground();
-    //     setSeconds(seconds + 1);
-    //   }, 5000);
-    //   // clearing interval
-    //   return () => clearInterval(timer);      
-    // }
+    if(flag === 2) {
+      const timer = setInterval(() => {
+        getOrderActiveBackground();
+        setSeconds(seconds + 1);
+      }, 5000);
+      // clearing interval
+      return () => clearInterval(timer);      
+    }
   }); 
 
   const handleBackNavigation = () => {
@@ -141,7 +141,7 @@ const DetailOrderScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(response.data.data.order[0].status)
+        // console.log(response.data.data.order[0])
         setTrx(response.data.data);
       } else {
         showError('Failed')
@@ -165,7 +165,7 @@ const DetailOrderScreen = ({navigation}) => {
       cart: flag === 3 ?  navigation.state.params.items : stateCarts
     };
 
-    console.log(data);
+    // console.log(data);
 
     try {
       const tokenizer = await AsyncStorage.getItem('token');

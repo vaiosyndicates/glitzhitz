@@ -1,5 +1,15 @@
 import React, { Component, useEffect, useState } from 'react';
-import { Text, TextInput, View, StyleSheet, Image, Platform, ScrollView } from 'react-native';
+import { 
+  Text, 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  Image, 
+  Platform, 
+  ScrollView,
+  BackHandler,
+  Alert,
+} from 'react-native';
 
 import CommonStyles from '../styles/CommonStyles';
 import CartShop from '../components/Carts/CartShop';
@@ -20,11 +30,46 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import {showError, showSuccess} from '../util/ShowMessage';
 import { WebView } from 'react-native-webview';
+import { resetLogin } from '../util/ResetRouting';
 
 const FaspayScreen = ({navigation}) => {
   
   const dispatch = useDispatch();
   const stateCart = useSelector(state => state.cartReducer.cart);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => navigation.dispatch(resetLogin)}
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+
+  }, [])
+
+  const handleBackNavigation = () => {
+    Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "YES", onPress: () => navigation.dispatch(resetLogin)}
+    ]);
+  }
+
 
   const handleBack = () => {
     const data = {
@@ -37,7 +82,7 @@ const FaspayScreen = ({navigation}) => {
 
   return (
     <View style={styles.page}>
-      <HeaderGradient title="Payment" onPress={()=> navigation.goBack(null)} dMarginLeft={0.25} />
+      <HeaderGradient title="Payment" onPress={()=> handleBackNavigation()} dMarginLeft={0.25} />
       <WebView source={{ uri: `${navigation.state.params.url}`}} />
 
 
