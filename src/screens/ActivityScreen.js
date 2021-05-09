@@ -96,7 +96,7 @@ const ActivityScreen = ({navigation}) => {
             </View>
             <View style={styles.mitraInfo}>
               <Text>Hala Madrid</Text>
-              <Text>{datas.trx_id}</Text>
+              <Text>{datas.trx_id.slice(8, 15)}</Text>
             </View>
             
           </View>

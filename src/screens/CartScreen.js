@@ -87,11 +87,11 @@ const CartScreen = ({navigation}) => {
         <GradientButton
           onPressButton={()=> navigation.navigate('MapScreen')}
           setting={shadowOpt}
-          disabled={
-            stateCart.length <= 0
-              ? true
-              : false
-          }
+          // disabled={
+          //   stateCart.length <= 0
+          //     ? true
+          //     : false
+          // }
           btnText="Set Location"
         />
       }

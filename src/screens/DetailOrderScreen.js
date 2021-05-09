@@ -33,6 +33,8 @@ const DetailOrderScreen = ({navigation}) => {
 
   const setSplash = () => {
     setLoad(true);
+    // dispatch({type: 'CLEAR_MAPS'});
+    dispatch({type: 'CLEAR_CART'});
     setTimeout(function () {
       setLoad(false);
     }, 4000)

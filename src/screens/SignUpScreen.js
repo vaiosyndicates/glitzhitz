@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   KeyboardAvoidingView ,
+  Pressable,
 } from 'react-native';
 
 import Text from '../elements/Text';
@@ -132,14 +133,16 @@ class SignUpScreen extends Component {
               />
             </View>
             <View style={CommonStyles.textInputField}>
-              <TextInput
-                placeholder='Date of Birth'
-                style={CommonStyles.textInput}
-                underlineColorAndroid='transparent'
-                value={this.state.birth}
-                caretHidden={true}
-                editable={false}
-              />
+              <Pressable onPress={this._showDatePicker.bind(this)}>
+                <TextInput
+                  placeholder='Date of Birth'
+                  style={CommonStyles.textInput}
+                  underlineColorAndroid='transparent'
+                  value={this.state.birth}
+                  caretHidden={true}
+                  editable={false}
+                />
+              </Pressable>
               <ImageButton
                 appearance={{
                     normal: require("../../img/glitz/arrows2x.png"),
