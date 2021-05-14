@@ -48,7 +48,6 @@ const DetailActivity = ({navigation}) => {
     const data = {
       id_order: navigation.state.params.id_order,
     }
-
     try {
       const tokenizer = await AsyncStorage.getItem('token');
       const response = await axios.post(
@@ -64,6 +63,8 @@ const DetailActivity = ({navigation}) => {
         showSuccess('Order Complete')
         setDisabled(false)
         setVisible(false)
+        navigation.navigate('RatingScreen')
+
       } else {
         showError('Error')
       }

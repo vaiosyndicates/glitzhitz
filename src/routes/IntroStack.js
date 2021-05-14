@@ -68,6 +68,7 @@ import ChattingScreen from '../screens/ChattingScreen';
 import ActivityScreen from '../screens/ActivityScreen';
 import DetailActivity from '../screens/DetailActivity';
 import DetailOrderScreen from '../screens/DetailOrderScreen';
+import RatingScreen from '../screens/RatingScreen';
 
 const AppRouter = StackRouter(
   {
@@ -299,6 +300,9 @@ const AppRouter = StackRouter(
     },
     DetailOrderScreen: {
       screen: DetailOrderScreen
+    },
+    RatingScreen: {
+      screen: RatingScreen
     },
   },
   {

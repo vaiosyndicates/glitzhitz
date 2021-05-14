@@ -190,6 +190,7 @@ const DetailOrderScreen = ({navigation}) => {
         // console.log(response.data.data)
       if(response.status === 200 ) {
         dispatch({type: 'SET_LOADING', value: false});
+        dispatch({type: 'CLEAR_CART'});
         const datas = {
           id_order: response.data.data.id_order,
           url: response.data.data.redirect_url
