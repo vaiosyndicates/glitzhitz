@@ -161,11 +161,10 @@ const DetailOrderScreen = ({navigation}) => {
     }
   }  
 
-
-  const handlePayment = async() => {
-    dispatch({type: 'SET_LOADING', value: true});
-
+  const handlePayment = async () => {
+    const tokenizer = await AsyncStorage.getItem('token');
     const data = {
+      token: tokenizer,
       longitude: stateMaps.longitude,
       latitude: stateMaps.latitude,
       address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
@@ -173,39 +172,56 @@ const DetailOrderScreen = ({navigation}) => {
       time: navigation.state.params.book_time,
       cart: flag === 3 ?  navigation.state.params.items : stateCarts
     };
+    navigation.navigate('FaspayScreen', data);
+  }
 
-    // console.log(data);
 
-    try {
-      const tokenizer = await AsyncStorage.getItem('token');
-      const response = await axios.post(
-        `${apiUrl}/Payment/checkout`, data, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: tokenizer,
-          }
-        }
-      );
+  // const handlePayment = async() => {
+  //   dispatch({type: 'SET_LOADING', value: true});
 
-        // console.log(response.data.data)
-      if(response.status === 200 ) {
-        dispatch({type: 'SET_LOADING', value: false});
-        dispatch({type: 'CLEAR_CART'});
-        const datas = {
-          id_order: response.data.data.id_order,
-          url: response.data.data.redirect_url
-        }
-        // console.log(response.data.data);
-        navigation.navigate('FaspayScreen', datas);
-      } else {
-        showError('Failed Booking')
-      }
+  //   const data = {
+  //     longitude: stateMaps.longitude,
+  //     latitude: stateMaps.latitude,
+  //     address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
+  //     date: navigation.state.params.book_date,
+  //     time: navigation.state.params.book_time,
+  //     cart: flag === 3 ?  navigation.state.params.items : stateCarts
+  //   };
 
-    } catch (error) {
-      dispatch({type: 'SET_LOADING', value: false});
-      console.log(error.response)
-    }
-  };
+  //   // console.log(data);
+
+  //   try {
+  //     const tokenizer = await AsyncStorage.getItem('token');
+  //     const response = await axios.post(
+  //       // `${apiUrl}/Payment/checkout`, data, {
+  //         `http://api.glitzandhitz.com/post_xpres.php`, data, {
+  //         headers: {
+  //           Accept: 'application/json',
+  //           Authorization: tokenizer,
+  //         }
+  //       }
+  //     );
+
+  //       console.log('------');
+  //       console.log(response);
+  //     if(response.status === 200 ) {
+  //       dispatch({type: 'SET_LOADING', value: false});
+  //       dispatch({type: 'CLEAR_CART'});
+  //       const datas = {
+  //         id_order: response.data.data.id_order,
+  //         url: response.data.data.redirect_url
+  //       }
+  //       // console.log(response.data.data);
+  //       navigation.navigate('FaspayScreen', datas);
+  //     } else {
+  //       showError('Failed Booking')
+  //     }
+
+  //   } catch (error) {
+  //     dispatch({type: 'SET_LOADING', value: false});
+  //     console.log(error.response)
+  //   }
+  // };
 
   return (
     <>

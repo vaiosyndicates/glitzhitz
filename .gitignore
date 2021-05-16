@@ -75,3 +75,4 @@ web-build/
 # @end expo-cli
 package.json
 app.json
+package-lock.json
