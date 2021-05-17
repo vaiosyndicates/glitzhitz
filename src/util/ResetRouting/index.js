@@ -12,8 +12,13 @@ const resetLogin = StackActions.reset({
   actions: [NavigationActions.navigate({ routeName: 'MainServiceScreen' })],
 });
 
+const resetActivity= StackActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: 'ActivityScreen' })],
+});
+
 const resetLogout = StackActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'GetStartedScreen' })],
 });
-export {resetAction, resetLogin, resetLogout}
+export {resetAction, resetLogin, resetLogout, resetActivity}

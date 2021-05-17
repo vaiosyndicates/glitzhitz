@@ -37,6 +37,21 @@ const DetailOrderScreen = ({navigation}) => {
     dispatch({type: 'CLEAR_CART'});
     setTimeout(function () {
       setLoad(false);
+
+      const data = {
+        idMitra: 57,
+        namaMitra: 'fahlepi',
+        rating: 4,
+        speciality: 'Spa and Massage Specialist',
+        item: trx.order[0].item,
+        total: trx.order[0].total_price,
+        serviceTime:  trx.order[0].service_time,
+        trxID: trx.order[0].trx_id,
+        id_order: trx.order[0].id_order,
+      }
+      // console.log(data)
+      navigation.navigate('MitraScreen', data)
+      
     }, 4000)
   };
 
@@ -120,7 +135,7 @@ const DetailOrderScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(response.data)
+        console.log(response.data.data)
         setTrx(response.data.data)
       } else {
         dispatch({type: 'SET_LOADING', value: false});
