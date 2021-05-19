@@ -1,7 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  FlatList, 
+  Image, 
+  TouchableOpacity
+} from 'react-native'
 import CustomTabBar from '../components/CustomTabBar'
 import HeaderGradient from '../components/Header'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styles/variables'
@@ -16,6 +23,7 @@ const ActivityScreen = ({navigation}) => {
   const [data, setData] = useState([])
   const [visibilty, setVisibility] = useState(false)
   const dispatch = useDispatch();
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
     _isMounted = true
@@ -96,7 +104,7 @@ const ActivityScreen = ({navigation}) => {
             </View>
             <View style={styles.mitraInfo}>
               <Text>Hala Madrid</Text>
-              <Text>{datas.trx_id.slice(8, 15)}</Text>
+              <Text>{datas.trx_id.slice(8, 20)}</Text>
             </View>
             
           </View>

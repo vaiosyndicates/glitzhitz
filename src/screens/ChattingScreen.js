@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  ScrollView, 
+  Image,
+  BackHandler,
+} from 'react-native'
 import ChatItem from '../components/chat'
 import HeaderGradient from '../components/Header'
 import InputChat from '../components/InputChat'
@@ -11,6 +18,7 @@ import { chatDate, chatTime } from '../util/DateTime'
 import { showError } from '../util/ShowMessage'
 import { LinearGradient } from 'expo-linear-gradient'
 import { color } from 'react-native-reanimated'
+import { resetActivity } from '../util/ResetRouting'
 
 
 const ChattingScreen = ({navigation}) => {
@@ -74,6 +82,22 @@ const ChattingScreen = ({navigation}) => {
     }
   }, [_isMounted, id])
 
+  useEffect(() => {
+
+    const backAction = () => {
+      navigation.dispatch(resetActivity)
+      return true;
+    }
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+
+  }, [])
+
   const handleSend = () => {
     const id_mitra = navigation.state.params.id_mitra;
     const chatIds = `${navigation.state.params.trx_id}_${navigation.state.params.id_order}`;
@@ -112,6 +136,7 @@ const ChattingScreen = ({navigation}) => {
         Fire.ref(urlMessagesMitra).set(dataHistoryChatMitra);
       })
       .catch(err => {
+        console.log(err)
         showError('Error');
       })
   }

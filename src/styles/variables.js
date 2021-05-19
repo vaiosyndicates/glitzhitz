@@ -13,6 +13,7 @@ const shadowOpt = {
   btnHeight: 45
 }
 
+
 const shadowButton = {
   btnWidth: deviceWidth * 0.40,
   btnHeight: deviceHeight * 0.05,
@@ -51,6 +52,7 @@ const colors = {
   violet2: 'rgba(193, 109, 255, 0.4)',
   blurry: 'rgba(0,0,0,0.35)',
   chat: '#D6B5EE',
+  chat1: '#E6B2F3',
   gradient: ['#FF5ED2', '#E200CC', '#7A0189', '#350057' ],
 } 
 

@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from 'react';
 import * as Font from 'expo-font';
 import { Dimensions, StatusBar, View, Platform, AppRegistry, Alert } from 'react-native';
-import { createNavigator, createAppContainer, addNavigationHelpers } from 'react-navigation';
+import { createNavigator, createAppContainer, addNavigationHelpers, NavigationActions, createStackNavigator } from 'react-navigation';
 import ScalingDrawer from './elements/ScalingDrawer';
 
 import LeftMenu from './components/LeftMenu';
@@ -12,6 +12,7 @@ import Loading from './components/loading';
 import FlashMessage from 'react-native-flash-message';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NavigationService from './util/Navigator';
 
 const {width, height} = Dimensions.get('window');
 
@@ -108,6 +109,7 @@ const MainApp = () => {
   const stateLoading = useSelector(state => state.loadingReducer.loading)
 
   useEffect(() => {
+
     //foreground notif
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
@@ -117,6 +119,19 @@ const MainApp = () => {
     //handle notif ketika notif bar di click
     messaging().onNotificationOpenedApp(remoteMessage => {
       console.log( 'Notification caused app to open from background state:', remoteMessage, );
+      if(remoteMessage.data.hasOwnProperty('type')) {
+        if(remoteMessage.data.type === 'chatting') {
+          const data = {
+            trx_id: remoteMessage.data.trx_id,
+            id_order: remoteMessage.data.id_order,
+            id_mitra: remoteMessage.data.id_mitra,
+            nama_mitra: remoteMessage.data.nama_mitra,
+          }
+          NavigationService.navigate('ChattingScreen', data);
+        } else {
+          console.log('failed')
+        }
+      }
     });
 
     // componen unmount
@@ -149,7 +164,11 @@ const MainApp = () => {
 
   return (
     <>
-      <AppContainer />
+      <AppContainer
+        ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }}
+      />
       {stateLoading && <Loading />}
       <FlashMessage position="top" />
     </>
