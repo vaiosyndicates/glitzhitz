@@ -16,6 +16,7 @@
     "@react-native-firebase/app": "^11.2.0",
     "@react-native-firebase/database": "^11.2.0",
     "@react-native-firebase/messaging": "^11.2.0",
+    "@react-native-picker/picker": "^1.16.0",
     "@reduxjs/toolkit": "^1.5.0",
     "art": "0.10.2",
     "axios": "^0.21.1",
