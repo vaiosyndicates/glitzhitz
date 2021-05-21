@@ -7,7 +7,8 @@ import {
   View, 
   ScrollView,
   BackHandler,
-  Alert
+  Alert,
+  Image
  } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { AddressList, PaySection, ProductList, TotalSection } from '../components/atom';
@@ -236,7 +237,7 @@ const DetailOrderScreen = ({navigation}) => {
       address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
       date: navigation.state.params.book_date,
       time: navigation.state.params.book_time,
-      payment_channel: selectedLanguage,
+      channel_code: selectedLanguage,
       cart: flag === 3 ?  navigation.state.params.items : stateCarts
     };
 
@@ -297,7 +298,7 @@ const DetailOrderScreen = ({navigation}) => {
           {flag !== 2 && 
           <View style={styles.bankList}>
             <Text style={styles.bankTitle}>PAYMENT METHOD</Text>
-            <View>
+            <View style={styles.pickerBank}>
               <Picker
                 selectedValue={selectedLanguage}
                 dropdownIconColor={colors.violet1}
@@ -311,7 +312,8 @@ const DetailOrderScreen = ({navigation}) => {
                         label={cur.channel} 
                         value={cur.code} 
                         key={cur.code}
-                        color={colors.violet1}
+                        color={colors.grey}
+                        style={styles.bankListItem}
                       />
                     )
                   })}
@@ -455,8 +457,10 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.light,
   },
   bankList: {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderViolet,
     marginVertical: deviceHeight * 0.02,
-  }
+  },
+  pickerBank: {
+    borderBottomWidth: 1,
+    borderColor: colors.borderViolet,
+  },
 })

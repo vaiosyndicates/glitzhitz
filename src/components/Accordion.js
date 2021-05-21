@@ -109,7 +109,7 @@ const Accordions = ({datas, isFlag, key, parents}) => {
               {current.subService && current.subService.map((cur, key) => {
                 return (
                   <List.Item style={styles.titleAccordion} title={cur.name} key={key} 
-                  description = {<Text>IDR {cur.price}</Text>}
+                  description = {<Text>IDR {parseFloat(cur.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>}
                   right={props => 
                     <>
                       {cur.isMins && <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => handleMinService({id: cur.id, name: `${parents} ${cur.name}`, price: cur.price, parent: current.name})} /> }
