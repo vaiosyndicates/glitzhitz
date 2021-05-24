@@ -18,7 +18,7 @@ import GradientButton from '../elements/GradientButton';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import apiUrl from '../util/API'
+import {apiUrl} from '../util/API'
 
 const MapScreen = ({navigation}) => {
   const dispatch = useDispatch();

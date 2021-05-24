@@ -15,7 +15,7 @@ import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styl
 import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
-import apiUrl from '../util/API'
+import {apiUrl} from '../util/API'
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false

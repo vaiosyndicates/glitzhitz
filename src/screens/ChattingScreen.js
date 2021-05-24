@@ -19,6 +19,11 @@ import { showError } from '../util/ShowMessage'
 import { LinearGradient } from 'expo-linear-gradient'
 import { color } from 'react-native-reanimated'
 import { resetActivity } from '../util/ResetRouting'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { dataSend } from '../util/DataChat'
+import { apiFirebase } from '../util/API'
+import tokenCredential from '../util/Credential'
+import axios from 'axios'
 
 
 const ChattingScreen = ({navigation}) => {
@@ -98,7 +103,7 @@ const ChattingScreen = ({navigation}) => {
 
   }, [])
 
-  const handleSend = () => {
+  const handleSend = async() => {
     const id_mitra = navigation.state.params.id_mitra;
     const chatIds = `${navigation.state.params.trx_id}_${navigation.state.params.id_order}`;
 
@@ -139,6 +144,25 @@ const ChattingScreen = ({navigation}) => {
         console.log(err)
         showError('Error');
       })
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('fcmToken');
+        const data = dataSend(tokenizer, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'TitleData', navigation.state.params.trx_id , 'fahlepi')
+
+        const response = await axios.post(
+          apiFirebase, data, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenCredential,
+            }
+          }
+        );
+  
+        console.log(response)
+      } catch (error) {
+        showError('Network Error')
+        console.log(error)
+      }
   }
 
   return (

@@ -24,7 +24,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import apiUrl from '../util/API';
+import {apiUrl} from '../util/API';
 
 class MainServiceScreen extends Component {
   _isMounted = false;
@@ -81,6 +81,7 @@ class MainServiceScreen extends Component {
         showError('Failed');
       }
     } catch (error) {
+      console.log(error)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
@@ -90,7 +91,7 @@ class MainServiceScreen extends Component {
   }
 
   async getCategory() {
-    console.log(this.props.getService)
+    console.log(apiUrl)
     try {
       const tokenizer = await AsyncStorage.getItem('token')
       const response = await axios.get(`${apiUrl}/Service/category`, {
@@ -113,6 +114,7 @@ class MainServiceScreen extends Component {
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
+        console.log(error)
         showError('Failed');
       }
     }
@@ -144,6 +146,7 @@ class MainServiceScreen extends Component {
 
     } catch (error) {
       showError('Network Error')
+      // console.log(error)
     }
   }
 

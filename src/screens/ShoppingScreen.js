@@ -10,7 +10,7 @@ import CommonStyles from '../styles/CommonStyles';
 import { colors, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 import { showError } from '../util/ShowMessage';
 import { List } from 'react-native-paper';
-import apiUrl from '../util/API';
+import {apiUrl} from '../util/API';
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;

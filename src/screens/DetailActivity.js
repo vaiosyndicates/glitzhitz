@@ -7,7 +7,7 @@ import {AddressList, MitraInfo, PaySection, ProductList} from '../components/ato
 import HeaderGradient from '../components/Header'
 import GradientButton from '../elements/GradientButton'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables'
-import apiUrl from '../util/API'
+import {apiUrl} from '../util/API'
 import { showError, showSuccess } from '../util/ShowMessage'
 
 const DetailActivity = ({navigation}) => {

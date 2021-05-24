@@ -17,7 +17,7 @@ import DetailOrder from '../components/molekul'
 import SplashMap from '../components/splash-map';
 import GradientButton from '../elements/GradientButton';
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables';
-import apiUrl from '../util/API';
+import {apiUrl} from '../util/API';
 import { resetLogin } from '../util/ResetRouting';
 import {Picker} from '@react-native-picker/picker';
 import { showError } from '../util/ShowMessage';
