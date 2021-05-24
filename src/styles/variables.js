@@ -9,7 +9,7 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : 0;
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 const shadowOpt = {
-  btnWidth: deviceWidth - 55,
+  btnWidth: deviceWidth - 50,
   btnHeight: 45
 }
 

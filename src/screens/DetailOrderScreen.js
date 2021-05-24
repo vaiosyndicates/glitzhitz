@@ -18,8 +18,11 @@ import GradientButton from '../elements/GradientButton';
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables';
 import apiUrl from '../util/API';
 import { resetLogin } from '../util/ResetRouting';
+import {Picker} from '@react-native-picker/picker';
+import { showError } from '../util/ShowMessage';
 
 const DetailOrderScreen = ({navigation}) => {
+  let mounted = false;
   const stateMaps = useSelector(state => state.mapsReducer.maps);
   const stateCarts = useSelector(state => state.cartReducer.cart);
   const totalPrice = stateCarts.reduce((accum,item) => accum + parseFloat(item.price), 0)
@@ -30,6 +33,8 @@ const DetailOrderScreen = ({navigation}) => {
   const [load, setLoad] = useState(false);
   const [trx, setTrx] = useState([]);
   const [seconds, setSeconds] = useState(1);
+  const [selectedLanguage, setSelectedLanguage] = useState('402');
+  const [channels, setChannels] = useState([])
 
   const setSplash = () => {
     setLoad(true);
@@ -58,7 +63,23 @@ const DetailOrderScreen = ({navigation}) => {
   useEffect(() => {
     const flag = navigation.state.params.flag;
     if(flag === 2) {
-      getOrderActive();
+      mounted = true
+      if(mounted === true) {
+        getOrderActive();
+      }
+
+      return () => {
+        mounted = false;
+      }
+    } else {
+      mounted = true
+      if(mounted === true) {
+        getChannel()
+      }
+
+      return () => {
+        mounted = false;
+      }      
     }
   }, [])
 
@@ -92,10 +113,15 @@ const DetailOrderScreen = ({navigation}) => {
         getOrderActiveBackground();
         setSeconds(seconds + 1);
       }, 5000);
+     
+
       // clearing interval
-      return () => clearInterval(timer);      
+      return () => {
+        mounted = false
+        clearInterval(timer);
+      }      
     }
-  }); 
+  });
 
   const handleBackNavigation = () => {
     Alert.alert("Hold on!", "Are you sure you want to go back?", [
@@ -135,7 +161,7 @@ const DetailOrderScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(response.data.data)
+        // console.log(response.data.data)
         setTrx(response.data.data)
       } else {
         dispatch({type: 'SET_LOADING', value: false});
@@ -174,69 +200,78 @@ const DetailOrderScreen = ({navigation}) => {
       showError('Network Error')
       console.log('error')
     }
-  }  
+  }
 
-  const handlePayment = async () => {
-    const tokenizer = await AsyncStorage.getItem('token');
+  const getChannel = async() => {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.get(`${apiUrl}/Payment/channel`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+      });
+      // console.log(response.data.data.channel)
+      switch (response.status) {
+        case 200:
+          setChannels(response.data.data.channel)
+          break;
+      
+        default:
+          showError('Failed Get Payment Channel')
+          break;
+      }
+    } catch (error) {
+      showError('Network Error')
+      console.log(error.response)
+    }
+  }
+
+  const handlePayment = async() => {
+    dispatch({type: 'SET_LOADING', value: true});
+
     const data = {
-      token: tokenizer,
       longitude: stateMaps.longitude,
       latitude: stateMaps.latitude,
       address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
       date: navigation.state.params.book_date,
       time: navigation.state.params.book_time,
+      payment_channel: selectedLanguage,
       cart: flag === 3 ?  navigation.state.params.items : stateCarts
     };
-    navigation.navigate('FaspayScreen', data);
-  }
 
+    // console.log(data);
 
-  // const handlePayment = async() => {
-  //   dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${apiUrl}/Payment/checkout`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
 
-  //   const data = {
-  //     longitude: stateMaps.longitude,
-  //     latitude: stateMaps.latitude,
-  //     address: `${stateMaps.address} ${navigation.state.params.fullAddress}`,
-  //     date: navigation.state.params.book_date,
-  //     time: navigation.state.params.book_time,
-  //     cart: flag === 3 ?  navigation.state.params.items : stateCarts
-  //   };
+        // console.log(response.data.data)
+      if(response.status === 200 ) {
+        dispatch({type: 'SET_LOADING', value: false});
+        dispatch({type: 'CLEAR_CART'});
+        const datas = {
+          id_order: response.data.data.id_order,
+          url: response.data.data.redirect_url
+        }
+        // console.log(response.data.data);
+        navigation.navigate('FaspayScreen', datas);
+      } else {
+        showError('Failed Booking')
+      }
 
-  //   // console.log(data);
-
-  //   try {
-  //     const tokenizer = await AsyncStorage.getItem('token');
-  //     const response = await axios.post(
-  //       // `${apiUrl}/Payment/checkout`, data, {
-  //         `http://api.glitzandhitz.com/post_xpres.php`, data, {
-  //         headers: {
-  //           Accept: 'application/json',
-  //           Authorization: tokenizer,
-  //         }
-  //       }
-  //     );
-
-  //       console.log('------');
-  //       console.log(response);
-  //     if(response.status === 200 ) {
-  //       dispatch({type: 'SET_LOADING', value: false});
-  //       dispatch({type: 'CLEAR_CART'});
-  //       const datas = {
-  //         id_order: response.data.data.id_order,
-  //         url: response.data.data.redirect_url
-  //       }
-  //       // console.log(response.data.data);
-  //       navigation.navigate('FaspayScreen', datas);
-  //     } else {
-  //       showError('Failed Booking')
-  //     }
-
-  //   } catch (error) {
-  //     dispatch({type: 'SET_LOADING', value: false});
-  //     console.log(error.response)
-  //   }
-  // };
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      console.log(error.response)
+    }
+  };
 
   return (
     <>
@@ -259,6 +294,31 @@ const DetailOrderScreen = ({navigation}) => {
         <View style={styles.addressSection}>
           <AddressList title="ADDRESS" data={`${stateMaps.address} ${paramsnav.fullAddress}`} isMap={true}/>
         </View>
+          {flag !== 2 && 
+          <View style={styles.bankList}>
+            <Text style={styles.bankTitle}>PAYMENT METHOD</Text>
+            <View>
+              <Picker
+                selectedValue={selectedLanguage}
+                dropdownIconColor={colors.violet1}
+                style={{marginLeft: deviceWidth * -0.04}}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedLanguage(itemValue)
+                }>
+                  {channels.length > 0 && channels.map((cur, i) => {
+                    return(
+                      <Picker.Item 
+                        label={cur.channel} 
+                        value={cur.code} 
+                        key={cur.code}
+                        color={colors.violet1}
+                      />
+                    )
+                  })}
+              </Picker> 
+            </View>
+          </View>
+        }
         <View style={styles.bookingSection}>
           {flag === 1 &&
             <ProductList title="YOUR BOOKING" data={stateCarts}  />
@@ -389,4 +449,14 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontFamily: fontFamily.medium,
   },
+  bankTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
+  },
+  bankList: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderViolet,
+    marginVertical: deviceHeight * 0.02,
+  }
 })

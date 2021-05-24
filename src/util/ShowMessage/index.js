@@ -14,7 +14,7 @@ export const showSuccess = message => {
   showMessage({
     message: message,
     type: 'default',
-    backgroundColor: colors.green1,
+    backgroundColor: colors.violet1,
     color: colors.white,
   });
 };
