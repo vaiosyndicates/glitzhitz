@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { showError, showSuccess } from '../util/ShowMessage';
 import { resetLogin } from '../util/ResetRouting';
-import apiUrl from '../util/API';
+import {apiUrl} from '../util/API';
 
 const UpdateProfile = ({navigation}) => {
   const [name, setName] = useState('')

@@ -1,0 +1,2 @@
+const tokenCredential = 'key=AAAA1tgb01M:APA91bFxMsCsucJdyHfgcTiAHshoiLFfVTA5H7BX8MBF6uieXQK2INWVUj-d-7Yu4KkbSXUtgmjPk8Y9jRM3e-yUQbqQXMLlsOwvbx0zY_m-wj_u5kLEX00AR8x3eoToLh7QIUn60B8V'
+export default tokenCredential

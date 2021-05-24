@@ -112,26 +112,26 @@ const MainApp = () => {
 
     //foreground notif
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      // Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
     });
 
     //handle notif ketika notif bar di click
     messaging().onNotificationOpenedApp(remoteMessage => {
       console.log( 'Notification caused app to open from background state:', remoteMessage, );
-      if(remoteMessage.data.hasOwnProperty('type')) {
-        if(remoteMessage.data.type === 'chatting') {
-          const data = {
-            trx_id: remoteMessage.data.trx_id,
-            id_order: remoteMessage.data.id_order,
-            id_mitra: remoteMessage.data.id_mitra,
-            nama_mitra: remoteMessage.data.nama_mitra,
-          }
-          NavigationService.navigate('ChattingScreen', data);
-        } else {
-          console.log('failed')
-        }
-      }
+      // if(remoteMessage.data.hasOwnProperty('type')) {
+      //   if(remoteMessage.data.type === 'chatting') {
+      //     const data = {
+      //       trx_id: remoteMessage.data.trx_id,
+      //       id_order: remoteMessage.data.id_order,
+      //       id_mitra: remoteMessage.data.id_mitra,
+      //       nama_mitra: remoteMessage.data.nama_mitra,
+      //     }
+      //     NavigationService.navigate('ChattingScreen', data);
+      //   } else {
+      //     console.log('failed')
+      //   }
+      // }
     });
 
     // componen unmount

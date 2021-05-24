@@ -1,2 +1,3 @@
 const apiUrl = 'http://api.glitzandhitz.com/index.php'
-export default apiUrl
+const apiFirebase = 'https://fcm.googleapis.com/fcm/send'
+export {apiUrl, apiFirebase}

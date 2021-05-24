@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { resetLogout } from '../util/ResetRouting';
 import HeaderGradient from '../components/Header';
 import { colors, fontFamily, fontSize } from '../styles/variables';
-import apiUrl from '../util/API'
+import {apiUrl} from '../util/API'
 class UserProfileScreen extends Component {
   _isMounted = false;
   signal = axios.CancelToken.source();
