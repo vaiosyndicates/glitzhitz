@@ -13,6 +13,8 @@ import FlashMessage from 'react-native-flash-message';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationService from './util/Navigator';
+import PushNotification from 'react-native-push-notification'
+
 
 const {width, height} = Dimensions.get('window');
 
@@ -113,6 +115,11 @@ const MainApp = () => {
     //foreground notif
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      PushNotification.localNotification({
+        channelId: "not1",
+        message: remoteMessage.data.body ,
+        title: remoteMessage.data.title,
+      });
       // Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
     });
 
