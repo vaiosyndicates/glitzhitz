@@ -1,14 +1,23 @@
 import React, { Component, useEffect, useState } from 'react';
 import { 
+  Text, 
+  TextInput, 
   View, 
   StyleSheet, 
+  Image, 
+  Platform, 
+  ScrollView,
   BackHandler,
   Alert,
 } from 'react-native';
 
 import CommonStyles from '../styles/CommonStyles';
+import CartShop from '../components/Carts/CartShop';
+import GradientNavigationBar from '../elements/GradientNavigationBar';
 import GradientButton from '../elements/GradientButton';
 import HeaderGradient from '../components/Header';
+import CustomTabBar from '../components/CustomTabBar';
+import Constants from 'expo-constants';
 import {
   deviceWidth,
   deviceHeight,
@@ -22,8 +31,6 @@ import { Button } from 'react-native-paper';
 import {showError, showSuccess} from '../util/ShowMessage';
 import { WebView } from 'react-native-webview';
 import { resetLogin } from '../util/ResetRouting';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 const FaspayScreen = ({navigation}) => {
   
@@ -76,23 +83,27 @@ const FaspayScreen = ({navigation}) => {
   return (
     <View style={styles.page}>
       <HeaderGradient title="Payment" onPress={()=> handleBackNavigation()} dMarginLeft={0.25} />
+      {navigation.state.params.isCC ?
       <WebView
-        source={{uri: 'http://api.glitzandhitz.com/index.php/Payment/xpress',
+        source={{uri: 'http://api.glitzandhitz.com/index.php/Payment/creditcard',
           body: JSON.stringify(navigation.state.params),
           method:'POST'}}
         javaScriptCanOpenWindowsAutomatically={true}
         javaScriptEnabled={true}
       />
+      :
+      <WebView source={{ uri: `${navigation.state.params.url}`}} />
+      }
 
 
-      {/* <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
       <GradientButton
         onPressButton={() => handleBack()}
         setting={shadowOpt}
         btnText="Confirmation Booking"
       />
 
-      </View> */}
+      </View>
 
     </View>
   );
