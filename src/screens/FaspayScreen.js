@@ -83,7 +83,17 @@ const FaspayScreen = ({navigation}) => {
   return (
     <View style={styles.page}>
       <HeaderGradient title="Payment" onPress={()=> handleBackNavigation()} dMarginLeft={0.25} />
+      {navigation.state.params.isCC ?
+      <WebView
+        source={{uri: 'http://api.glitzandhitz.com/index.php/Payment/creditcard',
+          body: JSON.stringify(navigation.state.params),
+          method:'POST'}}
+        javaScriptCanOpenWindowsAutomatically={true}
+        javaScriptEnabled={true}
+      />
+      :
       <WebView source={{ uri: `${navigation.state.params.url}`}} />
+      }
 
 
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>

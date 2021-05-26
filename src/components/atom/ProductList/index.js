@@ -13,7 +13,7 @@ const ProductList = ({title, flag, data}) => {
         <View style={styles.productSection}>
           { data.length > 0 && data.map((cur, i) => {
             return (
-              <React.Fragment key={cur.id_service}>
+              <React.Fragment key={i}>
                 <View style={styles.productList}>
                   <Text style={styles.productName}>{cur.name}</Text>
                   <Text style={styles.productPrice}>{cur.price}</Text>
