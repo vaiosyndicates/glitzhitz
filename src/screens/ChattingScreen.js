@@ -147,8 +147,8 @@ const ChattingScreen = ({navigation}) => {
 
       try {
         const tokenizer = await AsyncStorage.getItem('fcmToken');
-        const data = dataSend(tokenizer, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'TitleData', navigation.state.params.trx_id , 'fahlepi')
-
+        const data = dataSend(tokenizer, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'New Message', navigation.state.params.trx_id , 'fahlepi')
+        // console.log(data.data.type);
         const response = await axios.post(
           apiFirebase, data, {
             headers: {
@@ -158,7 +158,7 @@ const ChattingScreen = ({navigation}) => {
           }
         );
   
-        console.log(response)
+        // console.log(response)
       } catch (error) {
         showError('Network Error')
         console.log(error)

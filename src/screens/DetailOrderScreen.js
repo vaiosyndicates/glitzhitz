@@ -36,6 +36,8 @@ const DetailOrderScreen = ({navigation}) => {
   const [seconds, setSeconds] = useState(1);
   const [selectedLanguage, setSelectedLanguage] = useState('402');
   const [channels, setChannels] = useState([])
+  const [dated, setDated] = useState('')
+  const [timed, setTimed] = useState('')
 
   const setSplash = () => {
     setLoad(true);
@@ -62,6 +64,7 @@ const DetailOrderScreen = ({navigation}) => {
   };
 
   useEffect(() => {
+
     const flag = navigation.state.params.flag;
     if(flag === 2) {
       mounted = true
@@ -105,7 +108,7 @@ const DetailOrderScreen = ({navigation}) => {
      
       return () => backHandler.remove();
     } 
-  }, [])
+  }, [trx])
 
   useEffect(() => {
     const flag = navigation.state.params.flag;
@@ -137,12 +140,9 @@ const DetailOrderScreen = ({navigation}) => {
 
   const getOrderActive = async() => {
     dispatch({type: 'SET_LOADING', value: true});
-
     const data = {
       id_order: navigation.state.params.id_order ,
     }
-
-    // console.log(data);
 
     try {
       const tokenizer = await AsyncStorage.getItem('token')
@@ -164,6 +164,10 @@ const DetailOrderScreen = ({navigation}) => {
         dispatch({type: 'SET_LOADING', value: false});
         // console.log(response.data.data)
         setTrx(response.data.data)
+        // const dater = trx.order[0].service_time
+        // const dateSplit = dater.split(' ');
+        // setDated(dateSplit[0])
+        // setTimed(dateSplit[1]);
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         showError('Failed')
@@ -171,7 +175,7 @@ const DetailOrderScreen = ({navigation}) => {
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       showError('Network Error')
-      console.log(error.response)
+      console.log(error)
     }
   }
 
@@ -304,15 +308,15 @@ const DetailOrderScreen = ({navigation}) => {
         </View>
         <View style={styles.dateSection}>
           <View>
-            <Text style={styles.dateDate}>Date: {paramsnav.book_date}</Text>
+            <Text style={styles.dateDate}>Date: {flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].service_time.slice(0,10) : paramsnav.book_date }</Text>
           </View>
           <View></View>
           <View>
-            <Text style={styles.dateTime}>Time: {paramsnav.book_time}</Text>
+            <Text style={styles.dateTime}>Time:  {flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].service_time.slice(11,20) : paramsnav.book_time }</Text>
           </View>
         </View>
         <View style={styles.addressSection}>
-          <AddressList title="ADDRESS" data={`${stateMaps.address} ${paramsnav.fullAddress}`} isMap={true}/>
+          <AddressList title="ADDRESS" data=  {flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].address : `${stateMaps.address} ${paramsnav.fullAddress}` } isMap={true}/>
         </View>
           {flag !== 2 && 
           <View style={styles.bankList}>

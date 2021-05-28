@@ -114,12 +114,46 @@ const MainApp = () => {
 
     //foreground notif
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      PushNotification.localNotification({
-        channelId: "not1",
-        message: remoteMessage.data.body ,
-        title: remoteMessage.data.title,
-      });
+
+      if(remoteMessage.data.hasOwnProperty('type')) {
+
+        // if(remoteMessage.data.type === 'Chatting') {
+        //   PushNotification.localNotification({
+        //     channelId: "not1",
+        //     message: remoteMessage.data.message ,
+        //     title: remoteMessage.data.title,
+        //   })
+        // } else if(remoteMessage.data.type === 'Payment') {
+        //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        // } else {
+        //   Alert.alert('FAILED', JSON.stringify(remoteMessage));
+        // }
+         switch (remoteMessage.data.type) {
+            case "Payment":
+
+              const data = {
+                id_order: parseInt(remoteMessage.data.id_order),
+                flag: parseInt(remoteMessage.data.flag),
+              }
+
+              Alert.alert("Your Payment Has Been Paid", "Go To Review Order For Details", [
+                { text: "OK", onPress: () => NavigationService.navigate(`${remoteMessage.data.screen}Screen`, data)}
+              ]);
+              // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+            break;
+  
+            case "Chatting":
+              PushNotification.localNotification({
+                channelId: "not1",
+                message: remoteMessage.data.message ,
+                title: remoteMessage.data.title,
+              });
+            break;
+         
+           default:
+             break;
+         }
+      }
       // Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
     });
 

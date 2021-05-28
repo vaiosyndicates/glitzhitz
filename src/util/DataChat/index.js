@@ -3,13 +3,14 @@ export const dataSend = (to, collapse, body, title, bodyData, titleData, key1, k
     to : to,
     collapse_key : collapse,
     notification : {
-          body :  body,
+          message :  body,
           title : title,
           priority: "high"
       },
     data : {
       priority: "high",
-      body : bodyData,
+      message : bodyData,
+      type: "Chatting",
       title: titleData,
       key_1 : key1,
       key_2 : key2
