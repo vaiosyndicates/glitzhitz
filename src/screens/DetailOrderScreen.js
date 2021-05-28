@@ -22,6 +22,7 @@ import { resetLogin } from '../util/ResetRouting';
 import {Picker} from '@react-native-picker/picker';
 import { showError } from '../util/ShowMessage';
 
+
 const DetailOrderScreen = ({navigation}) => {
   let mounted = false;
   const stateMaps = useSelector(state => state.mapsReducer.maps);
@@ -39,28 +40,62 @@ const DetailOrderScreen = ({navigation}) => {
   const [dated, setDated] = useState('')
   const [timed, setTimed] = useState('')
 
-  const setSplash = () => {
+  const setSplash = async() => {
     setLoad(true);
-    // dispatch({type: 'CLEAR_MAPS'});
     dispatch({type: 'CLEAR_CART'});
-    setTimeout(function () {
-      setLoad(false);
 
-      const data = {
-        idMitra: 57,
-        namaMitra: 'fahlepi',
-        rating: 4,
-        speciality: 'Spa and Massage Specialist',
-        item: trx.order[0].item,
-        total: trx.order[0].total_price,
-        serviceTime:  trx.order[0].service_time,
-        trxID: trx.order[0].trx_id,
-        id_order: trx.order[0].id_order,
-      }
-      // console.log(data)
-      navigation.navigate('MitraScreen', data)
+    const data = {
+      id_order: trx.order[0].id_order,
+    }
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const response = await axios.post(
+        `${apiUrl}/Service/searchmitra`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      switch (response.status) {
+        case 200:
+          setLoad(false);
+          const data = {
+            idMitra: response.data.id_mitra,
+            namaMitra: response.data.nama_mitra,
+            rating: 4,
+            speciality: 'Spa and Massage Specialist',
+            item: response.data.item,
+            total: trx.order[0].total_price,
+            serviceTime:  trx.order[0].service_time,
+            trxID: trx.order[0].trx_id,
+            id_order: trx.order[0].id_order,
+          }
+
+          navigation.navigate('MitraScreen', data)
+          
+          break;
       
-    }, 4000)
+        default:
+          showError('Search Mitra Failed')
+          break;
+      }
+
+    } catch (error) {
+      showError('Network Error')
+      console.log(error)
+    }
+
+    // setTimeout(function () {
+    //   setLoad(false);
+
+
+    //   // console.log(data)
+    //   navigation.navigate('MitraScreen', data)
+      
+    // }, 4000)
   };
 
   useEffect(() => {
@@ -299,6 +334,7 @@ const DetailOrderScreen = ({navigation}) => {
 
   return (
     <>
+    {/* {console.log(trx.order[0])} */}
     <View style={styles.page}>
       <HeaderGradient title="Detail"  onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.30}  />
       <View style={styles.container}>
@@ -316,7 +352,7 @@ const DetailOrderScreen = ({navigation}) => {
           </View>
         </View>
         <View style={styles.addressSection}>
-          <AddressList title="ADDRESS" data=  {flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].address : `${stateMaps.address} ${paramsnav.fullAddress}` } isMap={true}/>
+          <AddressList title="ADDRESS" data=  {flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].address : `${stateMaps.address} ${paramsnav.fullAddress}` } isMap={true} latitude={flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].latitude : stateMaps.latitude} longitude={flag === 2 && trx.hasOwnProperty('order') ? trx.order[0].longitude : stateMaps.longitude} />
         </View>
           {flag !== 2 && 
           <View style={styles.bankList}>

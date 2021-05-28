@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../../../styles/variables'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 
-const AddressList = ({title, data, isMap}) => {
+const AddressList = ({title, data, isMap, latitude, longitude, flag}) => {
   const stateMaps = useSelector(state => state.mapsReducer.maps);
-
+  // console.log(longitude)
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -19,15 +19,15 @@ const AddressList = ({title, data, isMap}) => {
               provider={PROVIDER_GOOGLE}
               style={{height: deviceHeight * 0.20}}
               region={{
-                latitude: parseFloat(stateMaps.latitude),
-                longitude:  parseFloat(stateMaps.longitude),
+                latitude: stateMaps.latitude === 0 ? parseFloat(latitude) : parseFloat(stateMaps.latitude),
+                longitude:  stateMaps.longitude === 0 ? parseFloat(longitude) : parseFloat(stateMaps.longitude),
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
               }}>
             <Marker
               coordinate={{
-                latitude: parseFloat(stateMaps.latitude),
-                longitude:  parseFloat(stateMaps.longitude),
+                latitude: stateMaps.latitude === 0 ? parseFloat(latitude) : parseFloat(stateMaps.latitude),
+                longitude:  stateMaps.longitude === 0 ? parseFloat(longitude) : parseFloat(stateMaps.longitude),
               }}
             />
             </MapView>
