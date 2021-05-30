@@ -16,7 +16,7 @@ const SplashMap = () => {
         </View>
         <AnimatedLoader
           visible={true}
-          source={require('../../../assets/json/search.json')}
+          source={require('../../../assets/json/employee.json')}
           overlayColor="rgba(255,255,255,0.15)"
           animationStyle={styles.lottie}
           speed={3}

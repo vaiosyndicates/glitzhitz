@@ -58,22 +58,24 @@ const DetailOrderScreen = ({navigation}) => {
           }
         }
       );
-
+      
+      // console.log(response.data)
       switch (response.status) {
         case 200:
           setLoad(false);
           const data = {
-            idMitra: response.data.id_mitra,
-            namaMitra: response.data.nama_mitra,
-            rating: 4,
-            speciality: 'Spa and Massage Specialist',
-            item: response.data.item,
-            total: trx.order[0].total_price,
-            serviceTime:  trx.order[0].service_time,
-            trxID: trx.order[0].trx_id,
-            id_order: trx.order[0].id_order,
+            idMitra: response.data.data.id_mitra,
+            namaMitra: response.data.data.nama_mitra,
+            rating: response.data.data.rating,
+            speciality: response.data.data.speciality,
+            item: trx.order[0].item,
+            total: response.data.data.total,
+            serviceTime:  response.data.data.service_time,
+            trxID: response.data.data.trx_id,
+            id_order: response.data.data.id_order,
+            token: response.data.data.token,
           }
-
+          console.log(data);
           navigation.navigate('MitraScreen', data)
           
           break;

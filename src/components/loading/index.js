@@ -1,12 +1,20 @@
 import React from 'react';
 import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
-import { colors, fontFamily, fontSize } from '../../styles/variables';
+import { colors, deviceHeight, fontFamily, fontSize } from '../../styles/variables';
+import AnimatedLoader from 'react-native-animated-loader'
 
 const Loading = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.green1} />
-      <Text style={styles.text}>Please Wait</Text>
+      {/* <ActivityIndicator size="large" color={colors.green1} /> */}
+      <AnimatedLoader
+          visible={true}
+          source={require('../../../assets/json/loader.json')}
+          overlayColor="rgba(255,255,255,0.15)"
+          animationStyle={styles.lottie}
+          speed={3}
+        ></AnimatedLoader>
+      {/* <Text style={styles.text}>Please Wait</Text> */}
     </View>
   );
 };
@@ -28,4 +36,10 @@ const styles = StyleSheet.create({
     color: colors.green1,
     fontFamily: fontFamily.medium
   },
+  lottie: {
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },  
 });
