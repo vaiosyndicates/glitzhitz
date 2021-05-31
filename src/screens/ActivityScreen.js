@@ -117,7 +117,7 @@ const ActivityScreen = ({navigation}) => {
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
             {datas.status !== 'Completed' && datas.status !== 'Canceled' &&
-              <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({id_mitra: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order}) } />
+              <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({token: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order}) } />
             }
           </View>
         </View>
@@ -152,8 +152,9 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const handleChat = (obj) => {
+    // console.log(obj)
     const data = {
-      id_mitra: obj.id_mitra,
+      token: obj.token,
       nama_mitra: obj.nama_mitra,
       trx_id: obj.trx_id,
       id_order: obj.id_order,

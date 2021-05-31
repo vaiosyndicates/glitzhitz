@@ -75,7 +75,7 @@ const DetailOrderScreen = ({navigation}) => {
             id_order: response.data.data.id_order,
             token: response.data.data.token,
           }
-          console.log(data);
+          // console.log(data);
           navigation.navigate('MitraScreen', data)
           
           break;
@@ -101,8 +101,8 @@ const DetailOrderScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-
     const flag = navigation.state.params.flag;
+    console.log(navigation.state.params)
     if(flag === 2) {
       mounted = true
       if(mounted === true) {

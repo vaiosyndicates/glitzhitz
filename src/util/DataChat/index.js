@@ -1,4 +1,4 @@
-export const dataSend = (to, collapse, body, title, bodyData, titleData, key1, key2) => {
+export const dataSend = (to, collapse, body, title, bodyData, titleData, key1, key2, key3, key4) => {
   const data = {
     to : to,
     collapse_key : collapse,
@@ -12,10 +12,14 @@ export const dataSend = (to, collapse, body, title, bodyData, titleData, key1, k
       message : bodyData,
       type: "Chatting",
       title: titleData,
-      key_1 : key1,
-      key_2 : key2
+      trx_id : key1,
+      id_order : key2,
+      id_mitra: key3,
+      nama_mitra: key4,
+      token: to,
+      screen: 'Chatting',
     }
   }
-
+  // console.log(data)
   return data;
 }

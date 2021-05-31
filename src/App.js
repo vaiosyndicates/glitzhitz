@@ -117,17 +117,6 @@ const MainApp = () => {
 
       if(remoteMessage.data.hasOwnProperty('type')) {
 
-        // if(remoteMessage.data.type === 'Chatting') {
-        //   PushNotification.localNotification({
-        //     channelId: "not1",
-        //     message: remoteMessage.data.message ,
-        //     title: remoteMessage.data.title,
-        //   })
-        // } else if(remoteMessage.data.type === 'Payment') {
-        //   Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-        // } else {
-        //   Alert.alert('FAILED', JSON.stringify(remoteMessage));
-        // }
          switch (remoteMessage.data.type) {
             case "Payment":
 
@@ -147,6 +136,14 @@ const MainApp = () => {
                 channelId: "not1",
                 message: remoteMessage.data.message ,
                 title: remoteMessage.data.title,
+                userInfo: {
+                  type: remoteMessage.data.type,
+                  screen: remoteMessage.data.screen,
+                  trx_id: remoteMessage.data.trx_id, 
+                  id_order: remoteMessage.data.id_order,
+                  nama_mitra: remoteMessage.data.nama_mitra,
+                  token: remoteMessage.data.device_token,
+                },
               });
             break;
          
@@ -160,19 +157,17 @@ const MainApp = () => {
     //handle notif ketika notif bar di click
     messaging().onNotificationOpenedApp(remoteMessage => {
       console.log( 'Notification caused app to open from background state:', remoteMessage, );
-      // if(remoteMessage.data.hasOwnProperty('type')) {
-      //   if(remoteMessage.data.type === 'chatting') {
-      //     const data = {
-      //       trx_id: remoteMessage.data.trx_id,
-      //       id_order: remoteMessage.data.id_order,
-      //       id_mitra: remoteMessage.data.id_mitra,
-      //       nama_mitra: remoteMessage.data.nama_mitra,
-      //     }
-      //     NavigationService.navigate('ChattingScreen', data);
-      //   } else {
-      //     console.log('failed')
-      //   }
-      // }
+      if(remoteMessage.data.hasOwnProperty('type')) {
+        if(remoteMessage.data.type === 'Payment') {
+          const data = {
+            flag: parseInt(remoteMessage.data.flag),
+            id_order: parseInt(remoteMessage.data.id_order),
+          }
+          NavigationService.navigate('DetailOrderScreen', data);
+        } else {
+          console.log('failed')
+        }
+      }
     });
 
     // componen unmount

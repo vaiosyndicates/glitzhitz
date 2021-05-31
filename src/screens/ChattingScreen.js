@@ -38,6 +38,7 @@ const ChattingScreen = ({navigation}) => {
   const today = new Date();
 
   useEffect(() => {
+    // console.log(navigation.state.params)
     _isMounted = true;
     setMounted(true);
     if( _isMounted === true && mounted === true ) {
@@ -104,13 +105,9 @@ const ChattingScreen = ({navigation}) => {
   }, [])
 
   const handleSend = async() => {
-    const id_mitra = navigation.state.params.id_mitra;
     const chatIds = `${navigation.state.params.trx_id}_${navigation.state.params.id_order}`;
 
     const urlChatting = `chatting/${chatIds}/allChat/${chatDate(today)}`;
-    const urlMessagesUser = `messages/${id}/${chatIds}`;
-    const urlMessagesMitra = `messages/${id_mitra}/${chatIds}`;
-
 
     const data = {
       sendBy: id,
@@ -119,26 +116,10 @@ const ChattingScreen = ({navigation}) => {
       chatContent: chatContent,
     };
 
-    const dataHistoryChatUser = {
-      lastContentChat: chatContent,
-      lastChatDate: today.getTime(),
-      uidPartner: id_mitra,
-    };
-
-    const dataHistoryChatMitra = {
-      lastContentChat: chatContent,
-      lastChatDate: today.getTime(),
-      uidPartner: id,
-    };
-
-
     Fire.ref(urlChatting)
       .push(data)
       .then(res => {
         setChatContent('')
-
-        Fire.ref(urlMessagesUser).set(dataHistoryChatUser);
-        Fire.ref(urlMessagesMitra).set(dataHistoryChatMitra);
       })
       .catch(err => {
         console.log(err)
@@ -147,8 +128,8 @@ const ChattingScreen = ({navigation}) => {
 
       try {
         const tokenizer = await AsyncStorage.getItem('fcmToken');
-        const data = dataSend(tokenizer, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'New Message', navigation.state.params.trx_id , 'fahlepi')
-        // console.log(data.data.type);
+        const data = dataSend(navigation.state.params.token, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'New Message', navigation.state.params.trx_id , navigation.state.params.id_order, navigation.state.params.id_mitra, navigation.state.params.nama_mitra )
+        // console.log(navigation.state.params.token);
         const response = await axios.post(
           apiFirebase, data, {
             headers: {
@@ -161,7 +142,7 @@ const ChattingScreen = ({navigation}) => {
         // console.log(response)
       } catch (error) {
         showError('Network Error')
-        console.log(error)
+        console.log(error.response)
       }
   }
 

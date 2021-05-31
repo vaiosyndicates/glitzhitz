@@ -17,6 +17,7 @@ import { resetActivity, resetLogin } from '../util/ResetRouting';
 const MitraScreen = ({navigation}) => {
 
   useEffect(() => {
+    console.log(navigation.state.params)
 
     const backAction = () => {
       navigation.dispatch(resetLogin)
@@ -44,7 +45,10 @@ const MitraScreen = ({navigation}) => {
       trx_id: navigation.state.params.trxID,
       id_order: navigation.state.params.id_order,
       flag: 2,
+      token: navigation.state.params.token,
     }
+    // console.log(data);
+
 
     navigation.navigate('ChattingScreen', data);
     // console.log(data);
