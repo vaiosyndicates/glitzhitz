@@ -65,26 +65,18 @@ const ChattingScreen = ({navigation}) => {
                 data: dataChat[key],
               });
             })
-            // sort desc
-            // console.log(newDataChat)
-            const sorting  = newDataChat.sort(function(a, b) {
+            
+            newDataChat.sort(function(a, b) {
               // console.log(a.data)
               return a.data.chatDate - b.data.chatDate;
             });
-
-            // console.log(sorting)
-            
-            // newDataChat.sort(function(a, b) {
-            //   // console.log(a.data)
-            //   return a.data.chatDate - b.data.chatDate;
-            // });
             
             AllDataChat.push({
               date: item,
-              data: sorting,
+              data: newDataChat,
             });
           })
-          
+          AllDataChat.reverse()
           setChat(AllDataChat);
         }
       });
@@ -221,7 +213,7 @@ const ChattingScreen = ({navigation}) => {
             showsVerticalScrollIndicator={false} 
             ref={scrollViewRef}
             onContentSizeChange={() =>
-              scrollViewRef.current.scrollToEnd({animated: true})
+              scrollViewRef.current.scrollToEnd({animated: false})
             }>
             {chat.length > 0 && chat.map(cur => {
               return (
