@@ -32,6 +32,7 @@ const GetStarted = ({navigation}) => {
             <View style={styles.buttonGroup}>
               <GradientButton
                 setting={shadowOpt}
+                isLogin={true}
                 btnText="SIGN IN"
                 onPressButton={() => navigation.navigate('SignInScreen')}
                 disabled= {false}/>

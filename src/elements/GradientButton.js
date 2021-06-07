@@ -35,6 +35,7 @@ export default class GradientButton extends Component {
       onPressButton,
       btnText,
       disabled,
+      isLogin,
     } = this.props;
 
     // Define button style
@@ -51,6 +52,11 @@ export default class GradientButton extends Component {
         fontSize: fontSize,
         color: '#fff',
       },
+      textLogin: {
+        fontFamily: fontFamily.semiBold,
+        fontSize: fontSize,
+        color: colors.borderViolet,
+      }
     });
 
     // Return a view ,whose background is a svg picture
@@ -75,14 +81,14 @@ export default class GradientButton extends Component {
         </View>
         <LinearGradient
           start={{x: 0.2, y: 0.4}} end={{x: 1.0, y: 1.0}}
-          colors={disabled ? colors.gradient  : colors.gradient  }
+          colors={isLogin === true ? colors.gradientWhite  : colors.gradient  }
           style={[styles.button, {position: 'relative'}]}>
           <TouchableHighlight
             underlayColor={'rgb(105,105,105)'}
             style={styles.button}
             onPress={onPressButton}
             disabled={disabled}>
-            <Text style={styles.text}>{btnText}</Text>
+            <Text style={isLogin === true ? styles.textLogin  : styles.text  }>{btnText}</Text>
           </TouchableHighlight>
         </LinearGradient>
       </View>

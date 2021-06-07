@@ -54,6 +54,7 @@ const colors = {
   chat: '#D6B5EE',
   chat1: '#E6B2F3',
   gradient: ['#FF5ED2', '#E200CC', '#7A0189', '#350057' ],
+  gradientWhite: ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF' ],
 } 
 
 const fontFamily = {
