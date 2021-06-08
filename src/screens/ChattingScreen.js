@@ -65,8 +65,9 @@ const ChattingScreen = ({navigation}) => {
                 data: dataChat[key],
               });
             })
-            // sort desc
+            
             newDataChat.sort(function(a, b) {
+              // console.log(a.data)
               return a.data.chatDate - b.data.chatDate;
             });
             
@@ -75,7 +76,7 @@ const ChattingScreen = ({navigation}) => {
               data: newDataChat,
             });
           })
-          
+          AllDataChat.reverse()
           setChat(AllDataChat);
         }
       });
@@ -126,23 +127,63 @@ const ChattingScreen = ({navigation}) => {
         showError('Error');
       })
 
-      try {
-        const tokenizer = await AsyncStorage.getItem('fcmToken');
-        const data = dataSend(navigation.state.params.token, 'type_a', 'New Chat Message', 'Glits Hits', chatContent, 'New Message', navigation.state.params.trx_id , navigation.state.params.id_order, navigation.state.params.id_mitra, navigation.state.params.nama_mitra )
-        // console.log(navigation.state.params.token);
-        const response = await axios.post(
-          apiFirebase, data, {
-            headers: {
-              Accept: 'application/json',
-              Authorization: tokenCredential,
-            }
+      if(navigation.state.params.flag === 5) {
+        try {
+          const tokenizer = await AsyncStorage.getItem('fcmToken');
+          const sender = {
+            to: navigation.state.params.token,
+            trx_id: navigation.state.params.trx_id,
+            id_order: navigation.state.params.id_order,
+            chat_content: chatContent,
+            nama_mitra: navigation.state.params.nama_mitra,
+            nama_user: navigation.state.params.nama_user,
+            token_receiver: navigation.state.params.token,
+            token_sender: tokenizer,
           }
-        );
-  
-        // console.log(response)
-      } catch (error) {
-        showError('Network Error')
-        console.log(error.response)
+          const data = dataSend(sender)
+          console.log('sebagai pengirim')
+          // console.log(data)
+          const response = await axios.post(
+            apiFirebase, data, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenCredential,
+              }
+            }
+          );
+
+        } catch (error) {
+          showError('Network Error')
+          console.log(error.response.data)
+        }
+      } else {
+        try {
+          const receiver = {
+            to: navigation.state.params.token_sender,
+            trx_id: navigation.state.params.trx_id,
+            id_order: navigation.state.params.id_order,
+            chat_content: chatContent,
+            nama_mitra: navigation.state.params.nama_mitra,
+            nama_user: navigation.state.params.nama_user,
+            token_receiver: navigation.state.params.token_sender,
+            token_sender: navigation.state.params.token_receiver ,
+          }
+          const data = dataSend(receiver)
+          console.log('sebagai penerima')
+          // console.log(data)
+
+          const response = await axios.post(
+            apiFirebase, data, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenCredential,
+              }
+            }
+          )
+        } catch (error) {
+          showError('Network Error')
+          console.log(error.response.data)
+        }
       }
   }
 
@@ -172,7 +213,7 @@ const ChattingScreen = ({navigation}) => {
             showsVerticalScrollIndicator={false} 
             ref={scrollViewRef}
             onContentSizeChange={() =>
-              scrollViewRef.current.scrollToEnd({animated: true})
+              scrollViewRef.current.scrollToEnd({animated: false})
             }>
             {chat.length > 0 && chat.map(cur => {
               return (

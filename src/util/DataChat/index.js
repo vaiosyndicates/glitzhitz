@@ -1,25 +1,26 @@
-export const dataSend = (to, collapse, body, title, bodyData, titleData, key1, key2, key3, key4) => {
+export const dataSend = (obj) => {
   const data = {
-    to : to,
-    collapse_key : collapse,
+    to : obj.to,
+    collapse_key : 'type_a',
     notification : {
-          message :  body,
-          title : title,
-          priority: "high"
+          priority: "high",
+          title : "New Chat Message", 
+          message: "Glitz Hitz", 
       },
     data : {
       priority: "high",
-      message : bodyData,
+      message : obj.chat_content,
       type: "Chatting",
-      title: titleData,
-      trx_id : key1,
-      id_order : key2,
-      id_mitra: key3,
-      nama_mitra: key4,
-      token: to,
-      screen: 'Chatting',
+      title: "New Message",
+      trx_id : obj.trx_id,
+      id_order : obj.id_order,
+      nama_mitra: obj.nama_mitra,
+      nama_customer: obj.nama_user,
+      token_receiver: obj.token_receiver,
+      token_sender: obj.token_sender,
+      flag: 6,
     }
   }
-  // console.log(data)
+  // // console.log(selftoken)
   return data;
 }

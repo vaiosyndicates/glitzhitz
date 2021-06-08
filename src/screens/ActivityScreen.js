@@ -24,6 +24,7 @@ const ActivityScreen = ({navigation}) => {
   const [visibilty, setVisibility] = useState(false)
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false)
+  const profile = useSelector(state => state.profileReducer.profile)
 
   useEffect(() => {
     _isMounted = true
@@ -78,6 +79,7 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
+    console.log(datas)
       const item = [];
       const payWith = {
         status: datas.status,
@@ -117,7 +119,7 @@ const ActivityScreen = ({navigation}) => {
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
             {datas.status !== 'Completed' && datas.status !== 'Canceled' &&
-              <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({token: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order}) } />
+              <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({token: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order, nama_user: datas.customer_name}) } />
             }
           </View>
         </View>
@@ -152,12 +154,14 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const handleChat = (obj) => {
-    // console.log(obj)
+    // console.log(obj.nama_user)
     const data = {
       token: obj.token,
       nama_mitra: obj.nama_mitra,
+      nama_user: obj.nama_user,
       trx_id: obj.trx_id,
       id_order: obj.id_order,
+      flag: 5,
     }
     navigation.navigate('ChattingScreen', data);
   }

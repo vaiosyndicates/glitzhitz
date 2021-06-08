@@ -7,27 +7,31 @@ PushNotification.configure({
   onNotification: function (notification) {
 
     switch (notification.data.type) {
-      case 'Payment':
+      // case 'Payment':
 
-        const data = {
-          id_order: parseInt(notification.data.id_order),
-          flag: parseInt(notification.data.flag),
-        }
+      //   const data = {
+      //     id_order: parseInt(notification.data.id_order),
+      //     flag: parseInt(notification.data.flag),
+      //   }
 
-        console.log(data)
 
-        NavigationService.navigate('DetailOrderScreen', data);
+      //   NavigationService.navigate('DetailOrderScreen', data);
         
-        break;
+      //   break;
 
       case 'Chatting':
         const datas = {
           type: notification.data.type,
           id_order: notification.data.id_order,
           trx_id: notification.data.trx_id,
+          chat_content: notification.data.message,
           nama_mitra: notification.data.nama_mitra,
-          token: notification.data.token,
+          nama_user: notification.data.nama_customer,
+          token_receiver: notification.data.token_receiver,
+          token_sender: notification.data.token_sender,
+          flag: notification.data.flag,
         }
+        // console.log(notification.data)
         NavigationService.navigate('ChattingScreen', datas);
 
         break;
@@ -35,6 +39,7 @@ PushNotification.configure({
       default:
         break;
     }
+    
     // console.log('LOCAL NOTIFICATIONs ==>', notification)
     // NavigationService.navigate('ChattingScreen', data);
   },

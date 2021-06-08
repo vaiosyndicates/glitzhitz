@@ -128,21 +128,23 @@ const MainApp = () => {
               Alert.alert("Your Payment Has Been Paid", "Go To Review Order For Details", [
                 { text: "OK", onPress: () => NavigationService.navigate(`${remoteMessage.data.screen}Screen`, data)}
               ]);
-              // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
             break;
   
             case "Chatting":
+              // console.log(remoteMessage.data.flag);
               PushNotification.localNotification({
                 channelId: "not1",
                 message: remoteMessage.data.message ,
                 title: remoteMessage.data.title,
                 userInfo: {
                   type: remoteMessage.data.type,
-                  screen: remoteMessage.data.screen,
                   trx_id: remoteMessage.data.trx_id, 
                   id_order: remoteMessage.data.id_order,
                   nama_mitra: remoteMessage.data.nama_mitra,
-                  token: remoteMessage.data.device_token,
+                  nama_user: remoteMessage.data.nama_customer,
+                  token_receiver: remoteMessage.data.token_receiver,
+                  token_sender: remoteMessage.data.token_sender,
+                  flag: remoteMessage.data.flag 
                 },
               });
             break;
