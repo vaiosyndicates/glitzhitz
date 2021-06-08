@@ -25,6 +25,7 @@ const ActivityScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const [refresh, setRefresh] = useState(false)
   const profile = useSelector(state => state.profileReducer.profile)
+  const orderReducer = useSelector(state => state.orderReducer.order)
 
   useEffect(() => {
     _isMounted = true
@@ -49,6 +50,7 @@ const ActivityScreen = ({navigation}) => {
     }
   }, [])
 
+
   const getOrder = async() => {
     dispatch({type: 'SET_LOADING', value: true});
     try {
@@ -62,8 +64,12 @@ const ActivityScreen = ({navigation}) => {
       
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
+        dispatch({type: 'ADD_ORDER', value: response.data.data.order});
+        checkReminder()
         // console.log(response.data.data.order.length)
+        // console.log(orderReducer[0])
         setData(response.data.data);
+
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         showError('Failed Get Data')
@@ -78,8 +84,25 @@ const ActivityScreen = ({navigation}) => {
     }
   }
 
+  const checkReminder = () => {
+    let count = 0;
+    let now = new Date()
+    let dd = String(now.getDate()).padStart(2, '0');
+    let mm = String(now.getMonth() + 1).padStart(2, '0'); 
+    let yyyy = now.getFullYear();
+    let today = yyyy + '-' + mm + '-' + dd;
+    orderReducer[0].map((cur, i) => {
+      const split = cur.service_time.split(' ');
+      const date = split[0];
+      if(date === today) {
+        count++
+      }
+    })
+    console.log(count)
+  }
+
   const SetFlat = ({datas, idx}) => {
-    console.log(datas)
+    // console.log(datas)
       const item = [];
       const payWith = {
         status: datas.status,

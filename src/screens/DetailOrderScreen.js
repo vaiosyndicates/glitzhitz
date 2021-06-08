@@ -81,6 +81,7 @@ const DetailOrderScreen = ({navigation}) => {
           break;
       
         default:
+          setLoad(false);
           showError('Search Mitra Failed')
           break;
       }

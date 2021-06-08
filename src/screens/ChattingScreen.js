@@ -38,7 +38,7 @@ const ChattingScreen = ({navigation}) => {
   const today = new Date();
 
   useEffect(() => {
-    // console.log(navigation.state.params)
+    console.log(navigation.state.params)
     _isMounted = true;
     setMounted(true);
     if( _isMounted === true && mounted === true ) {

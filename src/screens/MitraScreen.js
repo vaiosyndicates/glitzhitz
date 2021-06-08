@@ -44,7 +44,7 @@ const MitraScreen = ({navigation}) => {
       nama_mitra: navigation.state.params.namaMitra,
       trx_id: navigation.state.params.trxID,
       id_order: navigation.state.params.id_order,
-      flag: 2,
+      flag: 5,
       token: navigation.state.params.token,
     }
     // console.log(data);
