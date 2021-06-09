@@ -5,7 +5,13 @@ import { List } from 'react-native-paper';
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styles/variables';
 
 const HowToScreen = ({navigation}) => {
-  const channel_name = navigation.state.params.nama_channel === '402' ? 'Permata Bank' : 'Lain - lain'
+  const channel_name =  navigation.state.params.nama_channel === '402' ? 'Permata Bank' :
+                        navigation.state.params.nama_channel === '801' ? 'BNI' :
+                        navigation.state.params.nama_channel === '800' ? 'BRI' :
+                        navigation.state.params.nama_channel === '802' ? 'Mandiri' :
+                        navigation.state.params.nama_channel === '825' ? 'CIMB' :
+                        navigation.state.params.nama_channel === '812' ? 'OVO' :
+                        navigation.state.params.nama_channel === '302' ? 'Link Aja': 'Shopee Pay'
   return (
     <View style={styles.page}>
       <HeaderGradient title="How To Do Payment" onPress={()=> navigation.goBack(null)} dMarginLeft={0.13} />
