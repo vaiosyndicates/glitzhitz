@@ -50,7 +50,6 @@ const ActivityScreen = ({navigation}) => {
     }
   }, [])
 
-
   const getOrder = async() => {
     dispatch({type: 'SET_LOADING', value: true});
     try {
@@ -104,6 +103,9 @@ const ActivityScreen = ({navigation}) => {
   const SetFlat = ({datas, idx}) => {
     // console.log(datas)
       const item = [];
+      let visible = false
+      const status = datas.status
+      const availbility = datas.id_mitra
       const payWith = {
         status: datas.status,
         payment_icon: datas.payment_icon,
@@ -117,6 +119,14 @@ const ActivityScreen = ({navigation}) => {
       );
     });
     // console.log(paySections);
+    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility == null) ) {
+      visible = false
+
+    }  else {
+      visible = true
+    }
+
+    console.log(visible)
 
     return (
       <View style={styles.listData}>
@@ -138,10 +148,10 @@ const ActivityScreen = ({navigation}) => {
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
           <View style={styles.buttonsGroup}>
-            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections})} style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections, id_mitra: datas.id_mitra})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
-            {datas.status !== 'Completed' && datas.status !== 'Canceled' &&
+            {visible &&
               <Button icon={require('../../img/glitz/chats.png')} mode="outlined" style={styles.buttonsChat} onPress={() => handleChat({token: datas.android_device_id_mitra, nama_mitra: datas.nama_mitra, trx_id: datas.trx_id, id_order: datas.id_order, nama_user: datas.customer_name}) } />
             }
           </View>
