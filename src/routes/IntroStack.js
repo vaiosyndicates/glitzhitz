@@ -70,6 +70,7 @@ import DetailActivity from '../screens/DetailActivity';
 import DetailOrderScreen from '../screens/DetailOrderScreen';
 import RatingScreen from '../screens/RatingScreen';
 import MitraScreen from '../screens/MitraScreen';
+import HowToScreen from '../screens/HowToScreen';
 
 const AppRouter = StackRouter(
   {
@@ -308,6 +309,9 @@ const AppRouter = StackRouter(
     MitraScreen: {
       screen: MitraScreen
     },
+    HowToScreen: {
+      screen: HowToScreen
+    },    
   },
   {
     initialRouteName: 'StartUpScreen',
