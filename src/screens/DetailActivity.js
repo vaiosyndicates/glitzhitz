@@ -19,6 +19,7 @@ const DetailActivity = ({navigation}) => {
   const [visibleHowto, setVisibleHowto] = useState(false)
   const [visibleSearch, setVisibleSearch] = useState(false)
   const [visibleVA, setVisibleVA] = useState(false)
+  const [visibleMitra, setVisibleMitra] = useState(false)
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
@@ -92,6 +93,7 @@ const DetailActivity = ({navigation}) => {
       }
 
     } catch (error) {
+      setLoad(false);
       showError('Network Error')
       console.log(error)
     }
@@ -103,19 +105,22 @@ const DetailActivity = ({navigation}) => {
     const status = navigation.state.params.status
     const availbility = navigation.state.params.id_mitra
     const channel = navigation.state.params.payment[0].payment_code
-    // console.log(navigation.state.params.payment[0].payment_code)
+    // console.log(availbility)
+    console.log(navigation.state.params)
     if(status == 'Completed') {
       setDisabled(false);
       setVisibleDone(false);
       setVisibleCancel(false)
       setVisibleHowto(false)
       setVisibleSearch(false)
+      setVisibleMitra(true)
     } else if(status == 'Canceled') {
       setDisabled(true);
       setVisibleDone(false);
       setVisibleCancel(false)
       setVisibleHowto(false)
       setVisibleSearch(false)
+      setVisibleMitra(true)
     
     } else if(status == 'Waiting for payment') {
       setDisabled(true);
@@ -123,18 +128,21 @@ const DetailActivity = ({navigation}) => {
       setVisibleCancel(true)
       setVisibleHowto(true)
       setVisibleSearch(false)
+      setVisibleMitra(false)
     } else if(status == 'Payment Success' && availbility == null) {
       setDisabled(true);
       setVisibleDone(false);
       setVisibleCancel(true)
       setVisibleHowto(false)
       setVisibleSearch(true)
+      setVisibleMitra(false)
     } else {
       setDisabled(true);
       setVisibleDone(true);
       setVisibleCancel(true)
       setVisibleHowto(false)
       setVisibleSearch(false)
+      setVisibleMitra(true)
     }
 
     switch (channel) {
@@ -238,11 +246,12 @@ const DetailActivity = ({navigation}) => {
                 <Text style={styles.boxDateTitle}>Date</Text>
                 <Text style={styles.boxDateDate}>{navigation.state.params.date_order}</Text>
               </View>
-              <View style={styles.mitraSection}>
-                <MitraInfo onPress={()=> handleReorder()} disabled={disabled}/>
-                {/* <MitraInfo onPress={()=> handleReorder()}/> */}
-
-              </View>
+              {visibleMitra &&
+                <View style={styles.mitraSection}>
+                  <MitraInfo onPress={()=> handleReorder()} disabled={disabled} name={navigation.state.params.namaMitra} speciality={navigation.state.params.speciality} />
+                  {/* <MitraInfo onPress={()=> handleReorder()}/> */}
+                </View>
+              }
               <View style={styles.mapSection}>
                 <AddressList title='ADDRESS' data={navigation.state.params.address}/>
               </View>
@@ -272,6 +281,15 @@ const DetailActivity = ({navigation}) => {
                   </View>
                 </View>
               }
+              <View style={styles.dateOrderSection}>
+                <View>
+                  <Text style={styles.dateOrderTitle}>DATE AND ORDER TIME</Text>
+                </View>
+                <View></View>
+                <View>
+                  <Text style={styles.dateOrderValue}>{navigation.state.params.date_service}</Text>
+                </View>
+              </View>              
 
             </View>
           </View>
@@ -536,5 +554,20 @@ const styles = StyleSheet.create({
     fontSize: fontSize.small,
     color: colors.grey,
     fontFamily: fontFamily.light,
-  }
+  },
+  dateOrderSection: {
+    flexDirection: 'row',
+    marginTop: deviceHeight * 0.04,
+    justifyContent: 'space-between',
+  },
+  dateOrderTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
+  },
+  dateOrderValue: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
+  },
 })

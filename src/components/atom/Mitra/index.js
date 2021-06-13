@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
 import Buttons from '../Buttons'
 
-const MitraInfo = ({onPress, disabled}) => {
+const MitraInfo = ({onPress, disabled, name, speciality}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -14,8 +14,8 @@ const MitraInfo = ({onPress, disabled}) => {
               style={styles.avatar} />
           </View>
           <View style={styles.mitraDetail}>
-            <Text Text style={styles.mitraName}>Hala Madrid</Text>
-            <Text style={styles.mitraSpeciality}>Spesialis Indomie</Text>
+            <Text Text style={styles.mitraName}>{name}</Text>
+            <Text style={styles.mitraSpeciality}>{speciality}</Text>
           </View>
         </View>
         <View></View>
