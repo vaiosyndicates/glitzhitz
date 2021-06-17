@@ -16,6 +16,7 @@ import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
 import {apiUrl} from '../util/API'
+import {TimeOut} from '../components/molekul'
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false
@@ -26,6 +27,7 @@ const ActivityScreen = ({navigation}) => {
   const [refresh, setRefresh] = useState(false)
   const profile = useSelector(state => state.profileReducer.profile)
   const orderReducer = useSelector(state => state.orderReducer.order)
+  const timeout = useSelector(state => state.timeoutReducer.timeout)
 
   useEffect(() => {
     _isMounted = true
@@ -77,8 +79,7 @@ const ActivityScreen = ({navigation}) => {
       if (axios.isCancel(error)) {
         dispatch({type: 'SET_LOADING', value: false});
         console.log('Error: ', error.message);
-        dispatch({type: 'SET_LOADING', value: false});
-        console.log(error);
+        dispatch({type: 'SET_TIMEOUT', value: true});
       }
     }
   }
@@ -128,6 +129,7 @@ const ActivityScreen = ({navigation}) => {
 
 
     return (
+
       <View style={styles.listData}>
         <View style={styles.headers}>
           <View style={styles.mitraSection}>
@@ -156,6 +158,7 @@ const ActivityScreen = ({navigation}) => {
           </View>
         </View>
       </View>
+  
     )
   }
 
@@ -198,47 +201,55 @@ const ActivityScreen = ({navigation}) => {
     navigation.navigate('ChattingScreen', data);
   }
 
+  const handleRefresh = () => {
+    dispatch({type: 'SET_TIMEOUT', value: false});
+    getOrder()
+  }
+
 
   return (
-    <View style={styles.container}>
-      <HeaderGradient title="Activity" dMarginLeft={0.28} onPress={() => navigation.goBack(null)} />
-      <View style={styles.page}>
-        <View style={styles.box}>
-          <View style={styles.headerSection}>
-            <View>
-              <Text style={styles.textStyleImage}>
-                  Mitra
-              </Text>
+    <>
+      <View style={styles.container}>
+        <HeaderGradient title="Activity" dMarginLeft={0.28} onPress={() => navigation.goBack(null)} />
+        <View style={styles.page}>
+          <View style={styles.box}>
+            <View style={styles.headerSection}>
+              <View>
+                <Text style={styles.textStyleImage}>
+                    Mitra
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.textStyleDesc}>
+                    Description
+                </Text>
+              </View>
+              <View></View>
             </View>
-            <View>
-              <Text style={styles.textStyleDesc}>
-                  Description
-              </Text>
-            </View>
-            <View></View>
+            {data.hasOwnProperty('order') && 
+              
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                data={data.order}
+                initialNumToRender={data.order.length}
+                keyExtractor={item => item.trx_id.toString()}
+                ItemSeparatorComponent={renderSeparator}
+                ListEmptyComponent={EmptyOrder()}
+                style={styles.flatList}
+                renderItem={({item, index}) => {
+                  return <SetFlat datas={item} idx={index} />
+                }}
+              />
+            }
           </View>
-          {data.hasOwnProperty('order') && 
-            
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={data.order}
-              initialNumToRender={data.order.length}
-              keyExtractor={item => item.trx_id.toString()}
-              ItemSeparatorComponent={renderSeparator}
-              ListEmptyComponent={EmptyOrder()}
-              style={styles.flatList}
-              renderItem={({item, index}) => {
-                return <SetFlat datas={item} idx={index} />
-              }}
-            />
-          }
         </View>
+        <CustomTabBar
+            navigation={navigation}
+            isActive='tabTwo'
+          />
       </View>
-      <CustomTabBar
-          navigation={navigation}
-          isActive='tabTwo'
-        />
-    </View>
+      {timeout && <TimeOut name='NETWORK ERROR'  onPress={() => handleRefresh()} />}
+    </>
   )
 }
 

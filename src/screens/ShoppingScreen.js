@@ -11,6 +11,7 @@ import { colors, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 import { showError } from '../util/ShowMessage';
 import { List } from 'react-native-paper';
 import {apiUrl} from '../util/API';
+import { TimeOut } from '../components/molekul'
 
 let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
@@ -22,52 +23,14 @@ const ShoppingScreen = ({navigation}) => {
 
   const [detailServices, setDetailServices] = useState([]);
   const count = useSelector(state => state.cartReducer.count);
+  const timeout = useSelector(state => state.timeoutReducer.timeout);
   const image = {uri : navigation.state.params.image};
 
   useEffect(() => {
     _isMounted = true;
 
-    const fetchService = async() => {
-      dispatch({type: 'SET_LOADING', value: true});
-      try {
-        const data = {
-          id_category: navigation.state.params.ids
-        };
-
-        const tokenizer = await AsyncStorage.getItem('token');
-        const response = await axios.get(`${apiUrl}/Service`,{
-          params: {
-            id_category: navigation.state.params.ids
-          },
-          headers: {
-              'Authorization': tokenizer
-            },
-          cancelToken: signal.token,
-        });
-
-        if(response.status === 200){
-          dispatch({type: 'SET_LOADING', value: false});
-          setDetailServices(response.data.data)
-          
-        } else {
-          dispatch({type: 'SET_LOADING', value: false});
-          setDt([])
-          showError('Failed');
-        }
-        
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          dispatch({type: 'SET_LOADING', value: false});
-          console.log('Error: ', error.message);
-        } else {
-          dispatch({type: 'SET_LOADING', value: false});
-          showError('Failed');
-        }
-      }
-    }
-
     if(_isMounted == true){
-      fetchService();
+      fetchingService();
 
     }
 
@@ -77,6 +40,45 @@ const ShoppingScreen = ({navigation}) => {
 
   }, [])
 
+  const fetchingService = async() => {
+    try {
+      const data = {
+        id_category: navigation.state.params.ids
+      };
+
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.get(`${apiUrl}/Service`,{
+        params: {
+          id_category: navigation.state.params.ids
+        },
+        headers: {
+            'Authorization': tokenizer
+          },
+        cancelToken: signal.token,
+      });
+
+      if(response.status === 200){
+        dispatch({type: 'SET_LOADING', value: false});
+        setDetailServices(response.data.data)
+        
+      } else {
+        dispatch({type: 'SET_LOADING', value: false});
+        setDt([])
+        showError('Failed');
+      }
+      
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        dispatch({type: 'SET_LOADING', value: false});
+        console.log('Error: ', error.message);
+      } else {
+        dispatch({type: 'SET_LOADING', value: false});
+        dispatch({type: 'SET_TIMEOUT', value: true});
+        console.log(error.message)
+      }
+    }    
+  }
+
   const toLocation = () => {
     const data = {
       flag: 'normal'
@@ -84,27 +86,35 @@ const ShoppingScreen = ({navigation}) => {
     navigation.navigate('CartScreen', data);
   };
 
+  const handleRefresh = () => {
+    dispatch({type: 'SET_TIMEOUT', value: false});
+    fetchingService()
+  }
+
   return (
-    <View style={styles.page}>
-      <ImageBackground source={image} style={styles.background}>
-        <View style={styles.blurry}>
-          <Text style={styles.pageTitle}>{navigation.state.params.name}</Text>
+    <>
+      <View style={styles.page}>
+        <ImageBackground source={image} style={styles.background}>
+          <View style={styles.blurry}>
+            <Text style={styles.pageTitle}>{navigation.state.params.name}</Text>
+          </View>
+        </ImageBackground>
+        <View style={styles.content}>
+          {detailServices.services && <Accordions datas={detailServices} parents={navigation.state.params.name} />}
         </View>
-      </ImageBackground>
-      <View style={styles.content}>
-        {detailServices.services && <Accordions datas={detailServices} parents={navigation.state.params.name} />}
+        <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+        {detailServices.services && 
+          <GradientButton
+            onPressButton={()=> toLocation()}
+            setting={shadowOpt}
+            btnText="Go To Cart"
+            disabled={count < 1 || count === undefined}
+          />
+        }
+        </View>
       </View>
-      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
-      {detailServices.services && 
-        <GradientButton
-          onPressButton={()=> toLocation()}
-          setting={shadowOpt}
-          btnText="Go To Cart"
-          disabled={count < 1 || count === undefined}
-        />
-      }
-      </View>
-    </View>
+      {timeout && <TimeOut name='NETWORK ERROR' onPress={() => handleRefresh()} />}
+    </>
   )
 }
 
