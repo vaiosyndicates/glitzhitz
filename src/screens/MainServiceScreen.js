@@ -88,14 +88,29 @@ class MainServiceScreen extends Component {
         console.log('Error: ', error.message);
       } else {
         showError(error.message);
-        this.props.timeout(true);
+        switch (error.response.status) {
+          case 404:
+            this.props.timeout({code: 404, status: true});
+            break;
+
+          case 405:
+            this.props.timeout({code: 405, status: true});
+            break;
+
+          case 505:
+            this.props.timeout({code: 505, status: true});
+            break;
+
+          default:
+            break;
+        }
 
       }
     }
   }
 
   async getCategory() {
-    console.log(apiUrl)
+    // console.log(apiUrl)
     try {
       const tokenizer = await AsyncStorage.getItem('token')
       const response = await axios.get(`${apiUrl}/Service/category`, {
@@ -115,11 +130,23 @@ class MainServiceScreen extends Component {
       }
 
     } catch (error) {
+      // console.log(this.props.getTimeout)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
+        showError(error.message)
       } else {
-        console.log(error.message)
-        this.props.timeout(true);
+        switch (error.response.status) {
+          case 404:
+            this.props.timeout({code: 404, status: true});
+            break;
+
+          case 505:
+            this.props.timeout({code: 505, status: true});
+            break;
+
+          default:
+            break;
+        }
       }
     }
   }
@@ -257,7 +284,7 @@ class MainServiceScreen extends Component {
             isActive='tabOne'
           />
         </View>
-        {this.props.getTimeout && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' />}
+        {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' errorCode={this.props.getTimeout.code} />}
       </>
     )
   }

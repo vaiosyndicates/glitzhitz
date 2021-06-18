@@ -41,6 +41,7 @@ const ShoppingScreen = ({navigation}) => {
   }, [])
 
   const fetchingService = async() => {
+    console.log(timeout)
     try {
       const data = {
         id_category: navigation.state.params.ids
@@ -75,6 +76,22 @@ const ShoppingScreen = ({navigation}) => {
         dispatch({type: 'SET_LOADING', value: false});
         dispatch({type: 'SET_TIMEOUT', value: true});
         console.log(error.message)
+        switch (error.response.status) {
+          case 404:
+            dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
+            break;
+
+          case 405:
+            dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
+            break;
+
+          case 505:
+            dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+            break;
+          
+            default:
+              break;
+        }
       }
     }    
   }
@@ -87,7 +104,7 @@ const ShoppingScreen = ({navigation}) => {
   };
 
   const handleRefresh = () => {
-    dispatch({type: 'SET_TIMEOUT', value: false});
+    dispatch({type: 'SET_TIMEOUT', value: {code: '00', status: false}});
     fetchingService()
   }
 
@@ -113,7 +130,7 @@ const ShoppingScreen = ({navigation}) => {
         }
         </View>
       </View>
-      {timeout && <TimeOut name='NETWORK ERROR' onPress={() => handleRefresh()} />}
+      {timeout.status && <TimeOut name='NETWORK ERROR' onPress={() => handleRefresh()} errorCode={timeout.code} />}
     </>
   )
 }

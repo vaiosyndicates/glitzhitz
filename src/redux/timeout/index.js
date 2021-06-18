@@ -1,5 +1,8 @@
 const initialState = {
-  timeout: false,
+  timeout: {
+    status: false,
+    code: '00',
+  },
 };
 
 const timeoutReducer = (state = initialState, action) => {
@@ -7,7 +10,11 @@ const timeoutReducer = (state = initialState, action) => {
     case 'SET_TIMEOUT':
       return {
         ...state,
-        timeout: action.value,
+        timeout: {
+          ...state.timeout,
+          status: action.value.status,
+          code: action.value.code,
+        },
       };
 
     default:

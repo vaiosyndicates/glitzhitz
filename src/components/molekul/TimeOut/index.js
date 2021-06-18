@@ -3,19 +3,19 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../../../styles/variables'
 import AnimatedLoader from 'react-native-animated-loader'
 
-const TimeOut = ({name, onPress}) => {
+const TimeOut = ({name, onPress, errorCode}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
         <View>
           <AnimatedLoader
             visible={true}
-            source={require('../../../../assets/json/network_error.json')}
+            source={require('../../../../assets/json/505.json')}
             overlayColor="rgba(255,255,255,0.15)"
             animationStyle={styles.lottie}
             speed={3}>
             <View style={styles.textSection}>
-              <Text style={styles.title}>{name}</Text>
+              <Text style={styles.title}>{name} {errorCode}</Text>
             </View>
             <View style={styles.buttonSection}>
               <TouchableOpacity onPress={onPress} style={styles.button}>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   lottie: {
     width: 150,
-    height: 150,
+    height: 250,
     justifyContent: 'center',
     alignItems: 'center',
   },   
