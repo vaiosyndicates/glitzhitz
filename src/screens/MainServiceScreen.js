@@ -133,7 +133,6 @@ class MainServiceScreen extends Component {
       // console.log(this.props.getTimeout)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
-        showError(error.message)
       } else {
         switch (error.response.status) {
           case 404:

@@ -41,7 +41,6 @@ const ShoppingScreen = ({navigation}) => {
   }, [])
 
   const fetchingService = async() => {
-    console.log(timeout)
     try {
       const data = {
         id_category: navigation.state.params.ids
@@ -75,7 +74,8 @@ const ShoppingScreen = ({navigation}) => {
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         dispatch({type: 'SET_TIMEOUT', value: true});
-        console.log(error.message)
+        showError(error.message)
+        console.log(error.data)
         switch (error.response.status) {
           case 404:
             dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
