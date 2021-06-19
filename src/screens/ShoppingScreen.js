@@ -74,23 +74,26 @@ const ShoppingScreen = ({navigation}) => {
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         dispatch({type: 'SET_TIMEOUT', value: true});
-        showError(error.message)
         console.log(error.data)
-        switch (error.response.status) {
-          case 404:
-            dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
-            break;
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
+              break;
+  
+            case 405:
+              dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
+              break;
+  
+            case 505:
+              dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+              break;
 
-          case 405:
-            dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
-            break;
-
-          case 505:
-            dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
-            break;
-          
             default:
               break;
+          }
+        } else {
+          showError(error.message)
         }
       }
     }    

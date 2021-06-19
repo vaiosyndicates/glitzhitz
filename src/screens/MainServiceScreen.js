@@ -87,22 +87,22 @@ class MainServiceScreen extends Component {
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
-        showError(error.message);
-        switch (error.response.status) {
-          case 404:
-            this.props.timeout({code: 404, status: true});
-            break;
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              this.props.timeout({code: 404, status: true});
+              break;
 
-          case 405:
-            this.props.timeout({code: 405, status: true});
-            break;
+            case 405:
+              this.props.timeout({code: 405, status: true});
+              break;
 
-          case 505:
-            this.props.timeout({code: 505, status: true});
-            break;
-
-          default:
-            break;
+            case 505:
+              this.props.timeout({code: 505, status: true});
+              break;
+          }
+        } else {
+          console.log('Error: ', error.message);
         }
 
       }
@@ -134,18 +134,27 @@ class MainServiceScreen extends Component {
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
-        switch (error.response.status) {
-          case 404:
-            this.props.timeout({code: 404, status: true});
-            break;
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              this.props.timeout({code: 404, status: true});
+              break;
 
-          case 505:
-            this.props.timeout({code: 505, status: true});
-            break;
+            case 405:
+              this.props.timeout({code: 405, status: true});
+              break;
 
-          default:
-            break;
+            case 505:
+              this.props.timeout({code: 505, status: true});
+              break;
+  
+            default:
+              break;
+          }
+        } else {
+          console.log('Error: ', error.message);
         }
+
       }
     }
   }

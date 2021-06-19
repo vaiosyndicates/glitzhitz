@@ -17,6 +17,7 @@ import { resetLogout } from '../util/ResetRouting';
 import HeaderGradient from '../components/Header';
 import { colors, fontFamily, fontSize } from '../styles/variables';
 import {apiUrl} from '../util/API'
+import { TimeOut } from '../components/molekul'
 class UserProfileScreen extends Component {
   _isMounted = false;
   signal = axios.CancelToken.source();
@@ -34,8 +35,9 @@ class UserProfileScreen extends Component {
 
   render() {
     return (
+      <>
       <View style={styles.page}>
-       <HeaderGradient title="User Profile" onPress={()=> this.props.navigation.goBack(null)} dMarginLeft={0.20} />
+       <HeaderGradient title="User Profile" onPress={()=> this.props.navigation.goBack(null)} dMarginLeft={0.25} />
         <ScrollView style={CommonStyles.scrollView}>
           <View style={CommonStyles.itemWhiteBox}>
             <View style={styles.rowTop}>
@@ -89,6 +91,8 @@ class UserProfileScreen extends Component {
           isActive='tabFour'
         />
       </View>
+      {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' errorCode={this.props.getTimeout.code} />}      
+      </>
     );
   }
 
@@ -100,6 +104,12 @@ class UserProfileScreen extends Component {
       phone: this.state.phone,
     }
     this.props.navigation.navigate("EditProfileScreen", data);
+  }
+
+  _handleRefresh() {
+    console.log('refresh')
+    this.props.timeout(false);
+    this.getProfiles()
   }
 
   async _handleClickLogOut() {
@@ -143,48 +153,65 @@ class UserProfileScreen extends Component {
     }
   }
 
+  async getProfiles() {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.get(`${apiUrl}/User/profile`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: this.signal.token,
+      });
+      if(response.status === 200){
+        this.props.loading(false);
+        this.setState({name: response.data.data.user[0].name});
+        this.setState({address: response.data.data.user[0].address});
+        this.setState({email: response.data.data.user[0].email});
+        this.setState({phone: response.data.data.user[0].phone});
+        this.setState({gender: response.data.data.user[0].gender});
+
+      } else{
+        this.props.loading(false);
+        showError('Fetching Data Failed');
+      }
+
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        this.props.loading(false);
+        console.log('Error: ', error.message);
+      } else {
+        this.props.loading(false);
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              this.props.timeout({code: 404, status: true});
+              break;
+
+            case 405:
+              this.props.timeout({code: 405, status: true});
+              break;
+
+            case 505:
+              this.props.timeout({code: 505, status: true});
+              break;
+  
+            default:
+              break;
+          }
+        } else {
+          console.log('Error: ', error.message);
+        }
+      }
+    }
+  }
+
   async componentDidMount(){
     this._isMounted = true;
     this.props.loading(true);
 
     if(this._isMounted === true) {
-      try {
-
-        const tokenizer = await AsyncStorage.getItem('token');
-        const response = await axios.get(`${apiUrl}/User/profile`, {
-          headers: {
-            Authorization: tokenizer,
-          },
-          cancelToken: this.signal.token,
-        });
-
-        if(response.status === 200){
-          this.props.loading(false);
-          this.setState({name: response.data.data.user[0].name});
-          this.setState({address: response.data.data.user[0].address});
-          this.setState({email: response.data.data.user[0].email});
-          this.setState({phone: response.data.data.user[0].phone});
-          this.setState({gender: response.data.data.user[0].gender});
-
-        } else{
-          this.props.loading(false);
-          showError('Fetching Data Failed');
-        }
-
-      } catch (error) {
-
-        if (axios.isCancel(error)) {
-          this.props.loading(false);
-          console.log('Error: ', error.message);
-        } else {
-          this.props.loading(false);
-          console.log(error);
-          showError('Failed');
-        }
-        
-      }
+      this.getProfiles()
     }
-
   }
 
   componentWillUnmount() {
@@ -194,7 +221,8 @@ class UserProfileScreen extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  authToken: state.tokenReducer.authToken
+  authToken: state.tokenReducer.authToken,
+  getTimeout: state.timeoutReducer.timeout,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -204,6 +232,7 @@ const mapDispatchToProps = dispatch => {
     clearToken: value => dispatch({ type: 'CLEAR_TOKEN'}),
     clearMaps: value => dispatch({ type: 'CLEAR_MAPS'}),
     clearCart: value => dispatch({ type: 'CLEAR_CART'}),
+    timeout: value => dispatch({ type: 'SET_TIMEOUT', value: value }),
   }
 }
 
