@@ -156,7 +156,7 @@ const ActivityScreen = ({navigation}) => {
           <View style={styles.mitraSection}>
             <View>
               <Image 
-                source={{uri: 'https://reactjs.org/logo-og.png'}}
+                source={require('../../img/glitz/icon-user-mitra.png')}
                 style={styles.avatar} />
             </View>
             <View style={styles.mitraInfo}>
