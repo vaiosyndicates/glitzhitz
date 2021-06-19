@@ -10,7 +10,7 @@ const MitraInfo = ({onPress, disabled, name, speciality}) => {
         <View style={styles.mitraInfo}>
           <View>
             <Image
-              source={require('../../img/glitz/icon-user-mitra.png')}
+              source={require('../../../../img/glitz/icon-user-mitra.png')}
               style={styles.avatar} />
           </View>
           <View style={styles.mitraDetail}>
