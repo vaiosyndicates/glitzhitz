@@ -148,14 +148,17 @@ const DetailActivity = ({navigation}) => {
     switch (channel) {
       case '812':
         setVisibleVA(false)
+        setVisibleHowto(false)
         break;
 
       case '302':
         setVisibleVA(false)
+        setVisibleHowto(false)
         break;
 
       case '713':
         setVisibleVA(false)
+        setVisibleHowto(false)
         break;
     
       default:

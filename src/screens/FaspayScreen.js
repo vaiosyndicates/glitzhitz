@@ -95,7 +95,7 @@ const FaspayScreen = ({navigation}) => {
       <WebView source={{ uri: `${navigation.state.params.url}`}} />
       }
 
-
+{/* 
       <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
       <GradientButton
         onPressButton={() => handleBack()}
@@ -103,7 +103,7 @@ const FaspayScreen = ({navigation}) => {
         btnText="Confirmation Booking"
       />
 
-      </View>
+      </View> */}
 
     </View>
   );
