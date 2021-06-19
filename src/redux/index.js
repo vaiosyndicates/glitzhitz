@@ -8,6 +8,7 @@ import cartReducer from './cart'
 import mapsReducer from './maps'
 import serviceReducer from './service'
 import orderReducer from './order'
+import timeoutReducer from './timeout'
 
 const reducer =  combineReducers({
   profileReducer,
@@ -17,6 +18,7 @@ const reducer =  combineReducers({
   mapsReducer,
   serviceReducer,
   orderReducer,
+  timeoutReducer,
 })
 const store = createStore(reducer)
 export default store

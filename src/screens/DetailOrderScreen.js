@@ -21,12 +21,13 @@ import {apiUrl} from '../util/API';
 import { resetLogin } from '../util/ResetRouting';
 import {Picker} from '@react-native-picker/picker';
 import { showError } from '../util/ShowMessage';
-
+import {TimeOut} from '../components/molekul'
 
 const DetailOrderScreen = ({navigation}) => {
   let mounted = false;
   const stateMaps = useSelector(state => state.mapsReducer.maps);
   const stateCarts = useSelector(state => state.cartReducer.cart);
+  const timeout = useSelector(state => state.timeoutReducer.timeout);
   const totalPrice = stateCarts.reduce((accum,item) => accum + parseFloat(item.price), 0)
   const flag = navigation.state.params.flag;
   const paramsnav = navigation.state.params;
@@ -212,8 +213,23 @@ const DetailOrderScreen = ({navigation}) => {
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      showError('Network Error')
-      console.log(error)
+      showError(error.message)
+      switch (error.response.status) {
+        case 404:
+          dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
+          break;
+
+        case 405:
+          dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
+          break;
+
+        case 505:
+          dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+          break;
+        
+          default:
+            break;
+      }
     }
   }
 
@@ -240,7 +256,7 @@ const DetailOrderScreen = ({navigation}) => {
         showError('Failed')
       }
     } catch (error) {
-      showError('Network Error')
+      showError(error.message)
       console.log('error')
     }
   }
@@ -265,7 +281,7 @@ const DetailOrderScreen = ({navigation}) => {
           break;
       }
     } catch (error) {
-      showError('Network Error')
+      showError(error.message)
       console.log(error.response)
     }
   }
@@ -293,7 +309,7 @@ const DetailOrderScreen = ({navigation}) => {
         
       } catch (error) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(error.response)
+        showError(error.message)
       }
      
     } else {
@@ -328,12 +344,32 @@ const DetailOrderScreen = ({navigation}) => {
   
       } catch (error) {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log(error.response)
-      }
-    }
+        console.log(error.message)
+        showError(error.message)
+        switch (error.response.status) {
+          case 404:
+            showError(`Page Not Found 404`)
+            break;
 
-  
+          case 500:
+            showError(`Internal Server Error 500`)
+            break;
+            
+          default:
+            break;
+        }
+      }
+    }  
   };
+
+  const handleRefresh = () => {
+    const flag = navigation.state.params.flag;
+    if(flag === 2) {
+      dispatch({type: 'SET_TIMEOUT', value: {code: '00', status: false}});
+      getOrderActive();
+      getOrderActiveBackground();
+    }
+  }
 
   return (
     <>
@@ -450,6 +486,7 @@ const DetailOrderScreen = ({navigation}) => {
       </View>
     </View>
     {load && <SplashMap />}
+    {timeout.status && flag === 2 && <TimeOut name='NETWORK ERROR'  onPress={() => handleRefresh()} errorCode={timeout.code} />}
     </>
   )
 }

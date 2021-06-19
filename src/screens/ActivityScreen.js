@@ -16,6 +16,7 @@ import { showError } from '../util/ShowMessage'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
 import {apiUrl} from '../util/API'
+import {TimeOut} from '../components/molekul'
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false
@@ -26,6 +27,7 @@ const ActivityScreen = ({navigation}) => {
   const [refresh, setRefresh] = useState(false)
   const profile = useSelector(state => state.profileReducer.profile)
   const orderReducer = useSelector(state => state.orderReducer.order)
+  const timeout = useSelector(state => state.timeoutReducer.timeout)
 
   useEffect(() => {
     _isMounted = true
@@ -74,11 +76,31 @@ const ActivityScreen = ({navigation}) => {
         showError('Failed Get Data')
       }
     } catch (error) {
-      if (axios.isCancel(error)) {
-        dispatch({type: 'SET_LOADING', value: false});
-        console.log('Error: ', error.message);
-        dispatch({type: 'SET_LOADING', value: false});
-        console.log(error);
+        if (axios.isCancel(error)) {
+          dispatch({type: 'SET_LOADING', value: false});
+          console.log('Error: ', error.message);
+        } else {
+          dispatch({type: 'SET_LOADING', value: false});
+          if(error.hasOwnProperty('response')) {
+            switch (error.response.status) {
+              case 404:
+                dispatch({type: 'SET_TIMEOUT', value: {code: 404, status: true}});
+                break;
+    
+              case 405:
+                dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
+                break;
+    
+              case 505:
+                dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+                break;
+  
+              default:
+                break;
+            }
+          } else {
+            showError(error.message)
+          }
       }
     }
   }
@@ -101,7 +123,7 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
-    // console.log(datas)
+    console.log(datas)
       const item = [];
       let visible = false
       const status = datas.status
@@ -126,9 +148,9 @@ const ActivityScreen = ({navigation}) => {
       visible = true
     }
 
-    console.log(visible)
 
     return (
+
       <View style={styles.listData}>
         <View style={styles.headers}>
           <View style={styles.mitraSection}>
@@ -148,7 +170,7 @@ const ActivityScreen = ({navigation}) => {
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
           <View style={styles.buttonsGroup}>
-            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections, id_mitra: datas.id_mitra})} style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, date_service: datas.service_time,  status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections, id_mitra: datas.id_mitra, namaMitra: datas.nama_mitra, speciality: datas.speciality})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
             {visible &&
@@ -157,6 +179,7 @@ const ActivityScreen = ({navigation}) => {
           </View>
         </View>
       </View>
+  
     )
   }
 
@@ -199,47 +222,55 @@ const ActivityScreen = ({navigation}) => {
     navigation.navigate('ChattingScreen', data);
   }
 
+  const handleRefresh = () => {
+    dispatch({type: 'SET_TIMEOUT', value: {code: '00', status: false}});
+    getOrder()
+  }
+
 
   return (
-    <View style={styles.container}>
-      <HeaderGradient title="Activity" dMarginLeft={0.28} onPress={() => navigation.goBack(null)} />
-      <View style={styles.page}>
-        <View style={styles.box}>
-          <View style={styles.headerSection}>
-            <View>
-              <Text style={styles.textStyleImage}>
-                  Mitra
-              </Text>
+    <>
+      <View style={styles.container}>
+        <HeaderGradient title="Activity" dMarginLeft={0.28} onPress={() => navigation.goBack(null)} />
+        <View style={styles.page}>
+          <View style={styles.box}>
+            <View style={styles.headerSection}>
+              <View>
+                <Text style={styles.textStyleImage}>
+                    Mitra
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.textStyleDesc}>
+                    Description
+                </Text>
+              </View>
+              <View></View>
             </View>
-            <View>
-              <Text style={styles.textStyleDesc}>
-                  Description
-              </Text>
-            </View>
-            <View></View>
+            {data.hasOwnProperty('order') && 
+              
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                data={data.order}
+                initialNumToRender={data.order.length}
+                keyExtractor={item => item.trx_id.toString()}
+                ItemSeparatorComponent={renderSeparator}
+                ListEmptyComponent={EmptyOrder()}
+                style={styles.flatList}
+                renderItem={({item, index}) => {
+                  return <SetFlat datas={item} idx={index} />
+                }}
+              />
+            }
           </View>
-          {data.hasOwnProperty('order') && 
-            
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              data={data.order}
-              initialNumToRender={data.order.length}
-              keyExtractor={item => item.trx_id.toString()}
-              ItemSeparatorComponent={renderSeparator}
-              ListEmptyComponent={EmptyOrder()}
-              style={styles.flatList}
-              renderItem={({item, index}) => {
-                return <SetFlat datas={item} idx={index} />
-              }}
-            />
-          }
         </View>
+        <CustomTabBar
+            navigation={navigation}
+            isActive='tabTwo'
+          />
       </View>
-      <CustomTabBar
-          navigation={navigation}
-          isActive='tabTwo'
-        />
-    </View>
+      {timeout.status && <TimeOut name='NETWORK ERROR'  onPress={() => handleRefresh()} errorCode={timeout.code} />}
+    </>
   )
 }
 

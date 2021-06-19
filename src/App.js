@@ -14,7 +14,8 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationService from './util/Navigator';
 import PushNotification from 'react-native-push-notification'
-
+import NetInfo from '@react-native-community/netinfo'
+import { showError } from './util/ShowMessage';
 
 const {width, height} = Dimensions.get('window');
 
@@ -109,6 +110,7 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 
 const MainApp = () => {
   const stateLoading = useSelector(state => state.loadingReducer.loading)
+  let netInfos = null
 
   useEffect(() => {
 
@@ -177,6 +179,18 @@ const MainApp = () => {
 
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    netInfos = NetInfo.addEventListener(state => {
+      if(!state.isConnected) {
+        showError('No Internet Access')
+      }
+     });
+
+    return () => {
+      if (netInfos != null) netInfos()
+    }
+  }, [])
 
   const requestUserPermission = async() => {
     const authStatus = await messaging().requestPermission();

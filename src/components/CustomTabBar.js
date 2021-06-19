@@ -21,8 +21,8 @@ export default class CustomTabBar extends Component {
           title: 'Home'
         }}
         tabTwoBtn={{
-          active: require('../../img/glitz/history_able.png'),
-          inactive: require('../../img/glitz/history_disable.png'),
+          active: require('../../img/glitz/history_disable.png'),
+          inactive: require('../../img/glitz/history_able.png'),
           width: 18,
           height: 24,
           action: this._onDoctorsIconClick.bind(this),

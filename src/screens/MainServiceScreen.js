@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {apiUrl} from '../util/API';
+import { TimeOut } from '../components/molekul';
 
 class MainServiceScreen extends Component {
   _isMounted = false;
@@ -37,6 +38,7 @@ class MainServiceScreen extends Component {
       data: [],
 	    name: '',
       refreshing: false,
+      timeout: false,
     }
   }
 
@@ -85,13 +87,30 @@ class MainServiceScreen extends Component {
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
-        showError(error);
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              this.props.timeout({code: 404, status: true});
+              break;
+
+            case 405:
+              this.props.timeout({code: 405, status: true});
+              break;
+
+            case 505:
+              this.props.timeout({code: 505, status: true});
+              break;
+          }
+        } else {
+          console.log('Error: ', error.message);
+        }
+
       }
     }
   }
 
   async getCategory() {
-    console.log(apiUrl)
+    // console.log(apiUrl)
     try {
       const tokenizer = await AsyncStorage.getItem('token')
       const response = await axios.get(`${apiUrl}/Service/category`, {
@@ -111,11 +130,31 @@ class MainServiceScreen extends Component {
       }
 
     } catch (error) {
+      // console.log(this.props.getTimeout)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
-        console.log(error)
-        showError('Failed');
+        if(error.hasOwnProperty('response')) {
+          switch (error.response.status) {
+            case 404:
+              this.props.timeout({code: 404, status: true});
+              break;
+
+            case 405:
+              this.props.timeout({code: 405, status: true});
+              break;
+
+            case 505:
+              this.props.timeout({code: 505, status: true});
+              break;
+  
+            default:
+              break;
+          }
+        } else {
+          console.log('Error: ', error.message);
+        }
+
       }
     }
   }
@@ -177,81 +216,84 @@ class MainServiceScreen extends Component {
   render() {
     let  [first, second] = this.splitArray();
     return (
-      <View style={styles.page}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('../../img/glitz/logoWhite.png')}
-            style={{width: 150, height: 80}}
-          />
-        </View>
-        <LinearGradient
-          colors={colors.gradient}
-          style={styles.linearGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        />
-        <View style={styles.personal}>
-          <Text style={styles.personalHellos}>Hello {(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
-          <Text style={styles.personalAsk}>How we can help you today ?</Text>
-        </View>
-        <View style={{height: deviceHeight * 0.03}} />
-        <ScrollView vertical 
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onRefresh}
+      <>
+        <View style={styles.page}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require('../../img/glitz/logoWhite.png')}
+              style={{width: 150, height: 80}}
             />
-          }>
-          <View style={styles.fullField}>
-            <View style={styles.colMainLeft}>
-              {first.length > 0 && first.map((current, i) => {
-                return (
-                  <React.Fragment key={current.id_service}>
-                    <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
-                    {/* <TouchableOpacity onPress={() => this._handleClickEmailButton()}> */}
-                      <ImageBackground 
-                        source={{ uri: current.image }}
-                        imageStyle={{ borderRadius: 6}}
-                        style={styles.image}
-                      >
-                          <View style={styles.bannerSection}>
-                            <Text style={styles.textBanner}>{ current.name}</Text>
-                          </View>
-                      </ImageBackground>
-                    </TouchableOpacity>
-
-                  </React.Fragment>
-                );
-              })}
-            </View>
-            <View style={styles.colMainRight}>
-              {second.length > 0 && second.map((current, i) => {
+          </View>
+          <LinearGradient
+            colors={colors.gradient}
+            style={styles.linearGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          />
+          <View style={styles.personal}>
+            <Text style={styles.personalHellos}>Hello {(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
+            <Text style={styles.personalAsk}>How we can help you today ?</Text>
+          </View>
+          <View style={{height: deviceHeight * 0.03}} />
+          <ScrollView vertical 
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }>
+            <View style={styles.fullField}>
+              <View style={styles.colMainLeft}>
+                {first.length > 0 && first.map((current, i) => {
                   return (
                     <React.Fragment key={current.id_service}>
                       <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                      {/* <TouchableOpacity onPress={() => this._handleClickEmailButton()}> */}
                         <ImageBackground 
-                          source={{ uri: current.image }} 
-                          style={styles.image}
+                          source={{ uri: current.image }}
                           imageStyle={{ borderRadius: 6}}
+                          style={styles.image}
                         >
                             <View style={styles.bannerSection}>
                               <Text style={styles.textBanner}>{ current.name}</Text>
                             </View>
                         </ImageBackground>
                       </TouchableOpacity>
+
                     </React.Fragment>
                   );
                 })}
+              </View>
+              <View style={styles.colMainRight}>
+                {second.length > 0 && second.map((current, i) => {
+                    return (
+                      <React.Fragment key={current.id_service}>
+                        <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                          <ImageBackground 
+                            source={{ uri: current.image }} 
+                            style={styles.image}
+                            imageStyle={{ borderRadius: 6}}
+                          >
+                              <View style={styles.bannerSection}>
+                                <Text style={styles.textBanner}>{ current.name}</Text>
+                              </View>
+                          </ImageBackground>
+                        </TouchableOpacity>
+                      </React.Fragment>
+                    );
+                  })}
+              </View>
             </View>
-          </View>
-        </ScrollView>
-        <View style={{height: 55}} />
-        <CustomTabBar
-          navigation={this.props.navigation}
-          isActive='tabOne'
-        />
-      </View>
+          </ScrollView>
+          <View style={{height: 55}} />
+          <CustomTabBar
+            navigation={this.props.navigation}
+            isActive='tabOne'
+          />
+        </View>
+        {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' errorCode={this.props.getTimeout.code} />}
+      </>
     )
   }
 
@@ -292,19 +334,29 @@ class MainServiceScreen extends Component {
     };
     this.props.navigation.navigate('ShoppingScreen', data);
   }
+
+  _handleRefresh() {
+    console.log('refresh')
+    this.props.timeout(false);
+    this.getProfiles();
+    this.getCategory();
+  }
 }
 
 const mapStateToProps = (state) => ({
   getProfile: state.profileReducer.profile,
   getToken: state.tokenReducer.authToken,
-  getService: state.serviceReducer.service
+  getService: state.serviceReducer.service,
+  getTimeout: state.timeoutReducer.timeout,
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     profile: value => dispatch({ type: 'SAVE_USER', value: value }),
     loading: value => dispatch({ type: 'SET_LOADING', value: value }),
-    service: value => dispatch({ type: 'SAVE_SERVICE', value: value })
+    service: value => dispatch({ type: 'SAVE_SERVICE', value: value }),
+    timeout: value => dispatch({ type: 'SET_TIMEOUT', value: value }),
+
   }
 }
 
