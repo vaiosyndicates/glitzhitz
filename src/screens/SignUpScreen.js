@@ -17,7 +17,7 @@ import Text from '../elements/Text';
 import GradientButton from '../elements/GradientButton';
 import CheckBox from '../elements/CheckBox';
 
-import { deviceHeight, shadowOpt, colors, fontSize } from '../styles/variables';
+import { deviceHeight, shadowOpt, colors, fontSize, deviceWidth, fontFamily } from '../styles/variables';
 
 import CommonStyles from '../styles/CommonStyles';
 import StartNameScreen from './StartNameScreen';
@@ -29,6 +29,7 @@ import ImageButton from '../elements/ImageButton';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { color } from 'react-native-reanimated';
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -154,7 +155,7 @@ class SignUpScreen extends Component {
             </View>
             <View style={styles.genderSection}>
               <View style={styles.headerTitle}>
-                <Text style={styles.textHeader}>GENDER | </Text>
+                <Text style={styles.textHeader}>Gender</Text>
               </View>
               <View style={styles.radioSection}>
                 <RadioForm
@@ -340,19 +341,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
-  headerTitle: {
-    marginLeft: -10,
-    paddingRight: 10,
-  },
   radio: {
-    paddingLeft: 60,  
-  },
-  headerTitle: {
-    fontSize: fontSize.header,
-    textAlign: 'center',
-    alignItems: 'center',
+    paddingLeft: 20,  
   },
   radioSection: {
     marginBottom: 15,
-  }
+  },
+  textHeader: {
+    fontSize: fontSize.header,
+    color: colors.lightGrey,
+    fontFamily: fontFamily.regular,
+  },
+  headerTitle: {
+    height: deviceHeight * 0.042,
+    width: deviceWidth * 0.20,
+    justifyContent: 'center',
+    marginLeft: deviceWidth * -0.13,
+    borderRightWidth: 1,
+    borderRightColor: colors.borderViolet,
+  },
 });

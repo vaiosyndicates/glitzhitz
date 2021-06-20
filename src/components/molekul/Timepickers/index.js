@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import ScrollPicker from '../../../elements/ScrollPicker'
 import CommonStyles from '../../../styles/CommonStyles'
@@ -11,7 +11,7 @@ const Timepickers = ({onChanged, onPress, curDate}) => {
     <View style={styles.page}>
       <View style={styles.closeIcon}>
         <TouchableOpacity onPress={onPress} >
-          <Text>X</Text>
+          <Image style={ styles.closeButton } source={require("../../../../img/glitz/close_icon.png")}/>
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
@@ -47,5 +47,9 @@ const styles = StyleSheet.create({
     width: deviceWidth * 0.90,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  closeButton: {
+    width: deviceWidth * 0.10,
+    height: deviceHeight * 0.015,
   }
 })
