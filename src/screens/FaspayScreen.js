@@ -43,7 +43,7 @@ const FaspayScreen = ({navigation}) => {
     }
 
     const backAction = () => {
-      Alert.alert("Hold on!", `${navigation.state.params.channel_code === '812' ? `Are you sure you want to go cancel this order?` : `Are you sure you want to go cancel this order?`}`, [
+      Alert.alert("Hold on!", `${navigation.state.params.channel_code === '812' ? `Are you sure you want to go cancel this order?` : `Are you sure you want to go back?`}`, [
         {
           text: "Cancel",
           onPress: () => null,
