@@ -38,8 +38,12 @@ const FaspayScreen = ({navigation}) => {
   const stateCart = useSelector(state => state.cartReducer.cart);
 
   useEffect(() => {
+    if(navigation.state.params.isCC || navigation.state.params.hasOwnProperty('isCC')) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+
     const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      Alert.alert("Hold on!", `${navigation.state.params.channel_code === '812' ? `Are you sure you want to go cancel this order?` : `Are you sure you want to go back?`}`, [
         {
           text: "Cancel",
           onPress: () => null,

@@ -334,6 +334,7 @@ const DetailOrderScreen = ({navigation}) => {
           const datas = {
             id_order: response.data.data.id_order,
             url: response.data.data.redirect_url,
+            channel_code: selectedLanguage,
             isCC: false,
           }
           // console.log(response.data.data);
