@@ -38,6 +38,10 @@ const FaspayScreen = ({navigation}) => {
   const stateCart = useSelector(state => state.cartReducer.cart);
 
   useEffect(() => {
+    if(navigation.state.params.isCC || navigation.state.params.hasOwnProperty('isCC')) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+
     const backAction = () => {
       Alert.alert("Hold on!", "Are you sure you want to go back?", [
         {

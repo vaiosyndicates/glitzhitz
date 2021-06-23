@@ -75,7 +75,7 @@ const MitraScreen = ({navigation}) => {
             <View style={styles.mitraSection}>
               <View>
                 <Image
-                  source={{uri: 'https://reactjs.org/logo-og.png'}}
+                  source={require('../../img/glitz/users.png')}
                   style={styles.avatar} />
               </View>
               <View>
