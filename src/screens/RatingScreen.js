@@ -11,14 +11,17 @@ import { colors, deviceHeight, deviceWidth, fontFamily, fontSize } from '../styl
 import { Rating, AirbnbRating } from 'react-native-ratings'
 import { LinearGradient } from 'expo-linear-gradient'
 import { resetLogin } from '../util/ResetRouting'
-import { showSuccess } from '../util/ShowMessage'
+import { showError, showSuccess } from '../util/ShowMessage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
+import { apiUrl } from '../util/API'
 
 const RatingScreen = ({navigation}) => {
   const [rating, setRating] = useState(0)
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go home?", [
+      Alert.alert("Hold on!", "Please Rate Our Mitra", [
         {
           text: "Cancel",
           onPress: () => null,
@@ -39,14 +42,48 @@ const RatingScreen = ({navigation}) => {
 
   const onComplete = async(rating) => {
     setRating(rating);
-    showSuccess('Thank You For Your Feedback');
-    setTimeout(() => {
-      navigation.dispatch(resetLogin); 
-    }, 2000);
+
+    const data = {
+      id_order: navigation.state.params.id_order,
+      rate: rating
+    }
+    // console.log(data)
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${apiUrl}/User/rate_mitra`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      switch (response.status) {
+        case 200:
+          showSuccess('Thank You For Your Feedback');
+          setTimeout(() => {
+            navigation.dispatch(resetLogin); 
+          }, 2000);
+          break;
+      
+        default:
+          showError('Bad Response From Server')
+          break;
+      }
+
+    } catch (error) {
+      showError(error.message)
+    }
+
   }
 
-  const updateRating = () => {
+  const updateRating = async() => {
     //endpoint
+    const data = {
+      id_order: name,
+      rate: rating
+    }
   }
 
   return (
@@ -65,17 +102,17 @@ const RatingScreen = ({navigation}) => {
                   </View>
                   <View style={styles.imageSection}>
                     <Image
-                      source={{uri: 'https://reactjs.org/logo-og.png'}}
+                      source={require('../../img/glitz/users_white.png')}
                       style={styles.avatar} />
                   </View>
                   <View style={styles.nameSection}>
-                    <Text style={styles.mitraName}>Nam Do San</Text>
+                    <Text style={styles.mitraName}>{navigation.state.params.namaMitra}</Text>
                   </View>
                 </View>
                 <View style={styles.ratingSection}>
                   <AirbnbRating
                     count={5}
-                    reviews={["Terrible", "Bad", "OK", "Good", "Verry Good"]}
+                    reviews={["Terrible", "Bad", "OK", "Good", "Very Good"]}
                     defaultRating={3}
                     size={20}
                     unSelectedColor={colors.blurry}

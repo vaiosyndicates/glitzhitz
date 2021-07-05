@@ -268,6 +268,7 @@ class MainServiceScreen extends Component {
               </View>
               <View style={styles.colMainRight}>
                 {second.length > 0 && second.map((current, i) => {
+                  // console.log(current)
                     return (
                       <React.Fragment key={current.id_service}>
                         <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>

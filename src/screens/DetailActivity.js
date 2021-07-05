@@ -172,6 +172,8 @@ const DetailActivity = ({navigation}) => {
       id_order: navigation.state.params.id_order,
     }
 
+    navigation.navigate('RatingScreen', data)
+
     // console.log(data)
     try {
       const tokenizer = await AsyncStorage.getItem('token');
@@ -185,20 +187,24 @@ const DetailActivity = ({navigation}) => {
       );
 
       if(response.status === 200) {
+        const data = {
+          id_order: navigation.state.params.id_order,
+          nama_mitra: navigation.state.params.namaMitra,
+        }
         showSuccess('Order Complete')
         setDisabled(false);
         setVisibleDone(false);
         setVisibleCancel(false)
         setVisibleHowto(false)
         setVisibleSearch(false)
-        navigation.navigate('RatingScreen')
+        navigation.navigate('RatingScreen', data)
 
       } else {
-        showError('Error')
+        showError('Bad Response From Server')
       }
 
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
     }
   }
 
