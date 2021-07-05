@@ -7,7 +7,8 @@ import {
   View, 
   FlatList, 
   Image, 
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl,
 } from 'react-native'
 import CustomTabBar from '../components/CustomTabBar'
 import HeaderGradient from '../components/Header'
@@ -70,7 +71,7 @@ const ActivityScreen = ({navigation}) => {
         // console.log(response.data.data.order.length)
         // console.log(orderReducer[0])
         setData(response.data.data);
-
+        setRefresh(false)
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         showError('Failed Get Data')
@@ -91,8 +92,8 @@ const ActivityScreen = ({navigation}) => {
                 dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
                 break;
     
-              case 505:
-                dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+              case 500:
+                dispatch({type: 'SET_TIMEOUT', value: {code: 500, status: true}});
                 break;
   
               default:
@@ -160,7 +161,7 @@ const ActivityScreen = ({navigation}) => {
                 style={styles.avatar} />
             </View>
             <View style={styles.mitraInfo}>
-              <Text>Hala Madrid</Text>
+              <Text>{datas.nama_mitra}</Text>
               <Text>{datas.trx_id.slice(8, 20)}</Text>
             </View>
             
@@ -227,6 +228,10 @@ const ActivityScreen = ({navigation}) => {
     getOrder()
   }
 
+  const onRefresh = () => {
+    setRefresh(true)
+    getOrder()
+  }
 
   return (
     <>
@@ -250,7 +255,9 @@ const ActivityScreen = ({navigation}) => {
             {data.hasOwnProperty('order') && 
               
               <FlatList
-                showsVerticalScrollIndicator={false}
+                onRefresh={() => onRefresh()}
+                refreshing={refresh}
+                showsVerticalScrollIndicator={true}
                 data={data.order}
                 initialNumToRender={data.order.length}
                 keyExtractor={item => item.trx_id.toString()}
@@ -269,7 +276,7 @@ const ActivityScreen = ({navigation}) => {
             isActive='tabTwo'
           />
       </View>
-      {timeout.status && <TimeOut name='NETWORK ERROR'  onPress={() => handleRefresh()} errorCode={timeout.code} />}
+      {timeout.status && <TimeOut name={timeout.code === 500 ? 'INTERNAL SERVER ERROR' : 'NETWORK ERROR'}  onPress={() => handleRefresh()} errorCode={timeout.code} />}
     </>
   )
 }
