@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import { 
+  StyleSheet, 
+  View, 
+  Image, 
+  ScrollView,
+  RefreshControl,
+ } from 'react-native';
 
 import Text from '../elements/Text';
 import GradientNavigationBar from '../elements/GradientNavigationBar';
@@ -30,6 +36,7 @@ class UserProfileScreen extends Component {
       email: '',
       phone: '',
       gender: '',
+      isFetching: false,
     }
   }
 
@@ -38,7 +45,14 @@ class UserProfileScreen extends Component {
       <>
       <View style={styles.page}>
        <HeaderGradient title="User Profile" onPress={()=> this.props.navigation.goBack(null)} dMarginLeft={0.25} />
-        <ScrollView style={CommonStyles.scrollView}>
+        <ScrollView 
+          style={CommonStyles.scrollView}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isFetching}
+              onRefresh={this._onRefresh}
+            />
+          }>
           <View style={CommonStyles.itemWhiteBox}>
             <View style={styles.rowTop}>
               <ProfileCard
@@ -91,7 +105,7 @@ class UserProfileScreen extends Component {
           isActive='tabFour'
         />
       </View>
-      {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' errorCode={this.props.getTimeout.code} />}      
+      {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name={this.props.getTimeout.code === 500 ? 'INTERNAL SERVER ERROR' : 'NETWORK ERROR'} errorCode={this.props.getTimeout.code} />}      
       </>
     );
   }
@@ -110,6 +124,11 @@ class UserProfileScreen extends Component {
     console.log('refresh')
     this.props.timeout(false);
     this.getProfiles()
+  }
+
+  _onRefresh = () => {
+    this.setState({isFetching: true});
+    this.getProfiles();
   }
 
   async _handleClickLogOut() {
@@ -169,6 +188,7 @@ class UserProfileScreen extends Component {
         this.setState({email: response.data.data.user[0].email});
         this.setState({phone: response.data.data.user[0].phone});
         this.setState({gender: response.data.data.user[0].gender});
+        this.setState({isFetching: false});
 
       } else{
         this.props.loading(false);
@@ -191,8 +211,8 @@ class UserProfileScreen extends Component {
               this.props.timeout({code: 405, status: true});
               break;
 
-            case 505:
-              this.props.timeout({code: 505, status: true});
+            case 500:
+              this.props.timeout({code: 500, status: true});
               break;
   
             default:

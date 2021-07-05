@@ -223,8 +223,8 @@ const DetailOrderScreen = ({navigation}) => {
           dispatch({type: 'SET_TIMEOUT', value: {code: 405, status: true}});
           break;
 
-        case 505:
-          dispatch({type: 'SET_TIMEOUT', value: {code: 505, status: true}});
+        case 500:
+          dispatch({type: 'SET_TIMEOUT', value: {code: 500, status: true}});
           break;
         
           default:
@@ -487,7 +487,7 @@ const DetailOrderScreen = ({navigation}) => {
       </View>
     </View>
     {load && <SplashMap />}
-    {timeout.status && flag === 2 && <TimeOut name='NETWORK ERROR'  onPress={() => handleRefresh()} errorCode={timeout.code} />}
+    {timeout.status && flag === 2 && <TimeOut name={timeout.code === 500 ? 'INTERNAL SERVER ERROR' : 'NETWORK ERROR'}  onPress={() => handleRefresh()} errorCode={timeout.code} />}
     </>
   )
 }

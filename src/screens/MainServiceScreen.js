@@ -130,6 +130,7 @@ class MainServiceScreen extends Component {
       }
 
     } catch (error) {
+      // console.log(error.message)
       // console.log(this.props.getTimeout)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
@@ -144,8 +145,8 @@ class MainServiceScreen extends Component {
               this.props.timeout({code: 405, status: true});
               break;
 
-            case 505:
-              this.props.timeout({code: 505, status: true});
+            case 500:
+              this.props.timeout({code: 500, status: true});
               break;
   
             default:
@@ -292,7 +293,7 @@ class MainServiceScreen extends Component {
             isActive='tabOne'
           />
         </View>
-        {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name='NETWORK ERROR' errorCode={this.props.getTimeout.code} />}
+        {this.props.getTimeout.status && <TimeOut onPress={() => this._handleRefresh()} name={this.props.getTimeout.code === 500 ? 'INTERNAL SERVER ERROR' : 'NETWORK ERROR'} errorCode={this.props.getTimeout.code} />}
       </>
     )
   }
