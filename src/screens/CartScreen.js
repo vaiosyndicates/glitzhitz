@@ -63,7 +63,7 @@ const CartScreen = ({navigation}) => {
                   <View style={styles.contentWrapper}>
                     <View style={styles.boxWrapper}>
                       <Text style={styles.nameService}>{cur.name}</Text>
-                      <Text style={styles.price}> IDR {cur.price}</Text>
+                      <Text style={styles.price}> IDR {parseFloat(cur.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                     </View>
                     <View style={styles.buttonsWrapper}>
                     <Button icon={require('../../img/glitz/minus.png')} mode="outlined" style={styles.buttons} onPress={() => deleteCart({id: cur.id, name: cur.name, price: cur.price, parent: cur.parent})} />
