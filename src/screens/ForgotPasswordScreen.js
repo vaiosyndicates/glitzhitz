@@ -55,7 +55,7 @@ class ForgotPasswordScreen extends Component {
             setting={shadowOpt}
             btnText="RESET PASSWORD"
             disabled={
-              this.state.phone.length < 11 
+              this.state.phone.length < 9
                 ? true
                 : false
             }

@@ -157,16 +157,17 @@ export default class BookAppointmentScreen extends Component {
                   }
                 ]}>
                   <Text header grey mediumBold>Time</Text>
-                  <View style={styles.right}>
-                    <Text itemHeader softBlue mediumBold>{this.state.time}</Text>
-                    <TouchableOpacity onPress={this._showTimePicker.bind(this)}>
-                      <Icon
-                        style={{fontSize: 20, paddingLeft: 10, paddingTop: 2}}
-                        name="chevron-thin-right"
-                        color="rgb(105,105,105)"
-                      />
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity onPress={this._showTimePicker.bind(this)}>
+                    <View style={styles.right}>
+                      <Text itemHeader softBlue mediumBold>{this.state.time}</Text>
+                        <Icon
+                          style={{fontSize: 20, paddingLeft: 10, paddingTop: 2}}
+                          name="chevron-thin-right"
+                          color="rgb(105,105,105)"
+                        />
+                    </View>
+                  </TouchableOpacity>
+
                   {/* <DatePicker
                     date={new Date()}
                     mode="time"

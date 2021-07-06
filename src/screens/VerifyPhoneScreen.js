@@ -31,7 +31,7 @@ class VerifyPhoneScreen extends Component {
           <Text normal grey regular
             style={{ width: deviceWidth - 70, marginTop: 15, textAlign: 'center' }}
           >
-            We just need your resgistered Email to send you password reset intruction
+            We already send the otp code to your registered number
           </Text>
         </View>
         <CodeInput
