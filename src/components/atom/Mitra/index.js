@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
 import Buttons from '../Buttons'
 
-const MitraInfo = ({onPress, disabled, name, speciality}) => {
+const MitraInfo = ({onPress, disabled, ava, name, speciality}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
         <View style={styles.mitraInfo}>
           <View>
             <Image
-              source={require('../../../../img/glitz/users.png')}
+              source={{uri: ava}}
               style={styles.avatar} />
           </View>
           <View style={styles.mitraDetail}>

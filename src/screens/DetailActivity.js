@@ -257,7 +257,7 @@ const DetailActivity = ({navigation}) => {
               </View>
               {visibleMitra &&
                 <View style={styles.mitraSection}>
-                  <MitraInfo onPress={()=> handleReorder()} disabled={disabled} name={navigation.state.params.namaMitra} speciality={navigation.state.params.speciality} />
+                  <MitraInfo onPress={()=> handleReorder()} disabled={disabled} ava={navigation.state.params.avaMitra} name={navigation.state.params.namaMitra} speciality={navigation.state.params.speciality} />
                   {/* <MitraInfo onPress={()=> handleReorder()}/> */}
                 </View>
               }
