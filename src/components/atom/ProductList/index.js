@@ -16,7 +16,7 @@ const ProductList = ({title, flag, data}) => {
               <React.Fragment key={i}>
                 <View style={styles.productList}>
                   <Text style={styles.productName}>{cur.name}</Text>
-                  <Text style={styles.productPrice}>{cur.price}</Text>
+                  <Text style={styles.productPrice}>{parseFloat(cur.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                 </View>
               </React.Fragment>
             )})

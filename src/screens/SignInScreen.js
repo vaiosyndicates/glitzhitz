@@ -42,7 +42,7 @@ class SignInScreen extends Component {
                style={{position:'absolute',bottom: 12,left: 20,width: 22, height: 17}}
               />
               <TextInput
-                placeholder='Email'
+                placeholder='Username / Email'
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
                 onChangeText={text => this.setState({email: text})}
@@ -164,40 +164,24 @@ const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 
 const styles = StyleSheet.create({
   titleBox: {
-    height: 52,
-    ...Platform.select({
-      ios: {
-        marginTop: spaceHeight * 0.30,
-        marginBottom: spaceHeight * 0.24,
-      },
-      android: {
-        marginTop: spaceHeight * 0.30,
-        marginBottom: spaceHeight * 0.20,
-      },
-    }),
+    marginTop: spaceHeight * 0.20,
+    marginBottom: spaceHeight * 0.20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   formBox: {
-    height: 190,
+    height: deviceHeight * 0.28,
     alignItems: 'center',
     marginBottom: spaceHeight * 0.05,
-  },
-  subFormBox: {
-    width: deviceWidth - 85,
-    height: 45,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: -10,
   },
   noteBox: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 15,
+    paddingBottom: deviceHeight * -0.01,
   },
   noteBoxes: {
     alignItems: 'center',
-    marginTop: -55,
+    marginTop: deviceHeight * -0.05,
   }
 });

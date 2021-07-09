@@ -162,8 +162,8 @@ const ActivityScreen = ({navigation}) => {
                 style={styles.avatar} />
             </View>
             <View style={styles.mitraInfo}>
-              <Text>{datas.nama_mitra}</Text>
-              <Text>{datas.trx_id.slice(8, 20)}</Text>
+              <Text style={styles.mitraNama}>{datas.nama_mitra}</Text>
+              <Text style={styles.idOrder}>{datas.trx_id.slice(8, 20)}</Text>
             </View>
             
           </View>
@@ -299,13 +299,13 @@ const styles = StyleSheet.create({
   },
   textStyleImage: {
     color: '#000',
-    fontSize: 18,
+    fontSize: deviceWidth * 0.04,
     paddingVertical: 7,
     marginLeft: deviceWidth * 0.05,
   },
   textStyleDesc: {
     color: '#000',
-    fontSize: 18,
+    fontSize: deviceWidth * 0.04,
     paddingVertical: 7,
     marginLeft: deviceWidth * 0.15,
   },
@@ -315,9 +315,11 @@ const styles = StyleSheet.create({
   },
   descSection: {
     flexWrap: 'wrap',
+    maxWidth: deviceWidth * 0.30,
   },
   descText: {
     maxWidth: deviceWidth * 0.20,
+    fontSize: deviceWidth * 0.035,
   },
   avatar: {
     width: deviceWidth * 0.14,
@@ -353,14 +355,18 @@ const styles = StyleSheet.create({
   mitraInfo: {
     marginLeft: deviceWidth * 0.02,
     marginTop: deviceHeight * 0.01,
+    maxWidth: deviceWidth * 0.20,
   },
   buttons: {
     backgroundColor: '#DD70F8',
     height: deviceHeight * 0.04,
-    width: deviceWidth * 0.11,
+    width: deviceWidth * 0.13,
     borderRadius: 10,
   },
   textButton: {
+    fontSize: deviceWidth * 0.030,
+    color: colors.white,
+    fontFamily: fontFamily.regular,
     textAlign: 'center',
     marginTop: deviceHeight * 0.01,
   },
@@ -368,7 +374,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   buttonsGroup: {
-    width: deviceWidth * 0.15, 
+    maxWidth: deviceWidth * 0.15,
     alignItems: 'center',
   },
   emptySection: {
@@ -380,5 +386,14 @@ const styles = StyleSheet.create({
     fontSize: fontSize.medium,
     fontFamily: fontFamily.medium,
     color: colors.lightGrey,
+  },
+  mitraNama: {
+    fontSize: deviceWidth * 0.04,
+  },
+  idOrder: {
+    fontSize: deviceWidth * 0.04
+  },
+  descStatus: {
+    fontSize: deviceWidth * 0.038,
   }
 })

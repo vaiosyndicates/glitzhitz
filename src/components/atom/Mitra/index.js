@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
 import Buttons from '../Buttons'
 
-const MitraInfo = ({onPress, disabled, ava, name, speciality}) => {
+const MitraInfo = ({onPress, disabled, ava, name, speciality, status}) => {
+
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -19,9 +20,11 @@ const MitraInfo = ({onPress, disabled, ava, name, speciality}) => {
           </View>
         </View>
         <View></View>
-        <View style={styles.buttonSection}>
-          <Buttons onPress={onPress} disabled={disabled} title='REORDER'/>
-        </View>
+        {status != 'Canceled' &&
+          <View style={styles.buttonSection}>
+            <Buttons onPress={onPress} disabled={disabled} title='REORDER'/>
+          </View>
+        }
       </View>
     </View>
   )

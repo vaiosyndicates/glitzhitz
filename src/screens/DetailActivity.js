@@ -1,7 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  Image, 
+  TouchableOpacity, 
+  ScrollView,
+  Alert
+} from 'react-native'
 import { color } from 'react-native-reanimated'
 import {AddressList, MitraInfo, PaySection, ProductList} from '../components/atom'
 import HeaderGradient from '../components/Header'
@@ -10,6 +18,7 @@ import GradientButton from '../elements/GradientButton'
 import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables'
 import {apiUrl} from '../util/API'
 import { showError, showSuccess } from '../util/ShowMessage'
+import Dialog from "react-native-dialog"
 
 const DetailActivity = ({navigation}) => {
 
@@ -21,6 +30,8 @@ const DetailActivity = ({navigation}) => {
   const [visibleVA, setVisibleVA] = useState(false)
   const [visibleMitra, setVisibleMitra] = useState(false)
   const [load, setLoad] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [reason, setReason] = useState('');
 
   useEffect(() => {
     checkDisabled()
@@ -209,11 +220,17 @@ const DetailActivity = ({navigation}) => {
   }
 
   const handleCancel = async() => {
+    setModal(true)
+
+  }
+
+  const handlesetCancel = async() => {
     const data = {
       bill_no: navigation.state.params.id_order,
       trx_id: navigation.state.params.trx_id,
+      alasan: reason,
     }
-    // console.log(data)
+
     try {
       const tokenizer = await AsyncStorage.getItem('token');
       const response = await axios.post(
@@ -231,15 +248,25 @@ const DetailActivity = ({navigation}) => {
         setVisibleDone(false)
         setVisibleCancel(false)
         setVisibleHowto(false)
-
-        navigation.navigate('ActivityScreen')
+        setReason('')
+        setModal(false)
+        setTimeout(() => {
+          navigation.navigate('ActivityScreen')
+        }, 2000);
       } else {
         showError('Error')
       }
     } catch (error) {
       showError('Network Error')
       console.log(error)
-    }
+    }    
+    console.log(data)
+
+  }
+
+  const handleCancelDialog = () => {
+    setReason('')
+    setModal(false)
   }
 
   return (
@@ -257,7 +284,7 @@ const DetailActivity = ({navigation}) => {
               </View>
               {visibleMitra &&
                 <View style={styles.mitraSection}>
-                  <MitraInfo onPress={()=> handleReorder()} disabled={disabled} ava={navigation.state.params.avaMitra} name={navigation.state.params.namaMitra} speciality={navigation.state.params.speciality} />
+                  <MitraInfo onPress={()=> handleReorder()} disabled={disabled} ava={navigation.state.params.avaMitra} name={navigation.state.params.namaMitra} speciality={navigation.state.params.speciality} status={navigation.state.params.status} />
                   {/* <MitraInfo onPress={()=> handleReorder()}/> */}
                 </View>
               }
@@ -273,7 +300,7 @@ const DetailActivity = ({navigation}) => {
                   <Text style={styles.totalTitle}>Total</Text>
                 </View>
                 <View style={styles.totalWrap}>
-                  <Text style={styles.totalPrice}>Rp. {navigation.state.params.total_price}</Text>
+                  <Text style={styles.totalPrice}>Rp. {parseFloat(navigation.state.params.total_price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                 </View>
               </View>
               <View style={styles.confirmSection}>
@@ -344,6 +371,12 @@ const DetailActivity = ({navigation}) => {
         }
         </View>
       </View>
+      <Dialog.Container visible={modal}>
+        <Dialog.Title style={styles.dialogTitles}>Why you cancel this order?</Dialog.Title>
+        <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
+        <Dialog.Button label="Cancel" onPress={() => handleCancelDialog()} />
+        <Dialog.Button label="OK" onPress={() => handlesetCancel()} />
+      </Dialog.Container>
       {load && <SplashMap />}
     </>
   )
@@ -579,4 +612,14 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontFamily: fontFamily.light,
   },
+  dialogTitles: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.04,
+    fontFamily: fontFamily.semiBold,
+  },
+  dialogInputs: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.035,
+    fontFamily: fontFamily.regular,
+  }
 })

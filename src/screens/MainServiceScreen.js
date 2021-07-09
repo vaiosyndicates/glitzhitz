@@ -232,8 +232,8 @@ class MainServiceScreen extends Component {
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.personal}>
-            <Text style={styles.personalHellos}>Hello {(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
-            <Text style={styles.personalAsk}>How we can help you today ?</Text>
+            <Text style={styles.personalHellos}>Hello </Text>
+            <Text style={styles.personalAsk}>{(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
           </View>
           <View style={{height: deviceHeight * 0.03}} />
           <ScrollView vertical 
@@ -372,10 +372,6 @@ const ELEMENT_HEIGHT = 430;
 const spaceHeight = deviceHeight - (NAV_HEIGHT + TAB_HEIGHT + ELEMENT_HEIGHT);
 
 const styles = StyleSheet.create({
-  titleBox: {
-    marginTop: spaceHeight * 0.12,
-    paddingHorizontal: 27,
-  },
   fullField: {
     flex: 1,
     flexDirection: 'row',
@@ -407,12 +403,12 @@ const styles = StyleSheet.create({
     marginLeft: deviceWidth * 0.05,
   },
   personalHellos: {
-    fontSize: fontSize.region,
+    fontSize: deviceWidth * 0.05,
     color: colors.white,
     fontFamily: fontFamily.medium,
   },
   personalAsk: {
-    fontSize: fontSize.header,
+    fontSize: deviceWidth * 0.05,
     color: colors.white,
     fontFamily: fontFamily.medium,
   },
@@ -436,7 +432,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     flexWrap: 'wrap',
     textAlign: 'center',
-    fontSize: fontSize.medium,
+    fontSize: deviceWidth *(0.037),
     maxWidth: deviceWidth * 0.20,
     marginLeft: deviceWidth * 0.09,
     fontFamily: fontFamily.medium,

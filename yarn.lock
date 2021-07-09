@@ -6895,7 +6895,7 @@ graceful-fs@^4.2.0:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
-graceful-fs@^4.2.4:
+graceful-fs@^4.2.4, graceful-fs@^4.2.6:
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
@@ -9890,6 +9890,11 @@ react-native-device-info@^8.0.2:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.0.2.tgz#edefb8538412bf33e12a7ba1b80fbd804f69580b"
   integrity sha512-5X5sMO2N9WpnqA4BXHlby0ml0WKlHconLhgf8fCiXDELf7DIjOMX8z6iYZ7WDgmn0E/6Psubq9yb5D2Qdc30Wg==
 
+react-native-dialog@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-8.0.1.tgz#8e554c4d7ee755c9e20d43bb0c5bb1a158060e57"
+  integrity sha512-shm0NE7nZJj5ubvMT/6Snt3fazzRPgDj/m9eIcYjo6JAQbxvg6Ym9o5GGahDn1d96LyAruPoP+N/IBzAI8Worg==
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -10113,6 +10118,11 @@ react-native-simple-radio-button@^2.7.4:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.4.tgz#86e2dbe8af9e6bf60eee088f60466f7a975e7758"
   integrity sha512-QOZNmJUn0ViBGU+at7wAG/uGzd5PfXi0kMHr9lfTCLXknW/f9f2fOVjxjdHvOCdf/zA/eMJBjGjtusSDzQf1+w==
+
+react-native-size-matters@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-size-matters/-/react-native-size-matters-0.4.0.tgz#01bfd0d59454318f4e0b13fe9c1eb0523d70f2e0"
+  integrity sha512-8/C0htHrFWeUm9N8JegmadovUfgTWkGBkDPZ1N3YkXtDWb+98Ya2gThiKcu445r8c7YhcrBfnHz/mYsXIusaOQ==
 
 react-native-snap-carousel@^3.9.1:
   version "3.9.1"
