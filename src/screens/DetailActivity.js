@@ -116,6 +116,7 @@ const DetailActivity = ({navigation}) => {
     const status = navigation.state.params.status
     const availbility = navigation.state.params.id_mitra
     const channel = navigation.state.params.payment[0].payment_code
+    const statusMitra =  navigation.state.params.statusMitra
     // console.log(availbility)
     console.log(navigation.state.params)
     if(status == 'Completed') {
@@ -147,7 +148,14 @@ const DetailActivity = ({navigation}) => {
       setVisibleHowto(false)
       setVisibleSearch(true)
       setVisibleMitra(false)
-    } else {
+    } else if(status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') {
+      setDisabled(true);
+      setVisibleDone(false);
+      setVisibleCancel(true)
+      setVisibleHowto(false)
+      setVisibleSearch(true)
+      setVisibleMitra(false)
+    }else {
       setDisabled(true);
       setVisibleDone(true);
       setVisibleCancel(true)

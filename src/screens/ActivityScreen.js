@@ -124,12 +124,13 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
-    console.log(datas)
+    // console.log(datas.status_mitra)
       const item = [];
       let visible = false
       const status = datas.status
       const availbility = datas.id_mitra
       const ava_mitra = datas.ava_mitra
+      const statusMitra = datas.status_mitra
       const payWith = {
         status: datas.status,
         payment_icon: datas.payment_icon,
@@ -143,9 +144,8 @@ const ActivityScreen = ({navigation}) => {
       );
     });
     // console.log(paySections);
-    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility == null) ) {
+    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility == null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject')) {
       visible = false
-
     }  else {
       visible = true
     }
@@ -172,7 +172,7 @@ const ActivityScreen = ({navigation}) => {
             <Text style={styles.descText}>{datas.order_time}</Text>
           </View>
           <View style={styles.buttonsGroup}>
-            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, date_service: datas.service_time,  status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections, id_mitra: datas.id_mitra, namaMitra: datas.nama_mitra, speciality: datas.speciality, avaMitra: datas.ava_mitra})} style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleDetail({date_order: datas.order_time, date_service: datas.service_time,  status: datas.status, address: datas.address, trx_id: datas.trx_id, item: item, total_price: datas.total_price, payment_icon: datas.payment_icon, id_order: datas.id_order, payment: paySections, id_mitra: datas.id_mitra, namaMitra: datas.nama_mitra, speciality: datas.speciality, avaMitra: datas.ava_mitra, statusMitra: datas.status_mitra})} style={styles.buttons}>
               <Text style={styles.textButton}>Detail</Text>
             </TouchableOpacity>
             {visible &&
