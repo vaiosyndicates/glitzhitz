@@ -192,7 +192,7 @@ export default class BookAppointmentScreen extends Component {
                     onChangeText={text => this.setState({address: text})}
                   />
                 </View>
-                <View style={[CommonStyles.buttonBox, {marginTop: 20, marginBottom: 10}]}>
+                <View style={[CommonStyles.buttonBox, {marginTop: deviceHeight * 0.04, marginBottom: deviceHeight * 0.04}]}>
                   <GradientButton
                     onPressButton={this._handleBookAppoitment.bind(this)}
                     setting={shadowOpt}

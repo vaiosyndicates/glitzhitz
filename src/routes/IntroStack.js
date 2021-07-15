@@ -71,6 +71,7 @@ import DetailOrderScreen from '../screens/DetailOrderScreen';
 import RatingScreen from '../screens/RatingScreen';
 import MitraScreen from '../screens/MitraScreen';
 import HowToScreen from '../screens/HowToScreen';
+import RefundScreen from '../screens/RefundScreen';
 
 const AppRouter = StackRouter(
   {
@@ -311,7 +312,10 @@ const AppRouter = StackRouter(
     },
     HowToScreen: {
       screen: HowToScreen
-    },    
+    },
+    RefundScreen: {
+      screen: RefundScreen
+    },
   },
   {
     initialRouteName: 'StartUpScreen',

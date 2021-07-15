@@ -29,8 +29,11 @@ const DetailActivity = ({navigation}) => {
   const [visibleSearch, setVisibleSearch] = useState(false)
   const [visibleVA, setVisibleVA] = useState(false)
   const [visibleMitra, setVisibleMitra] = useState(false)
+  const [visibleRefund, setVisibleRefund] = useState(false)
+  const [visibleSearchReject, setVisibleSearchReject] = useState(false)
   const [load, setLoad] = useState(false);
   const [modal, setModal] = useState(false);
+  const [modalRefund, setModalRefund] = useState(false);
   const [reason, setReason] = useState('');
 
   useEffect(() => {
@@ -111,6 +114,10 @@ const DetailActivity = ({navigation}) => {
     // console.log(data)
   }
 
+  const handleSearchReject = () => {
+    console.log('Search Reject');
+  }
+
 
   const checkDisabled = () => {
     const status = navigation.state.params.status
@@ -120,47 +127,26 @@ const DetailActivity = ({navigation}) => {
     // console.log(availbility)
     console.log(navigation.state.params)
     if(status == 'Completed') {
-      setDisabled(false);
-      setVisibleDone(false);
-      setVisibleCancel(false)
-      setVisibleHowto(false)
-      setVisibleSearch(false)
       setVisibleMitra(true)
     } else if(status == 'Canceled') {
       setDisabled(true);
-      setVisibleDone(false);
-      setVisibleCancel(false)
-      setVisibleHowto(false)
-      setVisibleSearch(false)
       setVisibleMitra(true)
-    
     } else if(status == 'Waiting for payment') {
       setDisabled(true);
-      setVisibleDone(false);
       setVisibleCancel(true)
       setVisibleHowto(true)
-      setVisibleSearch(false)
-      setVisibleMitra(false)
     } else if(status == 'Payment Success' && availbility == null) {
       setDisabled(true);
-      setVisibleDone(false);
-      setVisibleCancel(true)
-      setVisibleHowto(false)
       setVisibleSearch(true)
-      setVisibleMitra(false)
+      setVisibleRefund(true)
     } else if(status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') {
       setDisabled(true);
-      setVisibleDone(false);
-      setVisibleCancel(true)
-      setVisibleHowto(false)
-      setVisibleSearch(true)
-      setVisibleMitra(false)
+      setVisibleRefund(true)
+      setVisibleSearchReject(true)
     }else {
       setDisabled(true);
       setVisibleDone(true);
       setVisibleCancel(true)
-      setVisibleHowto(false)
-      setVisibleSearch(false)
       setVisibleMitra(true)
     }
 
@@ -179,6 +165,10 @@ const DetailActivity = ({navigation}) => {
         setVisibleVA(false)
         setVisibleHowto(false)
         break;
+
+        case '1':
+          setVisibleHowto(false)
+          break;
     
       default:
         setVisibleVA(true)
@@ -229,7 +219,6 @@ const DetailActivity = ({navigation}) => {
 
   const handleCancel = async() => {
     setModal(true)
-
   }
 
   const handlesetCancel = async() => {
@@ -275,6 +264,37 @@ const DetailActivity = ({navigation}) => {
   const handleCancelDialog = () => {
     setReason('')
     setModal(false)
+  }
+
+  const handleCancelDialogRefund = () => {
+    setModalRefund(false)
+  }
+
+  const handleRefund = () => {
+    const channel = navigation.state.params.payment[0].payment_code
+    switch (channel) {
+      case '1':
+        setModalRefund(true)
+        break;
+    
+      default:
+        navigation.navigate('RefundScreen');
+        break;
+    }
+
+    
+    // const data = {
+    //   items: navigation.state.params.item,
+    //   totals:  navigation.state.params.total_price,
+    //   flag: 3,
+    // }
+  //  navigation.navigate('RefundScreen');
+
+  }
+
+  const handlesetRefund = () => {
+    setModalRefund(false)
+    console.log('Refund cc')
   }
 
   return (
@@ -368,6 +388,17 @@ const DetailActivity = ({navigation}) => {
             />
           </View>
         }
+
+        {visibleSearchReject &&
+          <View>
+            <GradientButton
+              onPressButton={()=> handleSearchReject()}
+              setting={shadowButton}
+              btnText="Search Mitra"
+            />
+          </View>
+        }
+
         {visibileCancel &&
           <View>
             <GradientButton
@@ -377,6 +408,15 @@ const DetailActivity = ({navigation}) => {
             />
           </View>
         }
+        {visibleRefund &&
+          <View>
+            <GradientButton
+              onPressButton={()=> handleRefund()}
+              setting={shadowButton}
+              btnText="Refund"
+            />
+          </View>
+        }        
         </View>
       </View>
       <Dialog.Container visible={modal}>
@@ -384,6 +424,12 @@ const DetailActivity = ({navigation}) => {
         <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
         <Dialog.Button label="Cancel" onPress={() => handleCancelDialog()} />
         <Dialog.Button label="OK" onPress={() => handlesetCancel()} />
+      </Dialog.Container>
+
+      <Dialog.Container visible={modalRefund}>
+        <Dialog.Title style={styles.dialogTitles}>Are you sure to refund this order?</Dialog.Title>
+        <Dialog.Button label="Cancel" onPress={() => handleCancelDialogRefund()} />
+        <Dialog.Button label="OK" onPress={() => handlesetRefund()} />
       </Dialog.Container>
       {load && <SplashMap />}
     </>
