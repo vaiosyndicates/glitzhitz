@@ -33,10 +33,30 @@ const RefundScreen = ({navigation}) => {
     }
   }, [])
 
-  const handleRefund = () => {
-    console.log('Refund')
-    showSuccess('Refund will be processed')
-    navigation.dispatch(resetActivity); 
+  const handleRefund = async() => {
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const data = navigation.state.params.id_order;
+      const response = await axios.post(
+        `${apiUrl}/User/refund_order`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+      
+      if(response.status === 200) {
+        showSuccess('Refund will be processed')
+        setTimeout(() => {
+          navigation.dispatch(resetActivity); 
+        }, 2000);
+      } else {
+        showError('Error')
+      }
+    } catch (error) {
+      showError(`Internal server ${error.message}`)
+    }
   }
 
   const getChannel = async() => {

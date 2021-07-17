@@ -19,6 +19,7 @@ import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, 
 import {apiUrl} from '../util/API'
 import { showError, showSuccess } from '../util/ShowMessage'
 import Dialog from "react-native-dialog"
+import { resetActivity } from '../util/ResetRouting'
 
 const DetailActivity = ({navigation}) => {
 
@@ -37,6 +38,7 @@ const DetailActivity = ({navigation}) => {
   const [reason, setReason] = useState('');
 
   useEffect(() => {
+    // console.log(navigation.state.params.statusMitra)
     checkDisabled()
     return () => {
       checkDisabled()
@@ -62,60 +64,132 @@ const DetailActivity = ({navigation}) => {
     navigation.navigate('HowToScreen', data);
   }
 
+
   const handleSearch = async() => {
     setLoad(true);
+    let searchs = 0;
     const data = {
       id_order: navigation.state.params.id_order,
     }
 
-    try {
-      const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.post(
-        `${apiUrl}/Service/searchmitra`, data, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: tokenizer,
-          }
-        }
-      );
-      
-      // console.log(response.data)
-      switch (response.status) {
-        case 200:
-          setLoad(false);
-          const data = {
-            idMitra: response.data.data.id_mitra,
-            namaMitra: response.data.data.nama_mitra,
-            rating: response.data.data.rating,
-            speciality: response.data.data.speciality,
-            item: navigation.state.params.item,
-            total: response.data.data.total,
-            serviceTime:  response.data.data.service_time,
-            trxID: response.data.data.trx_id,
-            id_order: response.data.data.id_order,
-            token: response.data.data.token,
-          }
-          console.log(data);
-          navigation.navigate('MitraScreen', data)
-          
-          break;
-      
-        default:
-          setLoad(false);
-          showError('Search Mitra Failed')
-          break;
-      }
+    const timer = setInterval(async() => {
+      if(searchs < 10){
+        try {
+          const tokenizer = await AsyncStorage.getItem('token')
+          const response = await axios.post(
+            `${apiUrl}/Service/searchmitra`, data, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenizer,
+              }
+            }
+          );
 
-    } catch (error) {
-      setLoad(false);
-      showError('Network Error')
-      console.log(error)
-    }
-    // console.log(data)
+          switch (response.status) {
+            case 200:
+              console.log(response.data.data.hasOwnProperty('id_mitra'))
+              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
+                setLoad(false);
+                clearInterval(timer);
+                const data = {
+                  idMitra: response.data.data.id_mitra,
+                  namaMitra: response.data.data.nama_mitra,
+                  rating: response.data.data.rating,
+                  speciality: response.data.data.speciality,
+                  item: navigation.state.params.item,
+                  total: response.data.data.total,
+                  serviceTime:  response.data.data.service_time,
+                  trxID: response.data.data.trx_id,
+                  id_order: response.data.data.id_order,
+                  token: response.data.data.token,
+                }
+                // console.log(data);
+                navigation.navigate('MitraScreen', data)
+              } else {
+                setLoad(true);
+                showError('No Mitra Found')
+              }
+              break;
+          
+            default:
+              setLoad(false);
+              showError('Search Mitra Failed')
+              break;
+          }
+
+        } catch (error) {
+          showError('Error')
+        }
+        searchs += 1;
+      }else{ 
+        setLoad(false);
+        clearInterval(timer);
+        showError('Mitra Not Found')
+      }
+    }, 5000);
+
+    // try {
+      
+    //   const tokenizer = await AsyncStorage.getItem('token')
+    //   const response = await axios.post(
+    //     `${apiUrl}/Service/searchmitra`, data, {
+    //       headers: {
+    //         Accept: 'application/json',
+    //         Authorization: tokenizer,
+    //       }
+    //     }
+    //   );
+
+      
+    //   // console.log(response.data)
+
+    //   switch (response.status) {
+    //     case 200:
+    //       console.log(response.data.data.hasOwnProperty('id_mitra'))
+    //       setLoad(false);
+    //       if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
+    //         clearInterval(timer);
+    //         const data = {
+    //           idMitra: response.data.data.id_mitra,
+    //           namaMitra: response.data.data.nama_mitra,
+    //           rating: response.data.data.rating,
+    //           speciality: response.data.data.speciality,
+    //           item: navigation.state.params.item,
+    //           total: response.data.data.total,
+    //           serviceTime:  response.data.data.service_time,
+    //           trxID: response.data.data.trx_id,
+    //           id_order: response.data.data.id_order,
+    //           token: response.data.data.token,
+    //         }
+    //         // console.log(data);
+    //         navigation.navigate('MitraScreen', data)
+    //       } else {
+    //         setLoad(false);
+    //         setFlag(true);
+    //         showError('No Mitra Found')
+    //       }
+    //       break;
+      
+    //     default:
+    //       setLoad(false);
+    //       showError('Search Mitra Failed')
+    //       break;
+    //   }
+
+    // } catch (error) {
+    //   setLoad(false);
+    //   showError(error.message)
+    //   console.log(error.response.data)
+    // }
   }
 
   const handleSearchReject = () => {
-    console.log('Search Reject');
+    setLoad(true);
+    const data = {
+      id_order: navigation.state.params.id_order,
+      id_mitra: navigation.state.params.id_mitra
+    }
+    console.log(data)
   }
 
 
@@ -125,7 +199,7 @@ const DetailActivity = ({navigation}) => {
     const channel = navigation.state.params.payment[0].payment_code
     const statusMitra =  navigation.state.params.statusMitra
     // console.log(availbility)
-    console.log(navigation.state.params)
+    // console.log(navigation.state.params)
     if(status == 'Completed') {
       setVisibleMitra(true)
     } else if(status == 'Canceled') {
@@ -135,7 +209,7 @@ const DetailActivity = ({navigation}) => {
       setDisabled(true);
       setVisibleCancel(true)
       setVisibleHowto(true)
-    } else if((status == 'Payment Success' && availbility == null && statusMitra.length === 0) || (status == 'Payment Success' && availbility !== null && statusMitra.length === 0)) {
+    } else if((status == 'Payment Success' && availbility == null && statusMitra === null) || (status == 'Payment Success' && availbility !== null && statusMitra === null)) {
       setDisabled(true);
       setVisibleSearch(true)
       setVisibleRefund(true)
@@ -225,7 +299,6 @@ const DetailActivity = ({navigation}) => {
     const data = {
       bill_no: navigation.state.params.id_order,
       trx_id: navigation.state.params.trx_id,
-      alasan: reason,
     }
 
     try {
@@ -248,21 +321,18 @@ const DetailActivity = ({navigation}) => {
         setReason('')
         setModal(false)
         setTimeout(() => {
-          navigation.navigate('ActivityScreen')
+          navigation.dispatch(resetActivity); 
         }, 2000);
       } else {
         showError('Error')
       }
     } catch (error) {
-      showError('Network Error')
+      showError(error.message)
       console.log(error)
-    }    
-    console.log(data)
-
+    }
   }
 
   const handleCancelDialog = () => {
-    setReason('')
     setModal(false)
   }
 
@@ -278,23 +348,43 @@ const DetailActivity = ({navigation}) => {
         break;
     
       default:
-        navigation.navigate('RefundScreen');
+        const data = {
+          id_order: navigation.state.params.id_order,
+        }
+        navigation.navigate('RefundScreen', data);
         break;
     }
-
-    
-    // const data = {
-    //   items: navigation.state.params.item,
-    //   totals:  navigation.state.params.total_price,
-    //   flag: 3,
-    // }
-  //  navigation.navigate('RefundScreen');
-
   }
 
-  const handlesetRefund = () => {
+  const handlesetRefund = async() => {
+    setReason('')
     setModalRefund(false)
-    console.log('Refund cc')
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const data = {
+        id_order: navigation.state.params.id_order,
+        alasan: reason,
+      }
+      const response = await axios.post(
+        `${apiUrl}/User/refund_order`, data, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+      
+      if(response.status === 200) {
+        showSuccess('Refund will be processed')
+        setTimeout(() => {
+          navigation.dispatch(resetActivity); 
+        }, 2000);
+      } else {
+        showError('Error')
+      }
+    } catch (error) {
+      showError(`Internal server ${error.message}`)
+    }
   }
 
   return (
@@ -420,14 +510,14 @@ const DetailActivity = ({navigation}) => {
         </View>
       </View>
       <Dialog.Container visible={modal}>
-        <Dialog.Title style={styles.dialogTitles}>Why you cancel this order?</Dialog.Title>
-        <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
+        <Dialog.Title style={styles.dialogTitles}>Are you sure to cancel this order</Dialog.Title>
         <Dialog.Button label="Cancel" onPress={() => handleCancelDialog()} />
         <Dialog.Button label="OK" onPress={() => handlesetCancel()} />
       </Dialog.Container>
 
       <Dialog.Container visible={modalRefund}>
-        <Dialog.Title style={styles.dialogTitles}>Are you sure to refund this order?</Dialog.Title>
+        <Dialog.Title style={styles.dialogTitles}>Why you refund this order?</Dialog.Title>
+        <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
         <Dialog.Button label="Cancel" onPress={() => handleCancelDialogRefund()} />
         <Dialog.Button label="OK" onPress={() => handlesetRefund()} />
       </Dialog.Container>

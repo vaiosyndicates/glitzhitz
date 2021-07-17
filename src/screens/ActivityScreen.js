@@ -331,12 +331,13 @@ const styles = StyleSheet.create({
     // borderLeftWidth: 1,
     // borderRightWidth: 1,
     elevation: 2,
-    marginTop: deviceHeight * 0.10,
+    marginTop: deviceHeight * 0.04,
   },
   flatList: {
     paddingHorizontal: deviceWidth * 0.02,
-    height: deviceHeight * 0.45,
+    height: deviceHeight * 0.75,
     flexGrow: 0,
+    paddingBottom: deviceHeight * 0.05,
   },
   headerSection: {
     flexDirection: 'row',
