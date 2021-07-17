@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { TextInput, View, StyleSheet, Image, TouchableHighlight, ScrollView, StatusBar, Platform } from 'react-native';
+import { 
+  TextInput, 
+  View, 
+  StyleSheet, 
+  Image, 
+  TouchableHighlight, 
+  ScrollView, 
+  StatusBar, 
+  Platform,
+} from 'react-native';
 
 import Text from '../elements/Text';
 import GradientButton from '../elements/GradientButton';
@@ -15,6 +24,7 @@ import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
 import { resetLogin } from '../util/ResetRouting';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageButton from '../elements/ImageButton';
 
 // @inject('sampleStore')
 class SignInScreen extends Component {
@@ -25,6 +35,9 @@ class SignInScreen extends Component {
       email: '',
       password: '',
       didLoaded: true,
+      hidden: true,
+      eyeOpen: true,
+      eyeClose: false,
     };
   }
 
@@ -51,16 +64,37 @@ class SignInScreen extends Component {
             <View style={CommonStyles.textInputField}>
               <Image
                 source={require('../../img/healer/padlock.png')}
-                style={{position:'absolute',bottom: 12,left: 20, width: 17, height: 22}}
+                style={{position:'absolute',bottom: 12,left: 20, width: 17, height: 22, zIndex: 99999}}
               />
               <TextInput
                 placeholder='Password'
                 style={CommonStyles.textInput}
                 underlineColorAndroid='transparent'
                 onChangeText={text => this.setState({password: text})}
-                secureTextEntry
+                secureTextEntry={this.state.hidden}
               />
             </View>
+            {this.state.eyeOpen &&
+              <ImageButton
+                appearance={{
+                    normal: require("../../img/glitz/eye-open.png"),
+                    highlight: require("../../img/glitz/eye-open.png")
+                }}
+                onPress={this.onPress.bind(this)}
+                style={styles.imageButton}
+              />
+            }
+           {this.state.eyeClose &&
+              <ImageButton
+                appearance={{
+                    normal: require("../../img/glitz/eye-closed.png"),
+                    highlight: require("../../img/glitz/eye-closed.png")
+                }}
+                onPress={this.onPressClose.bind(this)}
+                style={styles.imageButton}
+              />
+            }
+
           </View>
           <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
             <GradientButton
@@ -105,6 +139,18 @@ class SignInScreen extends Component {
   _goToSignUpScreen() {
     this.props.navigation.navigate('SignUpScreen');
   }
+
+  onPress = () => {
+    this.setState({eyeOpen: false})
+    this.setState({eyeClose: true})
+    this.setState({hidden: false})
+  };
+
+  onPressClose = () => {
+    this.setState({eyeOpen: true})
+    this.setState({eyeClose: false})
+    this.setState({hidden: true})
+  };
   
   async _onLoggedIn() {
     const data = {
@@ -183,5 +229,9 @@ const styles = StyleSheet.create({
   noteBoxes: {
     alignItems: 'center',
     marginTop: deviceHeight * -0.05,
+  },
+  imageButton: {
+    marginTop: deviceHeight * -0.075,
+    marginLeft: deviceWidth * 0.70
   }
 });

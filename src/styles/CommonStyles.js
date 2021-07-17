@@ -101,6 +101,7 @@ export default CommonStyles = StyleSheet.create({
     width: deviceWidth - 55,
     height: 45,
     paddingLeft: 50,
+    paddingRight: 50,
     color: colors.lightGrey,
     fontSize: fontSize.medium,
     fontFamily: fontFamily.regular,

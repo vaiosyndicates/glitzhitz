@@ -135,7 +135,7 @@ const DetailActivity = ({navigation}) => {
       setDisabled(true);
       setVisibleCancel(true)
       setVisibleHowto(true)
-    } else if(status == 'Payment Success' && availbility == null) {
+    } else if((status == 'Payment Success' && availbility == null && statusMitra.length === 0) || (status == 'Payment Success' && availbility !== null && statusMitra.length === 0)) {
       setDisabled(true);
       setVisibleSearch(true)
       setVisibleRefund(true)
@@ -416,7 +416,7 @@ const DetailActivity = ({navigation}) => {
               btnText="Refund"
             />
           </View>
-        }        
+        }
         </View>
       </View>
       <Dialog.Container visible={modal}>
