@@ -44,54 +44,66 @@ const DetailOrderScreen = ({navigation}) => {
   const setSplash = async() => {
     setLoad(true);
     dispatch({type: 'CLEAR_CART'});
-
+    let searchs = 0;
     const data = {
       id_order: trx.order[0].id_order,
     }
 
-    try {
-      const tokenizer = await AsyncStorage.getItem('token')
-      const response = await axios.post(
-        `${apiUrl}/Service/searchmitra`, data, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: tokenizer,
-          }
-        }
-      );
-      
-      // console.log(response.data)
-      switch (response.status) {
-        case 200:
-          setLoad(false);
-          const data = {
-            idMitra: response.data.data.id_mitra,
-            namaMitra: response.data.data.nama_mitra,
-            rating: response.data.data.rating,
-            speciality: response.data.data.speciality,
-            item: trx.order[0].item,
-            total: response.data.data.total,
-            serviceTime:  response.data.data.service_time,
-            trxID: response.data.data.trx_id,
-            id_order: response.data.data.id_order,
-            token: response.data.data.token,
-          }
-          // console.log(data);
-          navigation.navigate('MitraScreen', data)
+    const timer = setInterval(async() => {
+      if(searchs < 12){
+        try {
+          const tokenizer = await AsyncStorage.getItem('token')
+          const response = await axios.post(
+            `${apiUrl}/Service/searchmitra`, data, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenizer,
+              }
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              console.log(response.data.data.hasOwnProperty('id_mitra'))
+              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
+                setLoad(false);
+                clearInterval(timer);
+                const data = {
+                  idMitra: response.data.data.id_mitra,
+                  namaMitra: response.data.data.nama_mitra,
+                  rating: response.data.data.rating,
+                  speciality: response.data.data.speciality,
+                  item: trx.order[0].item,
+                  total: response.data.data.total,
+                  serviceTime:  response.data.data.service_time,
+                  trxID: response.data.data.trx_id,
+                  id_order: response.data.data.id_order,
+                  token: response.data.data.token,
+                }
+                // console.log(data);
+                navigation.navigate('MitraScreen', data)
+              } else {
+                setLoad(true);
+                showError('No Mitra Found')
+              }
+              break;
           
-          break;
-      
-        default:
-          setLoad(false);
-          showError('Search Mitra Failed')
-          break;
+            default:
+              setLoad(false);
+              showError('Search Mitra Failed')
+              break;
+          }
+
+        } catch (error) {
+          showError('Error')
+        }
+        searchs += 1;
+      }else{ 
+        setLoad(false);
+        clearInterval(timer);
+        showError('Mitra Not Found')
       }
-
-    } catch (error) {
-      showError('Network Error')
-      console.log(error)
-    }
-
+    }, 5000);
     // setTimeout(function () {
     //   setLoad(false);
 

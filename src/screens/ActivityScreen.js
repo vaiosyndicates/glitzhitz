@@ -144,7 +144,7 @@ const ActivityScreen = ({navigation}) => {
       );
     });
     // console.log(paySections);
-    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility == null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject')) {
+    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility === null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') || (status == 'Payment Success' && availbility !== null && statusMitra == null)) {
       visible = false
     }  else {
       visible = true

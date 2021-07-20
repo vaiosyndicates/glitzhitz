@@ -119,7 +119,7 @@ class MainServiceScreen extends Component {
         },
         cancelToken: this.signal.token,
       });
-      // console.log(response);
+      // console.log(response.data.data.services);
       if(response.status === 200){
         this.setState({data: response.data.data.services})
         this.props.service(response.data.data.services)
@@ -201,7 +201,7 @@ class MainServiceScreen extends Component {
   findMiddle(){
     const rdx = this.props.getService;
     const datas = (rdx === null || typeof rdx == 'undefined' ? this.state.data : this.props.getService);
-    let mid = datas[Math.ceil((datas.length - 1) / 2)];
+    let mid = datas[Math.floor(datas.length / 2)];
     return datas.indexOf(mid);
   }
 
@@ -268,7 +268,6 @@ class MainServiceScreen extends Component {
               </View>
               <View style={styles.colMainRight}>
                 {second.length > 0 && second.map((current, i) => {
-                  // console.log(current)
                     return (
                       <React.Fragment key={current.id_service}>
                         <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>

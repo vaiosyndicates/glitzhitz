@@ -36,6 +36,10 @@ const DetailActivity = ({navigation}) => {
   const [modal, setModal] = useState(false);
   const [modalRefund, setModalRefund] = useState(false);
   const [reason, setReason] = useState('');
+  const [channels, setChannels] = useState([])
+  const [account, setAccount] = useState('')
+  const [name, setName] = useState('')
+  const [selectedLanguage, setSelectedLanguage] = useState('1');
 
   useEffect(() => {
     // console.log(navigation.state.params.statusMitra)
@@ -71,9 +75,10 @@ const DetailActivity = ({navigation}) => {
     const data = {
       id_order: navigation.state.params.id_order,
     }
+    // console.log(data)
 
     const timer = setInterval(async() => {
-      if(searchs < 10){
+      if(searchs < 12){
         try {
           const tokenizer = await AsyncStorage.getItem('token')
           const response = await axios.post(
@@ -127,69 +132,71 @@ const DetailActivity = ({navigation}) => {
         showError('Mitra Not Found')
       }
     }, 5000);
-
-    // try {
-      
-    //   const tokenizer = await AsyncStorage.getItem('token')
-    //   const response = await axios.post(
-    //     `${apiUrl}/Service/searchmitra`, data, {
-    //       headers: {
-    //         Accept: 'application/json',
-    //         Authorization: tokenizer,
-    //       }
-    //     }
-    //   );
-
-      
-    //   // console.log(response.data)
-
-    //   switch (response.status) {
-    //     case 200:
-    //       console.log(response.data.data.hasOwnProperty('id_mitra'))
-    //       setLoad(false);
-    //       if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
-    //         clearInterval(timer);
-    //         const data = {
-    //           idMitra: response.data.data.id_mitra,
-    //           namaMitra: response.data.data.nama_mitra,
-    //           rating: response.data.data.rating,
-    //           speciality: response.data.data.speciality,
-    //           item: navigation.state.params.item,
-    //           total: response.data.data.total,
-    //           serviceTime:  response.data.data.service_time,
-    //           trxID: response.data.data.trx_id,
-    //           id_order: response.data.data.id_order,
-    //           token: response.data.data.token,
-    //         }
-    //         // console.log(data);
-    //         navigation.navigate('MitraScreen', data)
-    //       } else {
-    //         setLoad(false);
-    //         setFlag(true);
-    //         showError('No Mitra Found')
-    //       }
-    //       break;
-      
-    //     default:
-    //       setLoad(false);
-    //       showError('Search Mitra Failed')
-    //       break;
-    //   }
-
-    // } catch (error) {
-    //   setLoad(false);
-    //   showError(error.message)
-    //   console.log(error.response.data)
-    // }
   }
 
-  const handleSearchReject = () => {
+  const handleSearchReject = async() => {
     setLoad(true);
+    let searchs = 0;
     const data = {
       id_order: navigation.state.params.id_order,
       id_mitra: navigation.state.params.id_mitra
     }
-    console.log(data)
+
+    const timer = setInterval(async() => {
+      if(searchs < 12){
+        try {
+          const tokenizer = await AsyncStorage.getItem('token')
+          const response = await axios.post(
+            `${apiUrl}/Service/searchmitra_reject`, data, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenizer,
+              }
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              console.log(response.data.data.hasOwnProperty('id_mitra'))
+              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
+                setLoad(false);
+                clearInterval(timer);
+                const data = {
+                  idMitra: response.data.data.id_mitra,
+                  namaMitra: response.data.data.nama_mitra,
+                  rating: response.data.data.rating,
+                  speciality: response.data.data.speciality,
+                  item: navigation.state.params.item,
+                  total: response.data.data.total,
+                  serviceTime:  response.data.data.service_time,
+                  trxID: response.data.data.trx_id,
+                  id_order: response.data.data.id_order,
+                  token: response.data.data.token,
+                }
+                // console.log(data);
+                navigation.navigate('MitraScreen', data)
+              } else {
+                setLoad(true);
+                showError('No Mitra Found')
+              }
+              break;
+          
+            default:
+              setLoad(false);
+              showError('Search Mitra Failed')
+              break;
+          }
+
+        } catch (error) {
+          showError('Error')
+        }
+        searchs += 1;
+      }else{ 
+        setLoad(false);
+        clearInterval(timer);
+        showError('Mitra Not Found')
+      }
+    }, 5000);
   }
 
 
@@ -202,7 +209,10 @@ const DetailActivity = ({navigation}) => {
     // console.log(navigation.state.params)
     if(status == 'Completed') {
       setVisibleMitra(true)
-    } else if(status == 'Canceled') {
+    } else if(status == 'Refund') {
+      setDisabled(true);
+      setVisibleMitra(true)
+    }else if(status == 'Canceled') {
       setDisabled(true);
       setVisibleMitra(true)
     } else if(status == 'Waiting for payment') {
@@ -296,8 +306,9 @@ const DetailActivity = ({navigation}) => {
   }
 
   const handlesetCancel = async() => {
+    setModal(false)
     const data = {
-      bill_no: navigation.state.params.id_order,
+      id_order: navigation.state.params.id_order,
       trx_id: navigation.state.params.trx_id,
     }
 
@@ -312,7 +323,9 @@ const DetailActivity = ({navigation}) => {
         }
       );
 
-      if(response.status === 200) {
+      // console.log(response.data)
+
+      if(response.data.status === 200) {
         showSuccess('Order Cancelled')
         setDisabled(false)
         setVisibleDone(false)
@@ -328,7 +341,7 @@ const DetailActivity = ({navigation}) => {
       }
     } catch (error) {
       showError(error.message)
-      console.log(error)
+      console.log(error.response.data)
     }
   }
 
@@ -359,31 +372,35 @@ const DetailActivity = ({navigation}) => {
   const handlesetRefund = async() => {
     setReason('')
     setModalRefund(false)
+    const data = {
+      id_order: navigation.state.params.id_order,
+      nama_rekening: name,
+      bank: selectedLanguage,
+      rekening: account,
+      alasan: reason,
+    }
+
+    console.log(data)
+
     try {
       const tokenizer = await AsyncStorage.getItem('token');
-      const data = {
-        id_order: navigation.state.params.id_order,
-        alasan: reason,
-      }
       const response = await axios.post(
-        `${apiUrl}/User/refund_order`, data, {
+        `${apiUrl}/Payment/refund_order`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,
           }
         }
       );
-      
+      // console.log(response)
       if(response.status === 200) {
         showSuccess('Refund will be processed')
-        setTimeout(() => {
-          navigation.dispatch(resetActivity); 
-        }, 2000);
       } else {
         showError('Error')
       }
     } catch (error) {
       showError(`Internal server ${error.message}`)
+      console.log(error.response.data)
     }
   }
 

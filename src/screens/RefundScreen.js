@@ -3,7 +3,9 @@ import {
   StyleSheet, 
   Text, 
   View,
-  TextInput 
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native'
 import HeaderGradient from '../components/Header'
 import { colors, deviceHeight, deviceWidth, fontFamily, shadowOpt } from '../styles/variables'
@@ -13,8 +15,9 @@ import { apiUrl } from '../util/API';
 import axios from 'axios';
 import { Divider } from 'react-native-paper';
 import GradientButton from '../elements/GradientButton';
-import { showSuccess } from '../util/ShowMessage';
+import { showError, showSuccess } from '../util/ShowMessage';
 import { resetActivity } from '../util/ResetRouting';
+import Dialog from "react-native-dialog"
 
 const RefundScreen = ({navigation}) => {
   let signal = axios.CancelToken.source();
@@ -22,6 +25,9 @@ const RefundScreen = ({navigation}) => {
   const [selectedLanguage, setSelectedLanguage] = useState('402');
   const [channels, setChannels] = useState([])
   const [account, setAccount] = useState('')
+  const [name, setName] = useState('')
+  const [reason, setReason] = useState('')
+  const [modal, setModal] = useState(false)
 
   useEffect(() => {
     mounted = true
@@ -33,12 +39,28 @@ const RefundScreen = ({navigation}) => {
     }
   }, [])
 
-  const handleRefund = async() => {
+  const handleOpenDialog = async() => {
+    setModal(true)
+  }
+
+  const handleCancelDialog = () => {
+    setModal(false)
+  }
+
+  const handleOkDialog =  async() => {
+    setModal(false)
+    const data = {
+      id_order: navigation.state.params.id_order,
+      nama_rekening: name,
+      bank: selectedLanguage,
+      rekening: account,
+      alasan: reason,
+    }
+    // console.log(data)
     try {
       const tokenizer = await AsyncStorage.getItem('token');
-      const data = navigation.state.params.id_order;
       const response = await axios.post(
-        `${apiUrl}/User/refund_order`, data, {
+        `${apiUrl}/Payment/refund_order`, data, {
           headers: {
             Accept: 'application/json',
             Authorization: tokenizer,
@@ -46,30 +68,32 @@ const RefundScreen = ({navigation}) => {
         }
       );
       
+      // console.log(response)
       if(response.status === 200) {
         showSuccess('Refund will be processed')
         setTimeout(() => {
           navigation.dispatch(resetActivity); 
         }, 2000);
       } else {
-        showError('Error')
+        showError(response.message)
       }
     } catch (error) {
       showError(`Internal server ${error.message}`)
+      console.log(error.response.data)
     }
   }
 
   const getChannel = async() => {
     try {
       const tokenizer = await AsyncStorage.getItem('token');
-      const response = await axios.get(`${apiUrl}/Payment/channel`, {
+      const response = await axios.get(`${apiUrl}/Payment/bank`, {
         headers: {
           Authorization: tokenizer,
         },
         cancelToken: signal.token,
       });
-      // console.log(response.data.data.channel)
-      switch (response.status) {
+      // console.log(response.data.status)
+      switch (response.data.status) {
         case 200:
           setChannels(response.data.data.channel)
           break;
@@ -80,64 +104,127 @@ const RefundScreen = ({navigation}) => {
       }
     } catch (error) {
       showError(error.message)
-      console.log(error.response)
+      console.log(error.response.data)
     }
   }
 
   return (
+    <>
     <View style={styles.page}>
       <HeaderGradient title="Refund" onPress={()=> navigation.goBack(null)} dMarginLeft={0.29} />
       <View style={styles.container}>
-        <View>
-          <View style={styles.headerSection}>
-            <Text style={styles.refundTitle}>REFUND POLICIES</Text>
-            <Text style={styles.refundsubTitle}>Refund will be process differentialy according to your payment method</Text>
-          </View>
-          <Divider />
-          <View style={styles.bankSection}>
-            <View style={styles.pickerBank}>
-              <Picker
-                selectedValue={selectedLanguage}
-                dropdownIconColor={colors.violet1}
-                style={{marginLeft: deviceWidth * -0.04}}
-                onValueChange={(itemValue, itemIndex) =>
-                  setSelectedLanguage(itemValue)
-                }>
-                  {channels.length > 0 && channels.map((cur, i) => {
-                    return(
-                      <Picker.Item 
-                        label={cur.channel} 
-                        value={cur.code} 
-                        key={cur.code}
-                        color={colors.grey}
-                        style={styles.bankListItem}
-                      />
-                    )
-                  })}
-              </Picker>
-            </View>
+        <KeyboardAvoidingView behavior="height" style={Platform.OS !== 'android' && { flex: 1 }}> 
+          <ScrollView vertical showsVerticalScrollIndicator={false}>
             <View>
-              <TextInput
-                placeholder='Account Number'
-                style={styles.textInput}
-                underlineColorAndroid='transparent'
-                keyboardType="number-pad"
-                onChangeText={text => setAccount(text)}
-              />
+              <View style={styles.headerSection}>
+                <Text style={styles.refundTitle}>REFUND POLICIES</Text>
+                <Text style={styles.refundsubTitle}>Refund will be process differentialy according to your payment method</Text>
+              </View>
+              <Divider />
+              <View style={styles.bankSection}>
+                <View>
+                  <View style={styles.titleSection}>
+                    <Text style={styles.accountTitleName}>Account Name</Text>
+                  </View>
+                  <View>
+                    <TextInput
+                      placeholder='Account Name'
+                      style={styles.textInput}
+                      underlineColorAndroid='transparent'
+                      onChangeText={text => setName(text)}
+                    />
+                  </View>
+                </View>
+                <View>
+                  <View style={styles.titleSection}>
+                    <Text style={styles.accountTitleName}>Account Type</Text>
+                  </View>
+                  <View style={styles.pickerBank}>
+                    <Picker
+                      selectedValue={selectedLanguage}
+                      dropdownIconColor={colors.violet1}
+                      style={{marginLeft: deviceWidth * -0.04}}
+                      onValueChange={(itemValue, itemIndex) =>
+                        setSelectedLanguage(itemValue)
+                      }>
+                        {channels.length > 0 && channels.map((cur, i) => {
+                          // console.log(cur)
+                          return(
+                            <Picker.Item 
+                              label={cur.bank} 
+                              value={cur.code} 
+                              key={cur.code}
+                              color={colors.grey}
+                              style={styles.bankListItem}
+                            />
+                          )
+                        })}
+                    </Picker>
+                  </View>
+                </View>
+                <View>
+                  <View>
+                    <View>
+                      <View style={styles.titleSection}>
+                        <Text style={styles.accountTitleName}>Account Number or Phone Number</Text>
+                      </View>
+                    </View>
+                    <View>
+                      <TextInput
+                        placeholder='Account Number'
+                        style={styles.textInput}
+                        underlineColorAndroid='transparent'
+                        keyboardType="number-pad"
+                        onChangeText={text => setAccount(text)}
+                      />
+                    </View>
+                  </View>
+                </View>
+                <View>
+                  <View>
+                    <View>
+                      <View style={styles.titleSection}>
+                        <Text style={styles.accountTitleName}>Refund Reason</Text>
+                      </View>
+                    </View>
+                    <View>
+                      <TextInput
+                        placeholder='Refund Reason'
+                        style={styles.textInputReason}
+                        underlineColorAndroid='transparent'
+                        onChangeText={text => setReason(text)}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.buttonSection}>
+                <GradientButton
+                  // onPressButton={()=> setSplash()}
+                  // onPressButton={()=> navigation.navigate('FaspayScreen')}
+                  onPressButton={()=> handleOpenDialog()}
+                  setting={shadowOpt}
+                  btnText="Refund"
+                  disabled={
+                    account.length < 3 ||
+                    name.length < 3 ||
+                    reason.length < 3 
+                      ? true
+                      : false
+                  }
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.buttonSection}>
-            <GradientButton
-              // onPressButton={()=> setSplash()}
-              // onPressButton={()=> navigation.navigate('FaspayScreen')}
-              onPressButton={()=> handleRefund()}
-              setting={shadowOpt}
-              btnText="Refund"
-            />
-          </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </View>
+    <Dialog.Container visible={modal}>
+      <Dialog.Title style={styles.dialogTitles}>Are you sure to refund this order</Dialog.Title>
+      <Dialog.Button label="Cancel" onPress={() => handleCancelDialog()} />
+      <Dialog.Button label="OK" onPress={() => handleOkDialog()} />
+    </Dialog.Container>
+    </>
   )
 }
 
@@ -166,16 +253,45 @@ const styles = StyleSheet.create({
     marginVertical: deviceHeight * 0.02,
   },
   textInput: {
-    height: deviceHeight * 0.04,
-    marginVertical: deviceHeight * 0.05,
+    height: deviceHeight * 0.05,
+    marginVertical: deviceHeight * 0.02,
     borderBottomWidth: 0.5,
     borderColor: colors.borderViolet,
+    color: colors.grey,
+  },
+  textInputReason: {
+    height: deviceHeight * 0.05,
+    marginTop: deviceHeight * 0.02,
+    marginBottom: deviceHeight * 0.05,
+    borderBottomWidth: 0.5,
+    borderColor: colors.borderViolet,
+    color: colors.grey,
   },
   pickerBank: {
     borderBottomWidth: 0.5,
     borderColor: colors.borderViolet,
+    marginVertical: deviceHeight * 0.02,
+    color: colors.grey,
   },
   buttonSection: {
     marginLeft: deviceWidth * 0.02,
+  },
+  accountTitleName: {
+    fontSize: deviceWidth * 0.04,
+    fontFamily: fontFamily.regular,
+    color: colors.black,
+  },
+  titleSection: {
+    marginTop: deviceHeight * 0.01,
+  },
+  dialogTitles: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.04,
+    fontFamily: fontFamily.semiBold,
+  },
+  dialogInputs: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.035,
+    fontFamily: fontFamily.regular,
   }
 })

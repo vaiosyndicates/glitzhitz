@@ -131,6 +131,13 @@ const MainApp = () => {
                 { text: "OK", onPress: () => NavigationService.navigate(`${remoteMessage.data.screen}Screen`, data)}
               ]);
             break;
+
+            case "Refund":
+
+              Alert.alert("Refund Notification", "Go To Activity For Details", [
+                { text: "OK", onPress: () => NavigationService.navigate(`${remoteMessage.data.screen}Screen`)}
+              ]);
+            break;
   
             case "Chatting":
               // console.log(remoteMessage.data.flag);
@@ -168,6 +175,11 @@ const MainApp = () => {
             id_order: parseInt(remoteMessage.data.id_order),
           }
           NavigationService.navigate('DetailOrderScreen', data);
+          
+        } else if(remoteMessage.data.type === 'Refund') {
+          console.log('masuk')
+          NavigationService.navigate('ActivityScreen');
+
         } else {
           console.log('failed')
         }
