@@ -42,64 +42,21 @@ const DetailOrderScreen = ({navigation}) => {
   const [timed, setTimed] = useState('')
   const [reject, setReject] = useState(false)
   const [idMitra, setidMitra] = useState('')
-  let statusMitra = 'Reject'
+  const [statusMitra, setStatusMitra] = useState('')
+  const [statusOrder, setStatusOrder] = useState('')
+  const [detailOrder, setDetailOrder] = useState([])
+  let tesStatus = '';
+  let detailOrders = [];
+  var timer;
 
   const setSplash = async() => {
     setLoad(true);
     dispatch({type: 'CLEAR_CART'});
     let searchs = 0;
-    const data = {
-      id_order: trx.order[0].id_order,
-    }
 
-    const timer = setInterval(async() => {
+    timer = setInterval(async() => {
       if(searchs < 12){
-        try {
-          const tokenizer = await AsyncStorage.getItem('token')
-          const response = await axios.post(
-            `${apiUrl}/Service/searchmitra`, data, {
-              headers: {
-                Accept: 'application/json',
-                Authorization: tokenizer,
-              }
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              console.log(response.data.data.hasOwnProperty('id_mitra'))
-              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
-                setLoad(false);
-                clearInterval(timer);
-                const data = {
-                  idMitra: response.data.data.id_mitra,
-                  namaMitra: response.data.data.nama_mitra,
-                  rating: response.data.data.rating,
-                  speciality: response.data.data.speciality,
-                  item: trx.order[0].item,
-                  total: response.data.data.total,
-                  serviceTime:  response.data.data.service_time,
-                  trxID: response.data.data.trx_id,
-                  id_order: response.data.data.id_order,
-                  token: response.data.data.token,
-                }
-                // console.log(data);
-                navigation.navigate('MitraScreen', data)
-              } else {
-                setLoad(true);
-                showError('No Mitra Found')
-              }
-              break;
-          
-            default:
-              setLoad(false);
-              showError('Search Mitra Failed')
-              break;
-          }
-
-        } catch (error) {
-          showError(error.message)
-        }
+        searchingMitra()
         searchs += 1;
       }else{ 
         setLoad(false);
@@ -109,20 +66,128 @@ const DetailOrderScreen = ({navigation}) => {
         showError('Mitra Not Found')
       }
     }, 5000);
-    // setTimeout(function () {
-    //   setLoad(false);
-
-
-    //   // console.log(data)
-    //   navigation.navigate('MitraScreen', data)
-      
-    // }, 4000)
   };
+
+  const stopTimer = () => {
+    console.log("Stop");
+    clearInterval(timer);
+  }
+
+  const searchingMitra = async() => {
+    getStatusOrder()
+    // console.log(`status ordetr : ${statusOrder}`)
+    console.log(`status order Tes : ${tesStatus}`)
+    if(tesStatus === '' || tesStatus === null){
+      showError('Mitra No Response')
+      setLoad(true)
+
+      const datas = {
+        id_order: navigation.state.params.id_order ,
+      }
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('aaaaaaaaaaaaa')
+
+      } catch (error) {
+        showError(error.message)
+      }
+
+    } else {
+      console.log('jancok')
+      getFullOrder()
+      stopTimer()
+    }
+  }
+
+  const getStatusOrder = async() => {
+    const datas = {
+      id_order: navigation.state.params.id_order ,
+    }
+    // console.log(datas)
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const headers = {
+        Authorization: tokenizer,
+        Accept: 'application/json',
+      };
+
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+        params: datas
+      });
+
+      if(response.status === 200) {
+        console.log(` id: ${response.data.data.order[0].status_mitra}`)
+        tesStatus = response.data.data.order[0].status_mitra
+      }
+    } catch (error) {
+      showError(error.message)
+    }
+  }
+
+  const getFullOrder = async() => {
+    const datas = {
+      id_order: navigation.state.params.id_order ,
+    }
+    // console.log(datas)
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const headers = {
+        Authorization: tokenizer,
+        Accept: 'application/json',
+      };
+
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+        params: datas
+      });
+
+      if(response.status === 200) {
+        // console.log(response.data.data.order[0])
+        setLoad(false)
+        stopTimer()
+        const mitra = {
+          idMitra: response.data.data.order[0].id_mitra,
+          namaMitra: response.data.data.order[0].nama_mitra,
+          rating: response.data.data.order[0].rating,
+          speciality: response.data.data.order[0].speciality,
+          item: response.data.data.order[0].item,
+          total: response.data.data.order[0].total_price,
+          serviceTime:  response.data.data.order[0].service_time,
+          trxID: response.data.data.order[0].trx_id,
+          id_order: response.data.data.order[0].id_order,
+          token: response.data.data.order[0].android_device_id_mitra,
+        }
+        // console.log(mitra)
+        navigation.navigate('MitraScreen', mitra)
+      }
+
+
+    } catch (error) {
+      showError(error.message)
+    }
+  }
 
   const handleSearchReject = async() => {
     setLoad(true);
     let searchs = 0;
-    const datas = {
+    const data = {
       id_order: trx.order[0].id_order,
       id_mitra: trx.order[0].id_mitra
     }
@@ -134,7 +199,7 @@ const DetailOrderScreen = ({navigation}) => {
         try {
           const tokenizer = await AsyncStorage.getItem('token')
           const response = await axios.post(
-            `${apiUrl}/Service/searchmitra_reject`, datas, {
+            `${apiUrl}/Service/searchmitra_reject`, data, {
               headers: {
                 Accept: 'application/json',
                 Authorization: tokenizer,
@@ -209,7 +274,7 @@ const DetailOrderScreen = ({navigation}) => {
         mounted = false;
       }      
     }
-  }, [idMitra])
+  }, [idMitra, statusMitra])
 
   useEffect(() => {
     if(flag === 2) {
@@ -289,6 +354,7 @@ const DetailOrderScreen = ({navigation}) => {
         // console.log(response.data.data.order[0].status_mitra)
         setTrx(response.data.data)
         setidMitra(response.data.data.order[0].id_mitra)
+        setStatusMitra(response.data.data.order[0].status_mitra)
         // setidMitra()
         // const dater = trx.order[0].service_time
         // const dateSplit = dater.split(' ');
@@ -570,7 +636,7 @@ const DetailOrderScreen = ({navigation}) => {
             />
           } */}
 
-         {flag === 2 && trx.hasOwnProperty('order') && idMitra === null && statusMitra === '' &&
+         {flag === 2 && trx.hasOwnProperty('order') && idMitra === null && statusMitra === null &&
             <GradientButton
             // onPressButton={()=> setSplash()}
             // onPressButton={()=> navigation.navigate('FaspayScreen')}
@@ -580,7 +646,7 @@ const DetailOrderScreen = ({navigation}) => {
           />
         }
 
-        {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === '' &&
+        {flag === 2 && trx.hasOwnProperty('order') && (idMitra !== null && statusMitra === null) &&
           <GradientButton
             // onPressButton={()=> setSplash()}
             // onPressButton={()=> navigation.navigate('FaspayScreen')}

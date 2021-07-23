@@ -24,7 +24,6 @@ import { resetActivity } from '../util/ResetRouting'
 
 const DetailActivityOrder = ({navigation}) => {
   let signal = axios.CancelToken.source();
-  let statusMitra = 'Approve'
   const [data, setData] = useState([]);
   const [mounted, setMounted] = useState(true)
   const [disabled, setDisabled] = useState(false)
@@ -235,7 +234,7 @@ const DetailActivityOrder = ({navigation}) => {
 
           switch (response.status) {
             case 200:
-              console.log(response.data.data.hasOwnProperty('id_mitra'))
+              // console.log(response.data.data.hasOwnProperty('id_mitra'))
               if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
                 setLoad(false);
                 clearInterval(timer);
@@ -475,7 +474,7 @@ const DetailActivityOrder = ({navigation}) => {
             </>
           }
 
-          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra === null && statusMitra === null &&
+          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra === null && data.order[0].status_mitra === null &&
             <>
               <View>
                 <GradientButton
@@ -494,7 +493,7 @@ const DetailActivityOrder = ({navigation}) => {
             </>
           }
 
-          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && statusMitra === null &&
+          {data.order[0].status === 'Payment Success' && (data.order[0].id_mitra !== null && data.order[0].status_mitra === null) || (data.order[0].id_mitra !== null && data.order[0].status_mitra === '')  &&
             <>
               <View>
                 <GradientButton
@@ -513,7 +512,7 @@ const DetailActivityOrder = ({navigation}) => {
             </>
           }
 
-          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && statusMitra === 'Reject' &&
+          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && data.order[0].status_mitra === 'Reject' &&
             <>
               <View>
                 <GradientButton
@@ -532,7 +531,7 @@ const DetailActivityOrder = ({navigation}) => {
             </>
           }
 
-          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && statusMitra === 'Approve' &&
+          {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && data.order[0].status_mitra === 'Approve' &&
             <>
               <View>
                 <GradientButton
