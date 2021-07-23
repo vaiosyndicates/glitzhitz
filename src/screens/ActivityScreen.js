@@ -206,9 +206,9 @@ const ActivityScreen = ({navigation}) => {
 
   const handleDetail = (obj) => {
     // console.log(obj)
-    navigation.navigate('DetailActivityScreen', obj);
+    // navigation.navigate('DetailActivityScreen', obj);
     // navigation.navigate('DetailOrderScreen');
-
+    navigation.navigate('DetailActivityOrder', obj);
   }
 
   const handleChat = (obj) => {

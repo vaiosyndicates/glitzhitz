@@ -7,7 +7,7 @@ const SplashMap = () => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <Text style={styles.titleCarts}>Find Nearby Driver</Text>
+        <Text style={styles.titleCarts}>Find Nearby Mitra</Text>
         <View style={styles.imageWrapper}>
           <Image
             source={require('../../../img/glitz/maps.png')}

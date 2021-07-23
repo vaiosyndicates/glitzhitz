@@ -4,14 +4,13 @@ import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
 import Buttons from '../Buttons'
 
 const MitraInfo = ({onPress, disabled, ava, name, speciality, status}) => {
-
   return (
     <View style={styles.page}>
       <View style={styles.container}>
         <View style={styles.mitraInfo}>
           <View>
             <Image
-              source={{uri: ava}}
+              source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}}
               style={styles.avatar} />
           </View>
           <View style={styles.mitraDetail}>
@@ -20,7 +19,7 @@ const MitraInfo = ({onPress, disabled, ava, name, speciality, status}) => {
           </View>
         </View>
         <View></View>
-        {status != 'Canceled' &&
+        {(status !== 'Canceled') &&
           <View style={styles.buttonSection}>
             <Buttons onPress={onPress} disabled={disabled} title='REORDER'/>
           </View>

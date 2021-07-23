@@ -40,6 +40,9 @@ const DetailOrderScreen = ({navigation}) => {
   const [channels, setChannels] = useState([])
   const [dated, setDated] = useState('')
   const [timed, setTimed] = useState('')
+  const [reject, setReject] = useState(false)
+  const [idMitra, setidMitra] = useState('')
+  let statusMitra = 'Reject'
 
   const setSplash = async() => {
     setLoad(true);
@@ -95,12 +98,14 @@ const DetailOrderScreen = ({navigation}) => {
           }
 
         } catch (error) {
-          showError('Error')
+          showError(error.message)
         }
         searchs += 1;
       }else{ 
         setLoad(false);
         clearInterval(timer);
+        setReject(true)
+        getOrderActive()
         showError('Mitra Not Found')
       }
     }, 5000);
@@ -113,6 +118,74 @@ const DetailOrderScreen = ({navigation}) => {
       
     // }, 4000)
   };
+
+  const handleSearchReject = async() => {
+    setLoad(true);
+    let searchs = 0;
+    const datas = {
+      id_order: trx.order[0].id_order,
+      id_mitra: trx.order[0].id_mitra
+    }
+
+    // console.log(datas)
+
+    const timer = setInterval(async() => {
+      if(searchs < 12){
+        try {
+          const tokenizer = await AsyncStorage.getItem('token')
+          const response = await axios.post(
+            `${apiUrl}/Service/searchmitra_reject`, datas, {
+              headers: {
+                Accept: 'application/json',
+                Authorization: tokenizer,
+              }
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              console.log(response.data.data.hasOwnProperty('id_mitra'))
+              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
+                setLoad(false);
+                clearInterval(timer);
+                const data = {
+                  idMitra: response.data.data.id_mitra,
+                  namaMitra: response.data.data.nama_mitra,
+                  rating: response.data.data.rating,
+                  speciality: response.data.data.speciality,
+                  item: navigation.state.params.item,
+                  total: response.data.data.total,
+                  serviceTime:  response.data.data.service_time,
+                  trxID: response.data.data.trx_id,
+                  id_order: response.data.data.id_order,
+                  token: response.data.data.token,
+                }
+                // console.log(data);
+                navigation.navigate('MitraScreen', data)
+              } else {
+                setLoad(true);
+                showError('No Mitra Found')
+              }
+              break;
+          
+            default:
+              setLoad(false);
+              showError('Search Mitra Failed')
+              break;
+          }
+
+        } catch (error) {
+          showError('Error')
+        }
+        searchs += 1;
+      }else{ 
+        setLoad(false);
+        clearInterval(timer);
+        getOrderActive()
+        showError('Mitra Not Found')
+      }
+    }, 5000);
+  }
 
   useEffect(() => {
     const flag = navigation.state.params.flag;
@@ -136,12 +209,12 @@ const DetailOrderScreen = ({navigation}) => {
         mounted = false;
       }      
     }
-  }, [])
+  }, [idMitra])
 
   useEffect(() => {
     if(flag === 2) {
       const backAction = () => {
-        Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        Alert.alert("Hold on!", "Are you sure you want to go home?", [
           {
             text: "Cancel",
             onPress: () => null,
@@ -161,22 +234,22 @@ const DetailOrderScreen = ({navigation}) => {
     } 
   }, [trx])
 
-  useEffect(() => {
-    const flag = navigation.state.params.flag;
-    if(flag === 2) {
-      const timer = setInterval(() => {
-        getOrderActiveBackground();
-        setSeconds(seconds + 1);
-      }, 5000);
+  // useEffect(() => {
+  //   const flag = navigation.state.params.flag;
+  //   if(flag === 2) {
+  //     const timer = setInterval(() => {
+  //       getOrderActiveBackground();
+  //       setSeconds(seconds + 1);
+  //     }, 5000);
      
 
-      // clearing interval
-      return () => {
-        mounted = false
-        clearInterval(timer);
-      }      
-    }
-  });
+  //     // clearing interval
+  //     return () => {
+  //       mounted = false
+  //       clearInterval(timer);
+  //     }      
+  //   }
+  // });
 
   const handleBackNavigation = () => {
     Alert.alert("Hold on!", "Are you sure you want to go back?", [
@@ -213,8 +286,10 @@ const DetailOrderScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        // console.log(response.data.data)
+        // console.log(response.data.data.order[0].status_mitra)
         setTrx(response.data.data)
+        setidMitra(response.data.data.order[0].id_mitra)
+        // setidMitra()
         // const dater = trx.order[0].service_time
         // const dateSplit = dater.split(' ');
         // setDated(dateSplit[0])
@@ -262,7 +337,7 @@ const DetailOrderScreen = ({navigation}) => {
 
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
-        // console.log(response.data.data.order[0])
+        // console.log(response.data.data)
         setTrx(response.data.data);
       } else {
         showError('Failed')
@@ -386,7 +461,7 @@ const DetailOrderScreen = ({navigation}) => {
 
   return (
     <>
-    {/* {console.log(trx.order[0])} */}
+    {console.log(idMitra)}
     <View style={styles.page}>
       <HeaderGradient title="Detail"  onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.30}  />
       <View style={styles.container}>
@@ -485,7 +560,7 @@ const DetailOrderScreen = ({navigation}) => {
             />
           }
 
-          {flag === 2 &&
+          {/* {flag === 2 &&
             <GradientButton
               // onPressButton={()=> setSplash()}
               // onPressButton={()=> navigation.navigate('FaspayScreen')}
@@ -493,7 +568,37 @@ const DetailOrderScreen = ({navigation}) => {
               setting={shadowOpt}
               btnText="Search Mitra"
             />
-          }
+          } */}
+
+         {flag === 2 && trx.hasOwnProperty('order') && idMitra === null && statusMitra === '' &&
+            <GradientButton
+            // onPressButton={()=> setSplash()}
+            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+            onPressButton={()=> setSplash()}
+            setting={shadowOpt}
+            btnText="Search Mitra"
+          />
+        }
+
+        {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === '' &&
+          <GradientButton
+            // onPressButton={()=> setSplash()}
+            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+            onPressButton={()=> setSplash()}
+            setting={shadowOpt}
+            btnText="Search status"
+          />
+        }
+
+        {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === 'Reject' &&
+          <GradientButton
+            // onPressButton={()=> setSplash()}
+            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+            onPressButton={()=> handleSearchReject()}
+            setting={shadowOpt}
+            btnText="Search Reject"
+          />
+        }
 
         </View>
       </View>

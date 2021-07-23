@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import { colors, deviceHeight, fontFamily, fontSize } from '../../../styles/variables'
 
 const PaySection = ({title, data}) => {
-  // console.log(data[0].status)
+  // console.log(data)
   return (
     <View style={styles.page}>
       <View style={styles.container}>
