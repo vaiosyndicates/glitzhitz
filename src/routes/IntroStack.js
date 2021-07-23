@@ -72,6 +72,7 @@ import RatingScreen from '../screens/RatingScreen';
 import MitraScreen from '../screens/MitraScreen';
 import HowToScreen from '../screens/HowToScreen';
 import RefundScreen from '../screens/RefundScreen';
+import DetailActivityOrder from '../screens/DetailActivityOrder';
 
 const AppRouter = StackRouter(
   {
@@ -315,6 +316,9 @@ const AppRouter = StackRouter(
     },
     RefundScreen: {
       screen: RefundScreen
+    },
+    DetailActivityOrder: {
+      screen: DetailActivityOrder
     },
   },
   {
