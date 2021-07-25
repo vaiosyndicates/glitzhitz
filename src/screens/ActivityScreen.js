@@ -59,11 +59,12 @@ const ActivityScreen = ({navigation}) => {
       const tokenizer = await AsyncStorage.getItem('token')
       const response = await axios.get(`${apiUrl}/User/order`, {
         headers: {
+          contentType: 'application/json;charset=utf-8',
           Authorization: tokenizer,
         },
         cancelToken: signal.token,
       });
-      
+      // console.log(response.data.data.order)
       if(response.status === 200) {
         dispatch({type: 'SET_LOADING', value: false});
         dispatch({type: 'ADD_ORDER', value: response.data.data.order});
@@ -124,7 +125,7 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
-    // console.log(datas.status_mitra)
+    // console.log(datas.status)
       const item = [];
       let visible = false
       const status = datas.status
@@ -152,7 +153,6 @@ const ActivityScreen = ({navigation}) => {
 
 
     return (
-
       <View style={styles.listData}>
         <View style={styles.headers}>
           <View style={styles.mitraSection}>

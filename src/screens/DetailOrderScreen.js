@@ -47,6 +47,7 @@ const DetailOrderScreen = ({navigation}) => {
   const [detailOrder, setDetailOrder] = useState([])
   let tesStatus = '';
   let detailOrders = [];
+  let idMitraReject = ''
   var timer;
 
   const setSplash = async() => {
@@ -109,6 +110,43 @@ const DetailOrderScreen = ({navigation}) => {
     }
   }
 
+  const searchingMitraReject = async() => {
+    getStatusOrder()
+    // console.log(`status ordetr : ${statusOrder}`)
+    console.log(`status order Tes : ${tesStatus}`)
+    if(tesStatus === '' || tesStatus === null || tesStatus === 'Reject'){
+      showError('Mitra No Response')
+      setLoad(true)
+
+      const datas = {
+        id_order: navigation.state.params.id_order ,
+        id_mitra: idMitraReject,
+      }
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra_reject`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('masuk reject')
+
+      } catch (error) {
+        showError(error.message)
+      }
+
+    } else {
+      console.log('jancok')
+      getFullOrder()
+      stopTimer()
+    }
+  }
+
   const getStatusOrder = async() => {
     const datas = {
       id_order: navigation.state.params.id_order ,
@@ -132,6 +170,7 @@ const DetailOrderScreen = ({navigation}) => {
       if(response.status === 200) {
         console.log(` id: ${response.data.data.order[0].status_mitra}`)
         tesStatus = response.data.data.order[0].status_mitra
+        idMitraReject = response.data.data.order[0].id_mitra
       }
     } catch (error) {
       showError(error.message)
@@ -186,66 +225,17 @@ const DetailOrderScreen = ({navigation}) => {
 
   const handleSearchReject = async() => {
     setLoad(true);
+    dispatch({type: 'CLEAR_CART'});
     let searchs = 0;
-    const data = {
-      id_order: trx.order[0].id_order,
-      id_mitra: trx.order[0].id_mitra
-    }
 
-    // console.log(datas)
-
-    const timer = setInterval(async() => {
+    timer = setInterval(async() => {
       if(searchs < 12){
-        try {
-          const tokenizer = await AsyncStorage.getItem('token')
-          const response = await axios.post(
-            `${apiUrl}/Service/searchmitra_reject`, data, {
-              headers: {
-                Accept: 'application/json',
-                Authorization: tokenizer,
-              }
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              console.log(response.data.data.hasOwnProperty('id_mitra'))
-              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
-                setLoad(false);
-                clearInterval(timer);
-                const data = {
-                  idMitra: response.data.data.id_mitra,
-                  namaMitra: response.data.data.nama_mitra,
-                  rating: response.data.data.rating,
-                  speciality: response.data.data.speciality,
-                  item: navigation.state.params.item,
-                  total: response.data.data.total,
-                  serviceTime:  response.data.data.service_time,
-                  trxID: response.data.data.trx_id,
-                  id_order: response.data.data.id_order,
-                  token: response.data.data.token,
-                }
-                // console.log(data);
-                navigation.navigate('MitraScreen', data)
-              } else {
-                setLoad(true);
-                showError('No Mitra Found')
-              }
-              break;
-          
-            default:
-              setLoad(false);
-              showError('Search Mitra Failed')
-              break;
-          }
-
-        } catch (error) {
-          showError('Error')
-        }
+        searchingMitraReject()
         searchs += 1;
       }else{ 
         setLoad(false);
         clearInterval(timer);
+        setReject(true)
         getOrderActive()
         showError('Mitra Not Found')
       }
@@ -527,7 +517,7 @@ const DetailOrderScreen = ({navigation}) => {
 
   return (
     <>
-    {console.log(idMitra)}
+    {/* {console.log(idMitra)} */}
     <View style={styles.page}>
       <HeaderGradient title="Detail"  onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.30}  />
       <View style={styles.container}>

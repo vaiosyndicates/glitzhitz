@@ -163,7 +163,8 @@ class SignInScreen extends Component {
       const response = await axios.post(
         'http://api.glitzandhitz.com/index.php/User/login', data, {
           headers: {
-            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
           }
         }
       );

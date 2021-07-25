@@ -83,7 +83,7 @@ class MainServiceScreen extends Component {
         showError('Failed');
       }
     } catch (error) {
-      console.log(error)
+      console.log(error.response)
       if (axios.isCancel(error)) {
         console.log('Error: ', error.message);
       } else {
@@ -95,6 +95,10 @@ class MainServiceScreen extends Component {
 
             case 405:
               this.props.timeout({code: 405, status: true});
+              break;
+
+            case 415:
+              this.props.timeout({code: 415, status: true});
               break;
 
             case 505:

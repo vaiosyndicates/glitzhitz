@@ -36,6 +36,9 @@ const DetailActivityOrder = ({navigation}) => {
   const [account, setAccount] = useState('')
   const [name, setName] = useState('')
   const [selectedLanguage, setSelectedLanguage] = useState('1');
+  var timer
+  let tesStatus = ''
+  let idMitraReject = ''
 
 
   useEffect(() => {
@@ -210,63 +213,24 @@ const DetailActivityOrder = ({navigation}) => {
   // end How To //
 
 
+  // stop timer
+  const stopTimer = () => {
+    console.log("Stop");
+    clearInterval(timer);
+  }
+
+  //
+
+
+
   // search awal //
   const handleSearch = async() => {
     setLoad(true);
     let searchs = 0;
-    const data = {
-      id_order: navigation.state.params.id_order,
-    }
-    // console.log(data)
 
-    const timer = setInterval(async() => {
+    timer = setInterval(async() => {
       if(searchs < 12){
-        try {
-          const tokenizer = await AsyncStorage.getItem('token')
-          const response = await axios.post(
-            `${apiUrl}/Service/searchmitra`, data, {
-              headers: {
-                Accept: 'application/json',
-                Authorization: tokenizer,
-              }
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              // console.log(response.data.data.hasOwnProperty('id_mitra'))
-              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
-                setLoad(false);
-                clearInterval(timer);
-                const data = {
-                  idMitra: response.data.data.id_mitra,
-                  namaMitra: response.data.data.nama_mitra,
-                  rating: response.data.data.rating,
-                  speciality: response.data.data.speciality,
-                  item: navigation.state.params.item,
-                  total: response.data.data.total,
-                  serviceTime:  response.data.data.service_time,
-                  trxID: response.data.data.trx_id,
-                  id_order: response.data.data.id_order,
-                  token: response.data.data.token,
-                }
-                // console.log(data);
-                navigation.navigate('MitraScreen', data)
-              } else {
-                setLoad(true);
-                showError('No Mitra Found')
-              }
-              break;
-          
-            default:
-              setLoad(false);
-              showError('Search Mitra Failed')
-              break;
-          }
-
-        } catch (error) {
-          showError('Error')
-        }
+        searchingMitra()
         searchs += 1;
       }else{ 
         setLoad(false);
@@ -277,75 +241,207 @@ const DetailActivityOrder = ({navigation}) => {
     }, 5000);
   }
 
+
+  const searchingMitra = async() => {
+    getStatusOrder()
+    // console.log(`status ordetr : ${statusOrder}`)
+    console.log(`status order activity : ${tesStatus}`)
+    if(tesStatus === '' || tesStatus === null){
+      showError('Mitra No Response')
+      setLoad(true)
+
+      const datas = {
+        id_order: navigation.state.params.id_order ,
+      }
+
+      console.log(`id mitra : ${idMitraReject}`);
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+        // console.log(response)
+        console.log('*******************')
+
+      } catch (error) {
+        showError(error.message)
+      }
+
+    } else if(tesStatus === 'Reject') {
+      const datas = {
+        id_order:  navigation.state.params.id_order,
+        id_mitra: idMitraReject,
+      }
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra_reject`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('REJECTREJECTREJECT')
+
+      } catch (error) {
+        showError(error.message)
+      }
+
+    } else {
+      console.log('setan')
+      getFullOrder()
+      stopTimer()
+    }
+  }
+
+  const getStatusOrder = async() => {
+    const datas = {
+      id_order: navigation.state.params.id_order ,
+    }
+    // console.log(datas)
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const headers = {
+        Authorization: tokenizer,
+        Accept: 'application/json',
+      };
+
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+        params: datas
+      });
+
+      if(response.status === 200) {
+        console.log(` id: ${response.data.data.order[0].status_mitra}`)
+        tesStatus = response.data.data.order[0].status_mitra
+        idMitraReject = response.data.data.order[0].id_mitra
+      }
+    } catch (error) {
+      showError(error.message)
+    }
+  }
+
+  const getFullOrder = async() => {
+    const datas = {
+      id_order: navigation.state.params.id_order ,
+    }
+    // console.log(datas)
+    try {
+      const tokenizer = await AsyncStorage.getItem('token')
+      const headers = {
+        Authorization: tokenizer,
+        Accept: 'application/json',
+      };
+
+      const response = await axios.get(`${apiUrl}/Order/detail`, {
+        headers: {
+          Authorization: tokenizer,
+        },
+        cancelToken: signal.token,
+        params: datas
+      });
+
+      if(response.status === 200) {
+        // console.log(response.data.data.order[0])
+        setLoad(false)
+        stopTimer()
+        const mitra = {
+          idMitra: response.data.data.order[0].id_mitra,
+          namaMitra: response.data.data.order[0].nama_mitra,
+          rating: response.data.data.order[0].rating,
+          speciality: response.data.data.order[0].speciality,
+          item: response.data.data.order[0].item,
+          total: response.data.data.order[0].total_price,
+          serviceTime:  response.data.data.order[0].service_time,
+          trxID: response.data.data.order[0].trx_id,
+          id_order: response.data.data.order[0].id_order,
+          token: response.data.data.order[0].android_device_id_mitra,
+        }
+        // console.log(mitra)
+        navigation.navigate('MitraScreen', mitra)
+      }
+
+
+    } catch (error) {
+      showError(error.message)
+    }
+  }
+
   // end search //
 
   // search reject
   const handleSearchReject = async() => {
-    // setLoad(true);
+    setLoad(true);
+    dispatch({type: 'CLEAR_CART'});
     let searchs = 0;
-    const datas = {
-      id_order: data.order[0].id_order,
-      id_mitra: data.order[0].id_mitra
-    }
 
-    // console.log(datas)
-
-    const timer = setInterval(async() => {
+    timer = setInterval(async() => {
       if(searchs < 12){
-        try {
-          const tokenizer = await AsyncStorage.getItem('token')
-          const response = await axios.post(
-            `${apiUrl}/Service/searchmitra_reject`, datas, {
-              headers: {
-                Accept: 'application/json',
-                Authorization: tokenizer,
-              }
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              console.log(response.data.data.hasOwnProperty('id_mitra'))
-              if(response.data.data.length > 0 || response.data.data.hasOwnProperty('id_mitra')) {
-                setLoad(false);
-                clearInterval(timer);
-                const data = {
-                  idMitra: response.data.data.id_mitra,
-                  namaMitra: response.data.data.nama_mitra,
-                  rating: response.data.data.rating,
-                  speciality: response.data.data.speciality,
-                  item: navigation.state.params.item,
-                  total: response.data.data.total,
-                  serviceTime:  response.data.data.service_time,
-                  trxID: response.data.data.trx_id,
-                  id_order: response.data.data.id_order,
-                  token: response.data.data.token,
-                }
-                // console.log(data);
-                navigation.navigate('MitraScreen', data)
-              } else {
-                setLoad(true);
-                showError('No Mitra Found')
-              }
-              break;
-          
-            default:
-              setLoad(false);
-              showError('Search Mitra Failed')
-              break;
-          }
-
-        } catch (error) {
-          showError('Error')
-        }
+        searchingMitraReject()
         searchs += 1;
       }else{ 
         setLoad(false);
         clearInterval(timer);
+        // setReject(true)
         getDetail()
         showError('Mitra Not Found')
       }
     }, 5000);
+  }
+
+
+  const searchingMitraReject = async() => {
+    getStatusOrder()
+    // console.log(`status ordetr : ${statusOrder}`)
+    console.log(`status order reject : ${tesStatus}`)
+    if(tesStatus === 'Reject' || tesStatus === null || tesStatus === ''){
+      showError('Mitra No Response')
+      setLoad(true)
+
+      const datas = {
+        id_order: navigation.state.params.id_order ,
+        id_mitra: idMitraReject === null || idMitraReject === '' ? data.order[0].id_mitra : idMitraReject,
+      }
+
+      console.log(datas);
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra_reject`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('masuk reject cok')
+
+      } catch (error) {
+        showError(error.message)
+        console.log(error.response.data)
+      }
+
+    } else {
+      console.log('--------------------------')
+      console.log('stop rejecting')
+      console.log('--------------------------')
+      getFullOrder()
+      stopTimer()
+    }
   }
   // end search reject //
 
@@ -455,7 +551,7 @@ const DetailActivityOrder = ({navigation}) => {
           </ScrollView>
         </View>
         <View style={styles.buttonConfirmSection}>
-          {data.order[0].status === 'Waiting Payment' &&
+          {data.order[0].status === 'Waiting for payment' &&
             <>
               <View>
                 <GradientButton
@@ -493,7 +589,7 @@ const DetailActivityOrder = ({navigation}) => {
             </>
           }
 
-          {data.order[0].status === 'Payment Success' && (data.order[0].id_mitra !== null && data.order[0].status_mitra === null) || (data.order[0].id_mitra !== null && data.order[0].status_mitra === '')  &&
+          {data.order[0].status === 'Payment Success' && (data.order[0].id_mitra !== null && data.order[0].status_mitra === null) &&
             <>
               <View>
                 <GradientButton
