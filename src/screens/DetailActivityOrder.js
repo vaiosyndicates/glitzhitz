@@ -44,8 +44,8 @@ const DetailActivityOrder = ({navigation}) => {
   useEffect(() => {
     if(mounted) {
       getDetail()
+
     } 
-    // console.log(data.order[0].id_mitra)
     return () => {
       setMounted(false)
     }
@@ -54,7 +54,7 @@ const DetailActivityOrder = ({navigation}) => {
 
   const getDetail = async() => {
     dispatch({type: 'SET_LOADING', value: true});
-    const data = {
+    const datas = {
       id_order: navigation.state.params.id_order
     }
     try {
@@ -69,7 +69,7 @@ const DetailActivityOrder = ({navigation}) => {
           Authorization: tokenizer,
         },
         cancelToken: signal.token,
-        params: data
+        params: datas
       });
 
       // console.log(response.data.data.order)
@@ -79,6 +79,7 @@ const DetailActivityOrder = ({navigation}) => {
         // console.log(response.data.data.order.length)
         // console.log(orderReducer[0])
         setData(response.data.data);
+        console.log(data)
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         showError('Failed Get Data')
