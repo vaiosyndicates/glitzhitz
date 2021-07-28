@@ -46,7 +46,6 @@ const DetailOrderScreen = ({navigation}) => {
   const [statusOrder, setStatusOrder] = useState('')
   const [detailOrder, setDetailOrder] = useState([])
   let tesStatus = '';
-  let detailOrders = [];
   let idMitraReject = ''
   var timer;
 
@@ -98,43 +97,6 @@ const DetailOrderScreen = ({navigation}) => {
         );
 
         console.log('aaaaaaaaaaaaa')
-
-      } catch (error) {
-        showError(error.message)
-      }
-
-    } else {
-      console.log('jancok')
-      getFullOrder()
-      stopTimer()
-    }
-  }
-
-  const searchingMitraReject = async() => {
-    getStatusOrder()
-    // console.log(`status ordetr : ${statusOrder}`)
-    console.log(`status order Tes : ${tesStatus}`)
-    if(tesStatus === '' || tesStatus === null || tesStatus === 'Reject'){
-      showError('Mitra No Response')
-      setLoad(true)
-
-      const datas = {
-        id_order: navigation.state.params.id_order ,
-        id_mitra: idMitraReject,
-      }
-
-      try {
-        const tokenizer = await AsyncStorage.getItem('token')
-        const response = await axios.post(
-          `${apiUrl}/Service/searchmitra_reject`, datas, {
-            headers: {
-              Accept: 'application/json',
-              Authorization: tokenizer,
-            }
-          }
-        );
-
-        console.log('masuk reject')
 
       } catch (error) {
         showError(error.message)
@@ -598,8 +560,6 @@ const DetailOrderScreen = ({navigation}) => {
         <View style={styles.buttonSection}>
           {flag === 1 &&
             <GradientButton
-              // onPressButton={()=> setSplash()}
-              // onPressButton={()=> navigation.navigate('FaspayScreen')}
               onPressButton={()=> handlePayment()}
               setting={shadowOpt}
               btnText="Pay Now"
@@ -608,28 +568,14 @@ const DetailOrderScreen = ({navigation}) => {
 
           {flag === 3 &&
             <GradientButton
-              // onPressButton={()=> setSplash()}
-              // onPressButton={()=> navigation.navigate('FaspayScreen')}
               onPressButton={()=> handlePayment()}
               setting={shadowOpt}
               btnText="Pay Now"
             />
           }
 
-          {/* {flag === 2 &&
-            <GradientButton
-              // onPressButton={()=> setSplash()}
-              // onPressButton={()=> navigation.navigate('FaspayScreen')}
-              onPressButton={()=> setSplash()}
-              setting={shadowOpt}
-              btnText="Search Mitra"
-            />
-          } */}
-
          {flag === 2 && trx.hasOwnProperty('order') && idMitra === null && statusMitra === null &&
-            <GradientButton
-            // onPressButton={()=> setSplash()}
-            // onPressButton={()=> navigation.navigate('FaspayScreen')}
+          <GradientButton
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
             btnText="Search Mitra"
@@ -638,8 +584,6 @@ const DetailOrderScreen = ({navigation}) => {
 
         {flag === 2 && trx.hasOwnProperty('order') && (idMitra !== null && statusMitra === null) &&
           <GradientButton
-            // onPressButton={()=> setSplash()}
-            // onPressButton={()=> navigation.navigate('FaspayScreen')}
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
             btnText="Search status"
@@ -648,8 +592,6 @@ const DetailOrderScreen = ({navigation}) => {
 
         {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === 'Reject' &&
           <GradientButton
-            // onPressButton={()=> setSplash()}
-            // onPressButton={()=> navigation.navigate('FaspayScreen')}
             onPressButton={()=> handleSearchReject()}
             setting={shadowOpt}
             btnText="Search Reject"

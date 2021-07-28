@@ -82,7 +82,7 @@ const CartScreen = ({navigation}) => {
         <EmptyCart />
       }
 
-      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
+      <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.20}]}>
       {stateCart.length > 0 &&
         <GradientButton
           onPressButton={()=> navigation.navigate('MapScreen')}

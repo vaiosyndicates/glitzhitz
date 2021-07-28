@@ -10,6 +10,8 @@ import {
   RefreshControl,
   ImageBackground,
   TouchableOpacity,
+  StatusBar,
+  SafeAreaView,
 } from 'react-native';
 
 import Text from '../elements/Text';
@@ -223,23 +225,25 @@ class MainServiceScreen extends Component {
     return (
       <>
         <View style={styles.page}>
-          <View style={styles.imageContainer}>
-            <Image
-              source={require('../../img/glitz/logoWhite.png')}
-              style={{width: 150, height: 80}}
-            />
-          </View>
           <LinearGradient
             colors={colors.gradient}
             style={styles.linearGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-          />
-          <View style={styles.personal}>
-            <Text style={styles.personalHellos}>Hello </Text>
-            <Text style={styles.personalAsk}>{(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
-          </View>
-          <View style={{height: deviceHeight * 0.03}} />
+          >
+            <View style={styles.imageContainer}>
+              <Image
+                source={require('../../img/glitz/logoWhite.png')}
+                style={{width: 150, height: 80}}
+              />
+            </View>
+            <View style={styles.personal}>
+              <Text style={styles.personalHellos}>Hello </Text>
+              <Text style={styles.personalAsk}>{(this.props.getProfile === null || typeof this.props.getProfile == 'undefined' ? this.state.name : this.props.getProfile.name)}</Text>
+            </View>
+          </LinearGradient>
+
+          <View style={{height: deviceHeight * 0.01}} />
           <ScrollView vertical 
             showsVerticalScrollIndicator={false}
             refreshControl={
@@ -379,7 +383,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 15,
-    marginTop: spaceHeight * 0.1,
+    // marginTop: spaceHeight * 0.1,
     marginLeft: deviceWidth * 0.05,
   },
   colMainLeft: {
@@ -394,15 +398,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: deviceHeight * 0.30,
-  },
-  imageContainer: {
-    position: 'absolute',
-    zIndex: 1,
-    left: deviceWidth * 0.32,
-    top: deviceHeight * 0.05,
+    flexDirection: 'column',
   },
   personal: {
-    marginTop: deviceHeight * -0.1,
+    alignSelf: 'flex-start',
+    marginTop: deviceHeight * 0.02,
     marginLeft: deviceWidth * 0.05,
   },
   personalHellos: {
@@ -411,9 +411,11 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.medium,
   },
   personalAsk: {
-    fontSize: deviceWidth * 0.05,
+    fontSize: deviceWidth * 0.045,
     color: colors.white,
     fontFamily: fontFamily.medium,
+    flexWrap: 'wrap',
+    flexShrink: 1,
   },
   page: {
     flex: 1,

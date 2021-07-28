@@ -486,7 +486,7 @@ const DetailActivityOrder = ({navigation}) => {
   
   return (
     <>
-    {/* {console.log(data)} */}
+    {/* {console.log(data.order[0].payment_code)} */}
       <View style={styles.page}>
         <HeaderGradient title="Detail" onPress={()=> navigation.goBack(null)} dMarginLeft={0.30} />
         {data.hasOwnProperty('order') &&
@@ -502,7 +502,7 @@ const DetailActivityOrder = ({navigation}) => {
                 </View>
                 {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null &&
                   <View style={styles.mitraSection}>
-                    <MitraInfo onPress={()=> handleReorder()} disabled={true} ava={navigation.state.params.avaMitra} name={data.order[0].nama_mitra} speciality={data.order[0].spesialis} status={data.order[0].status} />
+                    <MitraInfo onPress={()=> handleReorder()} disabled={true} ava={data.order[0].ava_mitra} name={data.order[0].nama_mitra} speciality={data.order[0].spesialis} status={data.order[0].status} />
                   </View>
                 }
                 {data.order[0].status === 'Completed' && 
@@ -561,13 +561,16 @@ const DetailActivityOrder = ({navigation}) => {
                   btnText="CANCEL ORDER"
                 />
               </View>
-              <View>
-                <GradientButton
-                  onPressButton={()=> handleHowTo()}
-                  setting={shadowButton}
-                  btnText="How To Pay"
-                />
-              </View>
+              { (data.order[0].payment_code === '402' || data.order[0].payment_code === '801' || data.order[0].payment_code === '800' || 
+                 data.order[0].payment_code === '802' || data.order[0].payment_code === '825') &&
+                <View>
+                  <GradientButton
+                    onPressButton={()=> handleHowTo()}
+                    setting={shadowButton}
+                    btnText="How To Pay"
+                  />
+                </View>
+              }
             </>
           }
 
