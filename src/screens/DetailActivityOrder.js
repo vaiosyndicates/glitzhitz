@@ -618,7 +618,7 @@ const DetailActivityOrder = ({navigation}) => {
                 <GradientButton
                   onPressButton={()=> handleSearchReject()}
                   setting={shadowButton}
-                  btnText="Search Reject"
+                  btnText="Search Mitra"
                 />
               </View>
               <View>

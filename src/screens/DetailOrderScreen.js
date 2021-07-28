@@ -586,7 +586,7 @@ const DetailOrderScreen = ({navigation}) => {
           <GradientButton
             onPressButton={()=> setSplash()}
             setting={shadowOpt}
-            btnText="Search status"
+            btnText="Search Mitra"
           />
         }
 
@@ -594,7 +594,7 @@ const DetailOrderScreen = ({navigation}) => {
           <GradientButton
             onPressButton={()=> handleSearchReject()}
             setting={shadowOpt}
-            btnText="Search Reject"
+            btnText="Search Mitra"
           />
         }
 
