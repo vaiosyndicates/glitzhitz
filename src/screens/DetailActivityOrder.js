@@ -39,7 +39,7 @@ const DetailActivityOrder = ({navigation}) => {
   var timer
   let tesStatus = ''
   let idMitraReject = ''
-
+  let idOrder = ''
 
   useEffect(() => {
     if(mounted) {
@@ -79,7 +79,7 @@ const DetailActivityOrder = ({navigation}) => {
         // console.log(response.data.data.order.length)
         // console.log(orderReducer[0])
         setData(response.data.data);
-        console.log(data)
+        // console.log(data)
       } else {
         dispatch({type: 'SET_LOADING', value: false});
         showError('Failed Get Data')
@@ -137,6 +137,43 @@ const DetailActivityOrder = ({navigation}) => {
 
   const handleCancelDialog = () => {
     setModal(false)
+  }
+
+  const handlesetCancel = async() => {
+    setModal(false)
+    const datas = {
+      id_order: data.order[0].id_order,
+      trx_id: data.order[0].trx_id,
+    }
+
+    // console.log(datas)
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${apiUrl}/Payment/cancel_payment`, datas, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+
+      // console.log(response.data)
+
+      if(response.data.status === 200) {
+        showSuccess('Order Cancelled')
+        setModal(false)
+        setTimeout(() => {
+          navigation.dispatch(resetActivity); 
+        }, 2000);
+      } else {
+        showError('Failed')
+      }
+    } catch (error) {
+      showError(error.message)
+      console.log(error.response.data)
+    }
   }
 
   // end cancel button //
@@ -328,6 +365,7 @@ const DetailActivityOrder = ({navigation}) => {
         console.log(` id: ${response.data.data.order[0].status_mitra}`)
         tesStatus = response.data.data.order[0].status_mitra
         idMitraReject = response.data.data.order[0].id_mitra
+        idOrder = response.data.data.order[0].id_order
       }
     } catch (error) {
       showError(error.message)
@@ -412,11 +450,11 @@ const DetailActivityOrder = ({navigation}) => {
       setLoad(true)
 
       const datas = {
-        id_order: navigation.state.params.id_order ,
+        id_order: idOrder === null || idOrder === '' ? data.order[0].id_order : idOrder,
         id_mitra: idMitraReject === null || idMitraReject === '' ? data.order[0].id_mitra : idMitraReject,
       }
 
-      console.log(datas);
+      // console.log(datas);
 
       try {
         const tokenizer = await AsyncStorage.getItem('token')

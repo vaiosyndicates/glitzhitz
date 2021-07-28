@@ -16,12 +16,13 @@ import HeaderGradient from '../components/Header';
 import DetailOrder from '../components/molekul'
 import SplashMap from '../components/splash-map';
 import GradientButton from '../elements/GradientButton';
-import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables';
+import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowButton, shadowOpt } from '../styles/variables';
 import {apiUrl} from '../util/API';
 import { resetLogin } from '../util/ResetRouting';
 import {Picker} from '@react-native-picker/picker';
 import { showError } from '../util/ShowMessage';
 import {TimeOut} from '../components/molekul'
+import Dialog from "react-native-dialog"
 
 const DetailOrderScreen = ({navigation}) => {
   let mounted = false;
@@ -45,6 +46,11 @@ const DetailOrderScreen = ({navigation}) => {
   const [statusMitra, setStatusMitra] = useState('')
   const [statusOrder, setStatusOrder] = useState('')
   const [detailOrder, setDetailOrder] = useState([])
+  const [reason, setReason] = useState('');
+  const [modalRefund, setModalRefund] = useState(false);
+  const [bankType, setBankType] = useState('1');
+  const [account, setAccount] = useState('')
+  const [name, setName] = useState('')
   let tesStatus = '';
   let idMitraReject = ''
   var timer;
@@ -366,6 +372,66 @@ const DetailOrderScreen = ({navigation}) => {
     }
   }
 
+  // refund button
+
+  const handleRefund = () => {
+    const channel = trx.order[0].payment_code
+    // console.log(channel)
+    switch (channel) {
+      case '1':
+        setModalRefund(true)
+        break;
+    
+      default:
+        const datas = {
+          id_order: trx.order[0].id_order
+        }
+        // console.log(datas)
+        navigation.navigate('RefundScreen', datas);
+        break;
+    }
+  }
+
+  const handleCancelDialogRefund = () => {
+    setModalRefund(false)
+  }
+
+  const handlesetRefund = async() => {
+    setReason('')
+    setModalRefund(false)
+    const datas = {
+      id_order: trx.order[0].id_order,
+      nama_rekening: name,
+      bank: bankType,
+      rekening: account,
+      alasan: reason,
+    }
+
+    // console.log(datas)
+
+    try {
+      const tokenizer = await AsyncStorage.getItem('token');
+      const response = await axios.post(
+        `${apiUrl}/Payment/refund_order`, datas, {
+          headers: {
+            Accept: 'application/json',
+            Authorization: tokenizer,
+          }
+        }
+      );
+      // console.log(response)
+      if(response.status === 200) {
+        showSuccess('Refund will be processed')
+      } else {
+        showError('Error')
+      }
+    } catch (error) {
+      showError(`Internal server ${error.message}`)
+      console.log(error.response.data)
+    }
+  }
+  // end refund button
+
   const getChannel = async() => {
     try {
       const tokenizer = await AsyncStorage.getItem('token');
@@ -583,11 +649,23 @@ const DetailOrderScreen = ({navigation}) => {
         }
 
         {flag === 2 && trx.hasOwnProperty('order') && (idMitra !== null && statusMitra === null) &&
-          <GradientButton
-            onPressButton={()=> setSplash()}
-            setting={shadowOpt}
-            btnText="Search Mitra"
-          />
+          <View style={styles.buttonGroup}>
+            <View>
+              <GradientButton
+                onPressButton={()=> setSplash()}
+                setting={shadowButton}
+                btnText="Search Mitra"
+              />
+            </View>
+            <View>
+              <GradientButton
+                onPressButton={()=> handleRefund()}
+                setting={shadowButton}
+                btnText="Refund"
+              />
+            </View>
+          </View>
+
         }
 
         {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === 'Reject' &&
@@ -601,6 +679,12 @@ const DetailOrderScreen = ({navigation}) => {
         </View>
       </View>
     </View>
+    <Dialog.Container visible={modalRefund}>
+      <Dialog.Title style={styles.dialogTitles}>Why you refund this order?</Dialog.Title>
+      <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
+      <Dialog.Button label="Cancel" onPress={() => handleCancelDialogRefund()} />
+      <Dialog.Button label="OK" onPress={() => handlesetRefund()} />
+    </Dialog.Container>
     {load && <SplashMap />}
     {timeout.status && flag === 2 && <TimeOut name={timeout.code === 500 ? 'INTERNAL SERVER ERROR' : 'NETWORK ERROR'}  onPress={() => handleRefresh()} errorCode={timeout.code} />}
     </>
@@ -678,4 +762,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.borderViolet,
   },
+  buttonGroup: {
+    flexDirection : 'row',
+    justifyContent: 'space-around',
+  },
+  dialogTitles: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.04,
+    fontFamily: fontFamily.semiBold,
+  },
+  dialogInputs: {
+    color: colors.grey,
+    fontSize: deviceWidth * 0.035,
+    fontFamily: fontFamily.regular,
+  }
 })
