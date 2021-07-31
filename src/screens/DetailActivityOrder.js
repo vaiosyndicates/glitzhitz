@@ -285,7 +285,7 @@ const DetailActivityOrder = ({navigation}) => {
     // console.log(`status ordetr : ${statusOrder}`)
     console.log(`status order activity : ${tesStatus}`)
     if(tesStatus === '' || tesStatus === null){
-      showError('Mitra No Response')
+      // showError('Mitra No Response')
       setLoad(true)
 
       const datas = {
@@ -331,6 +331,7 @@ const DetailActivityOrder = ({navigation}) => {
         console.log('REJECTREJECTREJECT')
 
       } catch (error) {
+        console.log(error.response.data)
         showError(error.message)
       }
 
@@ -398,6 +399,7 @@ const DetailActivityOrder = ({navigation}) => {
         stopTimer()
         const mitra = {
           idMitra: response.data.data.order[0].id_mitra,
+          ava_mitra: response.data.data.order[0].ava_mitra,
           namaMitra: response.data.data.order[0].nama_mitra,
           rating: response.data.data.order[0].rating,
           speciality: response.data.data.order[0].speciality,
@@ -446,7 +448,7 @@ const DetailActivityOrder = ({navigation}) => {
     // console.log(`status ordetr : ${statusOrder}`)
     console.log(`status order reject : ${tesStatus}`)
     if(tesStatus === 'Reject' || tesStatus === null || tesStatus === ''){
-      showError('Mitra No Response')
+      // showError('Mitra No Response')
       setLoad(true)
 
       const datas = {

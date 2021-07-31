@@ -125,7 +125,7 @@ const ActivityScreen = ({navigation}) => {
   }
 
   const SetFlat = ({datas, idx}) => {
-    // console.log(datas.status)
+    // console.log(` ${datas.trx_id } ${datas.ava_mitra}`)
       const item = [];
       let visible = false
       const status = datas.status
@@ -145,7 +145,7 @@ const ActivityScreen = ({navigation}) => {
       );
     });
     // console.log(paySections);
-    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment' || (status == 'Payment Success' && availbility === null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') || (status == 'Payment Success' && availbility !== null && statusMitra === null) || (status == 'Payment Success' && availbility !== null && statusMitra === '')) {
+    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment'  || status == 'Refund' || (status == 'Payment Success' && availbility === null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') || (status == 'Payment Success' && availbility !== null && statusMitra === null) || (status == 'Payment Success' && availbility !== null && statusMitra === '')) {
       visible = false
     }  else {
       visible = true

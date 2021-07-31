@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper';
 const InputChat = ({value, onChangeText, onButtonPress}) => {
   return (
     <>
-      <KeyboardAvoidingView behavior="padding">
+      <KeyboardAvoidingView keyboardVerticalOffset={deviceHeight * -0.50} behavior="padding">
         <View style={styles.container}>
           <TextInput
             style={styles.input}

@@ -84,7 +84,7 @@ const DetailOrderScreen = ({navigation}) => {
     // console.log(`status ordetr : ${statusOrder}`)
     console.log(`status order Tes : ${tesStatus}`)
     if(tesStatus === '' || tesStatus === null){
-      showError('Mitra No Response')
+      // showError('Mitra No Response')
       setLoad(true)
 
       const datas = {
@@ -171,6 +171,7 @@ const DetailOrderScreen = ({navigation}) => {
         stopTimer()
         const mitra = {
           idMitra: response.data.data.order[0].id_mitra,
+          ava_mitra: response.data.data.order[0].ava_mitra,
           namaMitra: response.data.data.order[0].nama_mitra,
           rating: response.data.data.order[0].rating,
           speciality: response.data.data.order[0].speciality,
@@ -187,6 +188,7 @@ const DetailOrderScreen = ({navigation}) => {
 
 
     } catch (error) {
+      console.log(error.response.data)
       showError(error.message)
     }
   }

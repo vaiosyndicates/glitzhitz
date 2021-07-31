@@ -5,34 +5,38 @@ import NavigationService from './src/util/Navigator';
 
 PushNotification.configure({
   onNotification: function (notification) {
-
+    // console.log(notification)
     switch (notification.data.type) {
-      // case 'Payment':
-
-      //   const data = {
-      //     id_order: parseInt(notification.data.id_order),
-      //     flag: parseInt(notification.data.flag),
-      //   }
-
-
-      //   NavigationService.navigate('DetailOrderScreen', data);
+      case 'Payment':
+        if(notification.userInteraction === true) { 
+          const data = {
+            id_order: parseInt(notification.data.id_order),
+            flag: parseInt(notification.data.flag),
+          }
+  
+          NavigationService.navigate('DetailOrderScreen', data);
+        }
         
-      //   break;
+        break;
 
       case 'Chatting':
-        const datas = {
-          type: notification.data.type,
-          id_order: notification.data.id_order,
-          trx_id: notification.data.trx_id,
-          chat_content: notification.data.message,
-          nama_mitra: notification.data.nama_mitra,
-          nama_user: notification.data.nama_customer,
-          token_receiver: notification.data.token_receiver,
-          token_sender: notification.data.token_sender,
-          flag: notification.data.flag,
+        if(notification.userInteraction === true) {
+          const datas = {
+            type: notification.data.type,
+            id_order: notification.data.id_order,
+            trx_id: notification.data.trx_id,
+            chat_content: notification.data.message,
+            nama_mitra: notification.data.nama_mitra,
+            nama_user: notification.data.nama_customer,
+            token_receiver: notification.data.token_receiver,
+            token_sender: notification.data.token_sender,
+            flag: notification.data.flag,
+          }
+
+          NavigationService.navigate('ChattingScreen', datas);
+        } else {
+          console.log(notification.data)
         }
-        // console.log(notification.data)
-        NavigationService.navigate('ChattingScreen', datas);
 
         break;
     

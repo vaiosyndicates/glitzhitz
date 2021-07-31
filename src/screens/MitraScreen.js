@@ -75,7 +75,8 @@ const MitraScreen = ({navigation}) => {
             <View style={styles.mitraSection}>
               <View>
                 <Image
-                  source={require('../../img/glitz/users.png')}
+                  // source={require('../../img/glitz/users.png')}
+                  source={{uri: navigation.state.params.ava_mitra}}
                   style={styles.avatar} />
               </View>
               <View>
