@@ -8,12 +8,12 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'
 import HeaderGradient from '../components/Header'
-import { colors, deviceHeight, deviceWidth, fontFamily, shadowOpt } from '../styles/variables'
+import { colors, deviceHeight, deviceWidth, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 import {Picker} from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiUrl } from '../util/API';
 import axios from 'axios';
-import { Divider } from 'react-native-paper';
+import { Divider, List } from 'react-native-paper';
 import GradientButton from '../elements/GradientButton';
 import { showError, showSuccess } from '../util/ShowMessage';
 import { resetActivity } from '../util/ResetRouting';
@@ -118,9 +118,26 @@ const RefundScreen = ({navigation}) => {
             <View>
               <View style={styles.headerSection}>
                 <Text style={styles.refundTitle}>REFUND POLICIES</Text>
-                <Text style={styles.refundsubTitle}>Refund will be process differentialy according to your payment method</Text>
               </View>
-              <Divider />
+              <View>
+                <List.AccordionGroup>
+                  <List.Accordion titleStyle={styles.titleAccordion} title="Virtual Account and E-Wallet" style={styles.titleAccordion} id="1">
+                    <List.Section>
+                      <View style={styles.guidance}>
+                        <Text style={styles.textWrap}>Dana akan masuk ker rekening anda estimasi 1 hari kerja</Text>
+                      </View>
+                    </List.Section>
+                  </List.Accordion>
+                  <List.Accordion titleStyle={styles.titleAccordion} title="Credit Card" style={styles.titleAccordion} id="2">
+                    <List.Section>
+                      <View style={styles.guidance}>
+                        <Text style={styles.textWrap}>Dana akan masuk ke rekening anda estimasi 5 hari kerja</Text>
+                      </View>
+                    </List.Section>
+                  </List.Accordion>
+                </List.AccordionGroup>
+              </View>
+              <Divider style={styles.divider} />
               <View style={styles.bankSection}>
                 <View>
                   <View style={styles.titleSection}>
@@ -293,5 +310,24 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontSize: deviceWidth * 0.035,
     fontFamily: fontFamily.regular,
+  },
+  titleAccordion: {
+    color: colors.black,
+    fontFamily: fontFamily.regular,
+    fontSize: fontSize.normal,
+    marginLeft: deviceWidth * -0.02,
+  },
+  textWrap: {
+    flexWrap: 'wrap',
+    color: colors.black2,
+    fontSize: fontSize.small,
+    fontFamily: fontFamily.regular,
+  },
+  bankSection: {
+    marginTop: deviceHeight * 0.01,
+  },
+  divider: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.borderViolet
   }
 })
