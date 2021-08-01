@@ -54,6 +54,7 @@ const DetailOrderScreen = ({navigation}) => {
   let tesStatus = '';
   let idMitraReject = ''
   var timer;
+  let idOrder = ''
 
   const setSplash = async() => {
     setLoad(true);
@@ -108,7 +109,31 @@ const DetailOrderScreen = ({navigation}) => {
         showError(error.message)
       }
 
-    } else {
+    } else if(tesStatus === 'Reject') {
+      const datas = {
+        id_order:  navigation.state.params.id_order,
+        id_mitra: idMitraReject === null || idMitraReject === '' ? trx.order[0].id_mitra : idMitraReject,
+      }
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra_reject`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('REJECTREJECTREJECT')
+
+      } catch (error) {
+        console.log(error.response.data)
+        showError(error.message)
+      }
+
+    }else {
       console.log('jancok')
       getFullOrder()
       stopTimer()
@@ -139,6 +164,7 @@ const DetailOrderScreen = ({navigation}) => {
         console.log(` id: ${response.data.data.order[0].status_mitra}`)
         tesStatus = response.data.data.order[0].status_mitra
         idMitraReject = response.data.data.order[0].id_mitra
+        idOrder = response.data.data.order[0].id_order
       }
     } catch (error) {
       showError(error.message)
@@ -211,6 +237,49 @@ const DetailOrderScreen = ({navigation}) => {
       }
     }, 5000);
   }
+
+  const searchingMitraReject = async() => {
+    getStatusOrder()
+    // console.log(`status ordetr : ${statusOrder}`)
+    console.log(`status order reject : ${tesStatus}`)
+    if(tesStatus === 'Reject' || tesStatus === null || tesStatus === ''){
+      // showError('Mitra No Response')
+      setLoad(true)
+
+      const datas = {
+        id_order: idOrder === null || idOrder === '' ? trx.order[0].id_order : idOrder,
+        id_mitra: idMitraReject === null || idMitraReject === '' ? trx.order[0].id_mitra : idMitraReject,
+      }
+
+      // console.log(datas);
+
+      try {
+        const tokenizer = await AsyncStorage.getItem('token')
+        const response = await axios.post(
+          `${apiUrl}/Service/searchmitra_reject`, datas, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+
+        console.log('masuk reject cok')
+
+      } catch (error) {
+        showError(error.message)
+        console.log(error.response.data)
+      }
+
+    } else {
+      console.log('--------------------------')
+      console.log('stop rejecting')
+      console.log('--------------------------')
+      getFullOrder()
+      stopTimer()
+    }
+  }
+  // end search reject //
 
   useEffect(() => {
     const flag = navigation.state.params.flag;
@@ -671,11 +740,24 @@ const DetailOrderScreen = ({navigation}) => {
         }
 
         {flag === 2 && trx.hasOwnProperty('order') && idMitra !== null && statusMitra === 'Reject' &&
-          <GradientButton
-            onPressButton={()=> handleSearchReject()}
-            setting={shadowOpt}
-            btnText="Search Mitra"
-          />
+        <>
+          <View style={styles.buttonGroup}>
+            <View>
+              <GradientButton
+                onPressButton={()=> handleSearchReject()}
+                setting={shadowButton}
+                btnText="Search Reject"
+              />
+            </View>
+            <View>
+              <GradientButton
+                onPressButton={()=> handleRefund()}
+                setting={shadowButton}
+                btnText="Refund"
+              />
+            </View>
+          </View>
+          </>
         }
 
         </View>

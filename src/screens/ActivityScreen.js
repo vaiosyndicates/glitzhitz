@@ -145,7 +145,7 @@ const ActivityScreen = ({navigation}) => {
       );
     });
     // console.log(paySections);
-    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment'  || status == 'Refund' || (status == 'Payment Success' && availbility === null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') || (status == 'Payment Success' && availbility !== null && statusMitra === null) || (status == 'Payment Success' && availbility !== null && statusMitra === '')) {
+    if(status == 'Completed' || status == 'Canceled' || status == 'Waiting for payment'  || status == 'Refund' || status == 'Refund dalam proses' || (status == 'Payment Success' && availbility === null) || (status == 'Payment Success' && availbility !== null && statusMitra == 'Reject') || (status == 'Payment Success' && availbility !== null && statusMitra === null) || (status == 'Payment Success' && availbility !== null && statusMitra === '')) {
       visible = false
     }  else {
       visible = true

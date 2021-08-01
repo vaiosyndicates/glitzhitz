@@ -134,7 +134,7 @@ const MainApp = () => {
 
             case "Refund":
 
-              Alert.alert("Refund Notification", "Go To Activity For Details", [
+              Alert.alert("Refund Notification", `${remoteMessage.data.message}`, [
                 { text: "OK", onPress: () => NavigationService.navigate(`${remoteMessage.data.screen}Screen`)}
               ]);
             break;

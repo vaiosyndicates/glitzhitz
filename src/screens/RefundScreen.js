@@ -116,27 +116,6 @@ const RefundScreen = ({navigation}) => {
         <KeyboardAvoidingView behavior="height" style={Platform.OS !== 'android' && { flex: 1 }}> 
           <ScrollView vertical showsVerticalScrollIndicator={false}>
             <View>
-              <View style={styles.headerSection}>
-                <Text style={styles.refundTitle}>REFUND POLICIES</Text>
-              </View>
-              <View>
-                <List.AccordionGroup>
-                  <List.Accordion titleStyle={styles.titleAccordion} title="Virtual Account and E-Wallet" style={styles.titleAccordion} id="1">
-                    <List.Section>
-                      <View style={styles.guidance}>
-                        <Text style={styles.textWrap}>Dana akan masuk ker rekening anda estimasi 1 hari kerja</Text>
-                      </View>
-                    </List.Section>
-                  </List.Accordion>
-                  <List.Accordion titleStyle={styles.titleAccordion} title="Credit Card" style={styles.titleAccordion} id="2">
-                    <List.Section>
-                      <View style={styles.guidance}>
-                        <Text style={styles.textWrap}>Dana akan masuk ke rekening anda estimasi 5 hari kerja</Text>
-                      </View>
-                    </List.Section>
-                  </List.Accordion>
-                </List.AccordionGroup>
-              </View>
               <Divider style={styles.divider} />
               <View style={styles.bankSection}>
                 <View>
@@ -237,7 +216,8 @@ const RefundScreen = ({navigation}) => {
       </View>
     </View>
     <Dialog.Container visible={modal}>
-      <Dialog.Title style={styles.dialogTitles}>Are you sure to refund this order</Dialog.Title>
+      <Dialog.Title style={styles.dialogTitles}>Apakah anda yakin ?</Dialog.Title>
+      <Dialog.Title style={styles.dialogTitles}>Dana akan masuk dalam 1 hari kerja </Dialog.Title>
       <Dialog.Button label="Cancel" onPress={() => handleCancelDialog()} />
       <Dialog.Button label="OK" onPress={() => handleOkDialog()} />
     </Dialog.Container>

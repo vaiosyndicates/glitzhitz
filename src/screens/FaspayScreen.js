@@ -30,7 +30,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import {showError, showSuccess} from '../util/ShowMessage';
 import { WebView } from 'react-native-webview';
-import { resetLogin } from '../util/ResetRouting';
+import { resetActivity, resetLogin } from '../util/ResetRouting';
 
 const FaspayScreen = ({navigation}) => {
   
@@ -43,13 +43,13 @@ const FaspayScreen = ({navigation}) => {
     }
 
     const backAction = () => {
-      Alert.alert("Hold on!", `${navigation.state.params.channel_code === '812' ? `Are you sure you want to go cancel this order?` : `Are you sure you want to leave this page?`}`, [
+      Alert.alert("Hold on!", `${navigation.state.params.channel_code === '812' ? `Check activity menu for details order` : `Check activity menu for details order`}`, [
         {
           text: "Cancel",
           onPress: () => null,
           style: "cancel"
         },
-        { text: "YES", onPress: () => navigation.dispatch(resetLogin)}
+        { text: "YES", onPress: () => navigation.dispatch(resetActivity)}
       ]);
       return true;
     };

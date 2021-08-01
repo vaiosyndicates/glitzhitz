@@ -228,6 +228,9 @@ const DetailActivityOrder = ({navigation}) => {
       // console.log(response)
       if(response.status === 200) {
         showSuccess('Refund will be processed')
+        setTimeout(() => {
+          navigation.dispatch(resetActivity); 
+        }, 2000);
       } else {
         showError('Error')
       }
@@ -540,7 +543,7 @@ const DetailActivityOrder = ({navigation}) => {
                   <Text style={styles.boxDateTitle}>Date</Text>
                   <Text style={styles.boxDateDate}>{data.order[0].order_time}</Text>
                 </View>
-                {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null &&
+                {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && data.order[0].status_mitra !== 'Reject' &&
                   <View style={styles.mitraSection}>
                     <MitraInfo onPress={()=> handleReorder()} disabled={true} ava={data.order[0].ava_mitra} name={data.order[0].nama_mitra} speciality={data.order[0].spesialis} status={data.order[0].status} />
                   </View>
@@ -701,7 +704,8 @@ const DetailActivityOrder = ({navigation}) => {
       </Dialog.Container>
 
       <Dialog.Container visible={modalRefund}>
-        <Dialog.Title style={styles.dialogTitles}>Why you refund this order?</Dialog.Title>
+        <Dialog.Title style={styles.dialogTitles}>Alasan anda refund?</Dialog.Title>
+        <Dialog.Title style={styles.dialogTitles}>Dana akan masuk ke rekening dalam estimasi 5 hari kerja</Dialog.Title>
         <Dialog.Input style={styles.dialogInputs} value={reason} onChangeText={(value) => setReason(value)} autoFocus={true} />
         <Dialog.Button label="Cancel" onPress={() => handleCancelDialogRefund()} />
         <Dialog.Button label="OK" onPress={() => handlesetRefund()} />
