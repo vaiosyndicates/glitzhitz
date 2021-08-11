@@ -25,6 +25,7 @@ import { showError } from '../util/ShowMessage';
 import { resetLogin } from '../util/ResetRouting';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageButton from '../elements/ImageButton';
+import { apiUrl } from '../util/API';
 
 // @inject('sampleStore')
 class SignInScreen extends Component {
@@ -161,7 +162,7 @@ class SignInScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/login', data, {
+        `${apiUrl}/User/login`, data, {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

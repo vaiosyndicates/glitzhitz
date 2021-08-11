@@ -35,7 +35,7 @@ const GetStarted = ({navigation}) => {
                 btnText="SIGN IN"
                 onPressButton={() => navigation.navigate('SignInScreen')}
                 disabled= {false}/>
-                <Text style={{height: 45}} />
+                <Text style={{height: deviceHeight * 0.03}} />
               <GradientButton
                 setting={shadowOpt}
                 btnText="SIGN UP"

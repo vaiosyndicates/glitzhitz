@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import {resetAction} from '../util/ResetRouting';
 import { showError, showSuccess } from '../util/ShowMessage';
+import { apiUrl } from '../util/API';
 
 const ChangePassword = ({navigation}) => {
   const [password, setPassword] = useState('');
@@ -26,7 +27,7 @@ const ChangePassword = ({navigation}) => {
     try {
       dispatch({type: 'SET_LOADING', value: false});
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/change_password', data, {
+        `${apiUrl}/User/change_password`, data, {
           headers: {
             Accept: 'application/json',
           }

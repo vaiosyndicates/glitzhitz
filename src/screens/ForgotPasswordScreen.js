@@ -13,6 +13,7 @@ import SignUpScreen from './SignUpScreen';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { showError } from '../util/ShowMessage';
+import { apiUrl } from '../util/API';
 // import SignInScreen from './SignInScreen';
 
 class ForgotPasswordScreen extends Component {
@@ -43,11 +44,6 @@ class ForgotPasswordScreen extends Component {
               />
             </View>
           </View>
-          <Text normal grey regular
-            style={{width: deviceWidth - 70, marginBottom: 65, textAlign: 'left'}}
-          >
-            Lost access to your number?
-          </Text>
         </View>
         <View style={CommonStyles.buttonBox}>
           <GradientButton
@@ -55,7 +51,7 @@ class ForgotPasswordScreen extends Component {
             setting={shadowOpt}
             btnText="RESET PASSWORD"
             disabled={
-              this.state.phone.length < 9
+              this.state.phone.length < 5
                 ? true
                 : false
             }
@@ -86,7 +82,7 @@ class ForgotPasswordScreen extends Component {
     // console.log(data);
     try {
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/forgot_password', data, {
+        `${apiUrl}/User/forgot_password`, data, {
           headers: {
             Accept: 'application/json',
           }
@@ -137,6 +133,7 @@ const styles = StyleSheet.create({
   },
   formBox: {
     alignItems: 'center',
+    marginBottom: deviceHeight * 0.02,
   },
   noteBox: {
     flex: 1,
