@@ -382,17 +382,16 @@ const styles = StyleSheet.create({
   fullField: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 15,
-    // marginTop: spaceHeight * 0.1,
-    marginLeft: deviceWidth * 0.05,
   },
   colMainLeft: {
     flex: 1,
-    marginRight: deviceWidth * 0.015,
+    alignItems: 'center',
+    marginLeft: deviceWidth * 0.015,
   },
   colMainRight: {
     flex: 1,
-    marginLeft: deviceWidth * 0.015,
+    alignItems: 'center',
+    marginRight: deviceWidth * 0.015,
   },
   linearGradient: {
     alignItems: 'center',
