@@ -26,7 +26,7 @@ const ChangePassword = ({navigation}) => {
     try {
       dispatch({type: 'SET_LOADING', value: false});
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/change_password', data, {
+        'https://api.glitzandhitz.com/index.php/User/change_password', data, {
           headers: {
             Accept: 'application/json',
           }

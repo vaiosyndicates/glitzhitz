@@ -55,7 +55,7 @@ class ForgotPasswordScreen extends Component {
             setting={shadowOpt}
             btnText="RESET PASSWORD"
             disabled={
-              this.state.phone.length < 9
+              this.state.phone.length < 11
                 ? true
                 : false
             }
@@ -86,7 +86,7 @@ class ForgotPasswordScreen extends Component {
     // console.log(data);
     try {
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/forgot_password', data, {
+        'https://api.glitzandhitz.com/index.php/User/forgot_password', data, {
           headers: {
             Accept: 'application/json',
           }

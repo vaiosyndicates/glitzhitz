@@ -230,7 +230,7 @@ class SignUpScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/add', data, {
+        'https://api.glitzandhitz.com/index.php/User/add', data, {
           headers: {
             Accept: 'application/json',
           }

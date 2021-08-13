@@ -99,7 +99,7 @@ class VerifyPhoneScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/cek_otp', data, {
+        'https://api.glitzandhitz.com/index.php/User/cek_otp', data, {
           headers: {
             Accept: 'application/json',
           }
@@ -139,7 +139,7 @@ class VerifyPhoneScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/resend_otp', data, {
+        'https://api.glitzandhitz.com/index.php/User/resend_otp', data, {
           headers: {
             Accept: 'application/json',
           }

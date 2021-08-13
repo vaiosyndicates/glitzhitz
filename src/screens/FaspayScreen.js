@@ -89,7 +89,7 @@ const FaspayScreen = ({navigation}) => {
       <HeaderGradient title="Payment" onPress={()=> handleBackNavigation()} dMarginLeft={0.25} />
       {navigation.state.params.isCC ?
       <WebView
-        source={{uri: 'http://api.glitzandhitz.com/index.php/Payment/creditcard',
+        source={{uri: 'https://api.glitzandhitz.com/index.php/Payment/creditcard',
           body: JSON.stringify(navigation.state.params),
           method:'POST'}}
         javaScriptCanOpenWindowsAutomatically={true}

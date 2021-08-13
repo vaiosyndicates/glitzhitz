@@ -161,7 +161,7 @@ class SignInScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'http://api.glitzandhitz.com/index.php/User/login', data, {
+        'https://api.glitzandhitz.com/index.php/User/login', data, {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
