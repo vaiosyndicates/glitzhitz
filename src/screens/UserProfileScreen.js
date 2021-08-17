@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { 
   StyleSheet, 
   View, 
-  Image, 
+  Platform, 
   ScrollView,
   RefreshControl,
+  Linking
  } from 'react-native';
 
 import Text from '../elements/Text';
@@ -89,6 +90,15 @@ class UserProfileScreen extends Component {
               header='Edit Profile'
               onPressItem={() => this.onClickEdit()}
             />
+          <ItemWithDetail
+              image={{
+                url: require('../../img/glitz/phone-call.png'),
+                width: 20,
+                height: 23 
+              }}
+              header='Call Center'
+              onPressItem={() => this.onClickCall()}
+            />             
             <ItemWithDetail
               image={{
                 url: require('../../img/glitz/logout.png'),
@@ -119,6 +129,16 @@ class UserProfileScreen extends Component {
     }
     this.props.navigation.navigate("EditProfileScreen", data);
   }
+
+  onClickCall() {
+    let number = '';
+    if (Platform.OS === 'ios') {
+      number = 'telprompt:${+62 819-91-492888}';
+    } else {
+      number = 'tel:${+62 819-91-492888}';
+    }
+    Linking.openURL(number);
+  }   
 
   _handleRefresh() {
     console.log('refresh')

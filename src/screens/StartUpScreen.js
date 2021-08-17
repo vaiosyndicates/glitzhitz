@@ -70,7 +70,7 @@ class StartUpScreen extends Component {
           flex: 1,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#fff'
+          backgroundColor: '#000000'
         }}
       >
         <Image

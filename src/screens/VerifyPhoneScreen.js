@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { showError, showSuccess } from '../util/ShowMessage';
 import { NavigationActions, StackActions } from 'react-navigation';
 import {resetAction} from '../util/ResetRouting';
+import { apiUrl } from '../util/API';
 
 class VerifyPhoneScreen extends Component {
   constructor(props) {
@@ -99,7 +100,7 @@ class VerifyPhoneScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'https://api.glitzandhitz.com/index.php/User/cek_otp', data, {
+        `${apiUrl}/User/cek_otp`, data, {
           headers: {
             Accept: 'application/json',
           }
@@ -139,7 +140,7 @@ class VerifyPhoneScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'https://api.glitzandhitz.com/index.php/User/resend_otp', data, {
+        'http://api.glitzandhitz.com/index.php/User/resend_otp', data, {
           headers: {
             Accept: 'application/json',
           }

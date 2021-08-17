@@ -215,7 +215,7 @@ class MainServiceScreen extends Component {
     const rdx = this.props.getService;
     const datas = (rdx === null || typeof rdx == 'undefined' ? this.state.data : this.props.getService);
     let first = datas.slice(0, this.findMiddle());
-    let second = datas.slice(- this.findMiddle());
+    let second = datas.slice(this.findMiddle());
     return [first, second] ;
   }
   
@@ -276,22 +276,22 @@ class MainServiceScreen extends Component {
               </View>
               <View style={styles.colMainRight}>
                 {second.length > 0 && second.map((current, i) => {
-                    return (
-                      <React.Fragment key={current.id_service}>
-                        <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
-                          <ImageBackground 
-                            source={{ uri: current.image }} 
-                            style={styles.image}
-                            imageStyle={{ borderRadius: 6}}
-                          >
-                              <View style={styles.bannerSection}>
-                                <Text style={styles.textBanner}>{ current.name}</Text>
-                              </View>
-                          </ImageBackground>
-                        </TouchableOpacity>
-                      </React.Fragment>
-                    );
-                  })}
+                  return (
+                    <React.Fragment key={current.id_service}>
+                      <TouchableOpacity onPress={() => this._handleClickShopping(current.id_service, current.name, current.image)}>
+                        <ImageBackground 
+                          source={{ uri: current.image }} 
+                          style={styles.image}
+                          imageStyle={{ borderRadius: 6}}
+                        >
+                            <View style={styles.bannerSection}>
+                              <Text style={styles.textBanner}>{ current.name}</Text>
+                            </View>
+                        </ImageBackground>
+                      </TouchableOpacity>
+                    </React.Fragment>
+                  );
+                })}
               </View>
             </View>
           </ScrollView>
@@ -382,17 +382,16 @@ const styles = StyleSheet.create({
   fullField: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 15,
-    // marginTop: spaceHeight * 0.1,
-    marginLeft: deviceWidth * 0.05,
   },
   colMainLeft: {
     flex: 1,
-    marginRight: deviceWidth * 0.015,
+    alignItems: 'center',
+    marginLeft: deviceWidth * 0.015,
   },
   colMainRight: {
     flex: 1,
-    marginLeft: deviceWidth * 0.015,
+    alignItems: 'center',
+    marginRight: deviceWidth * 0.015,
   },
   linearGradient: {
     alignItems: 'center',

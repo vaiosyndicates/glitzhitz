@@ -30,6 +30,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { color } from 'react-native-reanimated';
+import { apiUrl } from '../util/API';
 
 class SignUpScreen extends Component {
   constructor(props) {
@@ -230,7 +231,7 @@ class SignUpScreen extends Component {
     try {
       this.props.loading(true);
       const response = await axios.post(
-        'https://api.glitzandhitz.com/index.php/User/add', data, {
+        `${apiUrl}/User/add`, data, {
           headers: {
             Accept: 'application/json',
           }

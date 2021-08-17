@@ -20,7 +20,7 @@ const MitraInfo = ({onPress, disabled, ava, name, speciality, status}) => {
           </View>
         </View>
         <View></View>
-        {(status !== 'Canceled') &&
+        {(status !== 'Canceled') && (status !== 'Payment Success') &&
           <View style={styles.buttonSection}>
             <Buttons onPress={onPress} disabled={disabled} title='REORDER'/>
           </View>

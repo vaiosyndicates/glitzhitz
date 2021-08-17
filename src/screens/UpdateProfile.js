@@ -74,7 +74,7 @@ const UpdateProfile = ({navigation}) => {
         <View style={CommonStyles.textInputField}>
           <Image
             source={require('../../img/healer/envelope.png')}
-            style={{position:'absolute',bottom: 12,left: 20,width: 20, height: 22}}
+            style={{position:'absolute',top: deviceHeight * 0.0085, bottom: 12,left: deviceWidth * 0.03, width: deviceWidth * 0.075, height: deviceHeight * 0.03}}
           />
           <TextInput
             placeholder='Email'
@@ -87,7 +87,7 @@ const UpdateProfile = ({navigation}) => {
         <View style={CommonStyles.textInputField}>
           <Image
             source={require('../../img/healer/avatar.png')}
-            style={{position:'absolute',bottom: 12,left: 20,width: 19, height: 22}}
+            style={{position:'absolute',bottom: 12,left: deviceWidth * 0.04, width: deviceWidth * 0.05, height: deviceHeight * 0.03}}
           />
           <TextInput
             placeholder='Address'
@@ -100,7 +100,7 @@ const UpdateProfile = ({navigation}) => {
         <View style={CommonStyles.textInputField}>
           <Image
             source={require('../../img/glitz/phone.png')}
-            style={{position:'absolute',bottom: 12,left: 20,width: 20, height: 22}}
+            style={{position:'absolute',top: deviceHeight * 0.0085, bottom: deviceHeight * 0.05,left: deviceWidth * 0.04, width: deviceWidth * 0.05, height: deviceHeight * 0.035}}
           />
           <TextInput
             placeholder='Phone'

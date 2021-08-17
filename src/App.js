@@ -16,6 +16,7 @@ import NavigationService from './util/Navigator';
 import PushNotification from 'react-native-push-notification'
 import NetInfo from '@react-native-community/netinfo'
 import { showError } from './util/ShowMessage';
+import { deviceHeight } from './styles/variables';
 
 const {width, height} = Dimensions.get('window');
 
@@ -234,7 +235,7 @@ const MainApp = () => {
         }}
       />
       {stateLoading && <Loading />}
-      <FlashMessage position="top" />
+      <FlashMessage position="top"  />
     </>
   );
 };
