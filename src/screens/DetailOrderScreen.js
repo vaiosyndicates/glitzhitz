@@ -8,7 +8,9 @@ import {
   ScrollView,
   BackHandler,
   Alert,
-  Image
+  Image,
+  ImageBackground,
+  Pressable
  } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { AddressList, PaySection, ProductList, TotalSection } from '../components/atom';
@@ -23,6 +25,8 @@ import {Picker} from '@react-native-picker/picker';
 import { showError } from '../util/ShowMessage';
 import {TimeOut} from '../components/molekul'
 import Dialog from "react-native-dialog"
+import { Switch } from 'react-native-paper'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const DetailOrderScreen = ({navigation}) => {
   let mounted = false;
@@ -51,6 +55,8 @@ const DetailOrderScreen = ({navigation}) => {
   const [bankType, setBankType] = useState('1');
   const [account, setAccount] = useState('')
   const [name, setName] = useState('')
+  const [gender, setGender] = useState('pria')
+
   let tesStatus = '';
   let idMitraReject = ''
   var timer;
@@ -75,6 +81,7 @@ const DetailOrderScreen = ({navigation}) => {
     }, 5000);
   };
 
+
   const stopTimer = () => {
     console.log("Stop");
     clearInterval(timer);
@@ -90,8 +97,10 @@ const DetailOrderScreen = ({navigation}) => {
 
       const datas = {
         id_order: navigation.state.params.id_order ,
+        gender: gender
       }
 
+      // console.log(datas)
       try {
         const tokenizer = await AsyncStorage.getItem('token')
         const response = await axios.post(
@@ -249,6 +258,7 @@ const DetailOrderScreen = ({navigation}) => {
       const datas = {
         id_order: idOrder === null || idOrder === '' ? trx.order[0].id_order : idOrder,
         id_mitra: idMitraReject === null || idMitraReject === '' ? trx.order[0].id_mitra : idMitraReject,
+        gender: gender
       }
 
       // console.log(datas);
@@ -614,9 +624,17 @@ const DetailOrderScreen = ({navigation}) => {
     }
   }
 
+  const handleGenderMale = () => {
+    setGender('pria')
+  }
+
+  const handleGenderFemale = () => {
+    setGender('wanita')
+  }
+
   return (
     <>
-    {/* {console.log(idMitra)} */}
+    {/* {console.log(gender)} */}
     <View style={styles.page}>
       <HeaderGradient title="Detail"  onPress={()=> (flag === 2 ? handleBackNavigation()  : navigation.goBack(null))} dMarginLeft={0.30}  />
       <View style={styles.container}>
@@ -687,6 +705,35 @@ const DetailOrderScreen = ({navigation}) => {
           {flag === 3 &&
             <TotalSection title="TOTAL" total={navigation.state.params.totals} flag={flag} />
           }
+        </View>
+        <View style={styles.genderSection}>
+          <View>
+            <Text style={styles.genderTitle}>GENDER MITRA</Text>
+          </View>
+          <View style={styles.genderItem}>
+            <View>
+              <Pressable onPress={() => handleGenderMale()}>
+                <ImageBackground 
+                  source={{ uri: "https://reactjs.org/logo-og.png" }} 
+                  resizeMode="cover" 
+                  style={styles.images} 
+                />
+              </Pressable>
+
+            </View>
+            <View>
+              <Pressable onPress={() => handleGenderFemale()}>
+                <ImageBackground 
+                  source={{ uri: "https://reactjs.org/logo-og.png" }} 
+                  resizeMode="cover" 
+                  style={styles.images} 
+                />
+              </Pressable>
+            </View>
+            <View></View>
+            <View></View>
+            <View></View>
+          </View>
         </View>
         <View style={styles.paySection}>
         {flag === 2 && trx.hasOwnProperty('order') &&
@@ -859,5 +906,22 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontSize: deviceWidth * 0.035,
     fontFamily: fontFamily.regular,
+  },
+  genderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: moderateScale(15)
+  },
+  images: {
+    width: moderateScale(100),
+    height: moderateScale(50)
+  },
+  genderSection: {
+    marginTop: moderateScale(10),
+  },
+  genderTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
   }
 })

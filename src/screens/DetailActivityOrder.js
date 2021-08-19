@@ -8,7 +8,9 @@ import {
   Image, 
   TouchableOpacity, 
   ScrollView,
-  Alert
+  Alert,
+  Pressable,
+  ImageBackground,
 } from 'react-native'
 import { color } from 'react-native-reanimated'
 import {AddressList, MitraInfo, PaySection, ProductList} from '../components/atom'
@@ -21,6 +23,7 @@ import { showError, showSuccess } from '../util/ShowMessage'
 import Dialog from "react-native-dialog"
 import { useDispatch, useSelector } from 'react-redux';
 import { resetActivity } from '../util/ResetRouting'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const DetailActivityOrder = ({navigation}) => {
   let signal = axios.CancelToken.source();
@@ -36,6 +39,8 @@ const DetailActivityOrder = ({navigation}) => {
   const [account, setAccount] = useState('')
   const [name, setName] = useState('')
   const [selectedLanguage, setSelectedLanguage] = useState('1');
+  const [gender, setGender] = useState('pria')
+
   var timer
   let tesStatus = ''
   let idMitraReject = ''
@@ -293,9 +298,10 @@ const DetailActivityOrder = ({navigation}) => {
 
       const datas = {
         id_order: navigation.state.params.id_order ,
+        gender: gender,
       }
 
-      console.log(`id mitra : ${idMitraReject}`);
+      console.log(datas);
 
       try {
         const tokenizer = await AsyncStorage.getItem('token')
@@ -318,6 +324,7 @@ const DetailActivityOrder = ({navigation}) => {
       const datas = {
         id_order:  navigation.state.params.id_order,
         id_mitra: idMitraReject,
+        gender: gender,
       }
 
       try {
@@ -457,6 +464,7 @@ const DetailActivityOrder = ({navigation}) => {
       const datas = {
         id_order: idOrder === null || idOrder === '' ? data.order[0].id_order : idOrder,
         id_mitra: idMitraReject === null || idMitraReject === '' ? data.order[0].id_mitra : idMitraReject,
+        gender: gender,
       }
 
       // console.log(datas);
@@ -526,6 +534,19 @@ const DetailActivityOrder = ({navigation}) => {
   }
   // end done //
 
+  // handle gender pria
+  const handleGenderMale = () => {
+    setGender('pria')
+  }
+
+  // end handle
+
+  //handle gender wanita
+  const handleGenderFemale = () => {
+    setGender('wanita')
+  }
+  //end handle
+
   
   return (
     <>
@@ -568,6 +589,37 @@ const DetailActivityOrder = ({navigation}) => {
                     <Text style={styles.totalPrice}>Rp. {parseFloat(data.order[0].total_price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                   </View>
                 </View>
+                {data.order[0].status === 'Payment Success' &&
+                  <View style={styles.genderSection}>
+                    <View>
+                      <Text style={styles.genderTitle}>GENDER MITRA</Text>
+                    </View>
+                    <View style={styles.genderItem}>
+                      <View>
+                        <Pressable onPress={() => handleGenderMale()}>
+                          <ImageBackground 
+                            source={{ uri: "https://reactjs.org/logo-og.png" }} 
+                            resizeMode="cover" 
+                            style={styles.images} 
+                          />
+                        </Pressable>
+
+                      </View>
+                      <View>
+                        <Pressable onPress={() => handleGenderFemale()}>
+                          <ImageBackground 
+                            source={{ uri: "https://reactjs.org/logo-og.png" }} 
+                            resizeMode="cover" 
+                            style={styles.images} 
+                          />
+                        </Pressable>
+                      </View>
+                      <View></View>
+                      <View></View>
+                      <View></View>
+                    </View>
+                  </View>
+                }
                 <View style={styles.confirmSection}>
                   <PaySection title='PAY WITH' data={data.order} />
                 </View>
@@ -955,5 +1007,22 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontSize: deviceWidth * 0.035,
     fontFamily: fontFamily.regular,
+  },
+  genderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: moderateScale(15)
+  },
+  images: {
+    width: moderateScale(100),
+    height: moderateScale(50)
+  },
+  genderSection: {
+    marginTop: moderateScale(10),
+  },
+  genderTitle: {
+    fontSize: fontSize.small,
+    color: colors.grey,
+    fontFamily: fontFamily.light,
   }
 })
