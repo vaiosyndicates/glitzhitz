@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   page: {
     backgroundColor: colors.white,
     flex: 1,
-    marginTop: moderateScale(100),
+    marginTop: moderateScale(120),
   },
   imageContainer: {
     alignItems: 'center',

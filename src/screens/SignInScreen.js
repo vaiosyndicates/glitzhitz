@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerSection: {
-    marginTop: StatusBar.currentHeight + 10,
+    marginTop: StatusBar.currentHeight + moderateScale(40),
     alignItems: 'center',
   },
   imageBox: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.semiBold,
   },
   formSection: {
-    marginTop: moderateScale(40),
+    marginTop: moderateScale(100),
   },
   passwordSection: {
     flexDirection: 'row',
