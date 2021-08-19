@@ -3,6 +3,7 @@ import { StyleSheet, Image, Text, View, Dimensions } from 'react-native'
 import { colors, fontFamily, fontSize, shadowOpt } from '../styles/variables'
 import { LinearGradient } from 'expo-linear-gradient'
 import GradientButton from '../elements/GradientButton'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
@@ -19,7 +20,7 @@ const GetStarted = ({navigation}) => {
       </View>
       <View style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.textHeader}>“Make You Feel Beauty is Our Duty”</Text>
+          <Text style={styles.textHeader}>Make You Feel Beauty is Our Duty</Text>
         </View>
         <View style={styles.body}>
           <LinearGradient
@@ -35,7 +36,7 @@ const GetStarted = ({navigation}) => {
                 btnText="SIGN IN"
                 onPressButton={() => navigation.navigate('SignInScreen')}
                 disabled= {false}/>
-                <Text style={{height: deviceHeight * 0.03}} />
+                <Text style={{height: moderateScale(20)}} />
               <GradientButton
                 setting={shadowOpt}
                 btnText="SIGN UP"
@@ -55,30 +56,26 @@ export default GetStarted
 const styles = StyleSheet.create({
   container: {
     flex: 1, 
-
     backgroundColor: colors.white,
   },
   page: {
     backgroundColor: colors.white,
     flex: 1,
-    marginTop: 343,
+    marginTop: moderateScale(100),
   },
   imageContainer: {
-    position: 'absolute',
-    marginTop: deviceHeight * 0.10,
-    marginLeft: deviceWidth * 0.28,
-    marginBottom: deviceHeight * 0.20,
+    alignItems: 'center',
+    marginTop: moderateScale(60),
   },
   linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: deviceHeight * 0.89,
-    width: deviceWidth * 1.5,
-    borderRadius: deviceHeight * 0.89 /2,
+    height: moderateScale(600),
+    width: moderateScale(570),
+    borderRadius: moderateScale(600) /2,
     marginLeft: deviceWidth * -0.25
   },
   linearGradientOval: {
-
     alignItems: 'center',
     justifyContent: 'center',
     height: deviceHeight * 0.10,
@@ -88,11 +85,11 @@ const styles = StyleSheet.create({
   header: {
     position: 'absolute',
     zIndex: 1,
-    marginLeft: deviceWidth * 0.14,
-    marginTop: deviceHeight * 0.05,
+    marginLeft: moderateScale(60),
+    marginTop: moderateScale(40),
   },
   textHeader: {
-    fontSize: fontSize.extraLarge,
+    fontSize: moderateScale(30),
     fontFamily: fontFamily.regular,
     color: colors.white,
     flexWrap: 'wrap',
@@ -103,16 +100,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: deviceWidth * 0.85,
     zIndex: 1,
-  },
-  textFooter: {
-    color: colors.white,
-    position: 'absolute',
-    fontSize: fontSize.itemHeader,
-    fontFamily: fontFamily.regular,
-    marginLeft: deviceWidth * 0.01,
-    marginBottom: deviceHeight * 0.05,
-    marginTop: deviceHeight * -0.30,
-    textAlign: 'center',
   },
   buttonGroup: {
     marginTop: deviceHeight * 0.02,

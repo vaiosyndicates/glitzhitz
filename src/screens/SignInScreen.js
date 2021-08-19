@@ -14,7 +14,7 @@ import Text from '../elements/Text';
 import GradientButton from '../elements/GradientButton';
 import CheckBox from '../elements/CheckBox';
 
-import { deviceWidth, deviceHeight, shadowOpt, colors } from '../styles/variables';
+import { deviceWidth, deviceHeight, shadowOpt, colors, fontFamily } from '../styles/variables';
 
 import CommonStyles from '../styles/CommonStyles';
 import SignUpScreen from './SignUpScreen';
@@ -26,6 +26,7 @@ import { resetLogin } from '../util/ResetRouting';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageButton from '../elements/ImageButton';
 import { apiUrl } from '../util/API';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 // @inject('sampleStore')
 class SignInScreen extends Component {
@@ -44,95 +45,108 @@ class SignInScreen extends Component {
 
   render() {
     return (
-      <View style={CommonStyles.normalSinglePage}>
-        <ScrollView contentContainerStyle={{height: deviceHeight - 25}}>
-          <View style={styles.titleBox}>
-            <Text extraLarge black extraBold>SIGN IN</Text>
-          </View>
-          <View style={styles.formBox}>
-            <View style={CommonStyles.textInputField}>
-              <Image
-               source={require('../../img/healer/envelope.png')}
-               style={{position:'absolute',bottom: 12,left: 20,width: 22, height: 17}}
-              />
-              <TextInput
-                placeholder='Username / Email'
-                style={CommonStyles.textInput}
-                underlineColorAndroid='transparent'
-                onChangeText={text => this.setState({email: text})}
-              />
+      <View style={styles.page}>
+        <View style={styles.headerSection}>
+          <Text extraLarge black extraBold>SIGN IN </Text>
+        </View>
+        <View style={styles.container}>
+          <View style={styles.formSection}>
+            <View style={styles.emailSection}>
+              <View style={styles.imageBox}>
+                <Image
+                  source={require('../../img/healer/envelope.png')}
+                  style={{width: 22, height: 17}}
+                  />
+              </View>
+              <View>
+                <TextInput
+                  placeholder='Username / Email'
+                  underlineColorAndroid='transparent'
+                  style={styles.inputEmail}
+                  onChangeText={text => this.setState({email: text})}
+                />
+              </View>
             </View>
-            <View style={CommonStyles.textInputField}>
-              <Image
-                source={require('../../img/healer/padlock.png')}
-                style={{position:'absolute',bottom: 12,left: 20, width: 17, height: 22, zIndex: 99999}}
-              />
-              <TextInput
-                placeholder='Password'
-                style={CommonStyles.textInput}
-                underlineColorAndroid='transparent'
-                onChangeText={text => this.setState({password: text})}
-                secureTextEntry={this.state.hidden}
-              />
-            </View>
-            {this.state.eyeOpen &&
-              <ImageButton
-                appearance={{
-                    normal: require("../../img/glitz/eye-open.png"),
-                    highlight: require("../../img/glitz/eye-open.png")
-                }}
-                onPress={this.onPress.bind(this)}
-                style={styles.imageButton}
-              />
-            }
-           {this.state.eyeClose &&
-              <ImageButton
-                appearance={{
-                    normal: require("../../img/glitz/eye-closed.png"),
-                    highlight: require("../../img/glitz/eye-closed.png")
-                }}
-                onPress={this.onPressClose.bind(this)}
-                style={styles.imageButton}
-              />
-            }
-
-          </View>
-          <View style={[CommonStyles.buttonBox, {marginBottom: spaceHeight * 0.15}]}>
-            <GradientButton
-              onPressButton={this._onLoggedIn.bind(this)}
-              setting={shadowOpt}
-              btnText="SIGN IN"
-              disabled={
-                this.state.email.length < 3 ||
-                this.state.password.length < 3
-                  ? true
-                  : false
+            <View style={styles.passwordSection}>
+              <View style={styles.imageBox}>
+                <Image
+                  source={require('../../img/healer/padlock.png')}
+                  style={{width: 17, height: 22}}
+                />
+              </View>
+              <View>
+                <TextInput
+                  placeholder='Password'
+                  underlineColorAndroid='transparent'
+                  style={styles.inputPassword}
+                  onChangeText={text => this.setState({password: text})}
+                  secureTextEntry={this.state.hidden}
+                />
+              </View>
+              <View style={styles.visibilitySection}>
+              {this.state.eyeOpen &&
+                <ImageButton
+                  appearance={{
+                      normal: require("../../img/glitz/eye-open.png"),
+                      highlight: require("../../img/glitz/eye-open.png")
+                  }}
+                  onPress={this.onPress.bind(this)}
+                  style={styles.imageButtons}
+                />
               }
-            />
+              {this.state.eyeClose &&
+                <ImageButton
+                  appearance={{
+                      normal: require("../../img/glitz/eye-closed.png"),
+                      highlight: require("../../img/glitz/eye-closed.png")
+                  }}
+                  onPress={this.onPressClose.bind(this)}
+                  style={styles.imageButtons}
+                />
+              }
+              </View>
+            </View>
+            <View style={styles.buttonItem}>
+              <View style={styles.buttonSignIn}>
+                <GradientButton
+                  onPressButton={this._onLoggedIn.bind(this)}
+                  setting={shadowOpt}
+                  btnText="SIGN IN"
+                  disabled={
+                    this.state.email.length < 3 ||
+                    this.state.password.length < 3
+                      ? true
+                      : false
+                  }
+                />
+              </View>
+              <View>
+                <Text normal lightGrey regular>
+                  Forgot Password?
+                  <Text> </Text>
+                  <Text
+                    style={{color: colors.softBlue}}
+                    onPress={() => this._handleClickFortgotPass()}>
+                    FORGOT
+                  </Text>
+                </Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.noteBoxes}>
-            <Text normal lightGrey regular>
-              Forgot Password?
-              <Text> </Text>
-              <Text
-                style={{color: colors.softBlue}}
-                onPress={() => this._handleClickFortgotPass()}>
-                FORGOT
+          <View>
+            <View style={styles.footerNote}>
+              <Text normal lightGrey regular>
+                Don't have an account?
+                <Text> </Text>
+                <Text
+                  style={{color: colors.softBlue}}
+                  onPress={() => this._goToSignUpScreen()}>
+                  SIGN UP
+                </Text>
               </Text>
-            </Text>
+            </View>
           </View>
-          <View style={styles.noteBox}>
-            <Text normal lightGrey regular>
-              Don't have an account?
-              <Text> </Text>
-              <Text
-                style={{color: colors.softBlue}}
-                onPress={() => this._goToSignUpScreen()}>
-                SIGN UP
-              </Text>
-            </Text>
-          </View>
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -211,29 +225,83 @@ const ELEMENT_HEIGHT = 377;
 const spaceHeight = deviceHeight - ELEMENT_HEIGHT;
 
 const styles = StyleSheet.create({
-  titleBox: {
-    marginTop: spaceHeight * 0.20,
-    marginBottom: spaceHeight * 0.20,
+  page: {
+    flex: 1,
+    backgroundColor: colors.white
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  headerSection: {
+    marginTop: StatusBar.currentHeight + 10,
+    alignItems: 'center',
+  },
+  imageBox: {
+    height: moderateScale(45),
+    width: moderateScale(30),
+    paddingLeft: moderateScale(5) ,
+    justifyContent: 'center',
+    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 20,
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.borderViolet
+  },
+  emailSection: {
+    flexDirection : 'row',
+    alignItems: 'center',
+    marginLeft: moderateScale(25),
+    marginVertical: moderateScale(10),
+  },
+  inputEmail: {
+    width: moderateScale(300),
+    height: moderateScale(45),
+    borderBottomRightRadius: 15,
+    borderTopRightRadius: 15,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.borderViolet,
+    fontSize: moderateScale(15),
+    fontFamily: fontFamily.semiBold,
+  },
+  inputPassword: {
+    width: moderateScale(250),
+    height: moderateScale(45),
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.borderViolet,
+    fontSize: moderateScale(15),
+    fontFamily: fontFamily.semiBold,
+  },
+  formSection: {
+    marginTop: moderateScale(40),
+  },
+  passwordSection: {
+    flexDirection: 'row',
+    marginLeft: moderateScale(25),
+    marginVertical: moderateScale(15),
+  },
+  visibilitySection: {
+    width: moderateScale(50),
     justifyContent: 'center',
     alignItems: 'center',
+    borderBottomRightRadius: 15,
+    borderTopRightRadius: 15,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.borderViolet,
   },
-  formBox: {
-    height: deviceHeight * 0.28,
+  buttonItem: {
     alignItems: 'center',
-    marginBottom: spaceHeight * 0.05,
   },
-  noteBox: {
-    flex: 1,
-    justifyContent: 'flex-end',
+  buttonSignIn: {
+    marginVertical: moderateScale(20),
+  },
+  footerNote: {
     alignItems: 'center',
-    paddingBottom: deviceHeight * -0.01,
   },
-  noteBoxes: {
-    alignItems: 'center',
-    marginTop: deviceHeight * -0.05,
-  },
-  imageButton: {
-    marginTop: deviceHeight * -0.075,
-    marginLeft: deviceWidth * 0.70
-  }
 });

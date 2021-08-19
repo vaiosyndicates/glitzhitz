@@ -40,6 +40,7 @@
     "react-native-animatable": "1.2.4",
     "react-native-animated-loader": "^0.0.9",
     "react-native-calendar-datepicker": "^1.2.2",
+    "react-native-calendars": "^1.1264.0",
     "react-native-collapsible": "^1.5.3",
     "react-native-confirmation-code-input": "^1.0.4",
     "react-native-date-picker": "^3.3.0",
