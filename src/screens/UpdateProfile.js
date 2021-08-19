@@ -30,39 +30,44 @@ const UpdateProfile = ({navigation}) => {
 
   const onUpdate = async() => {
     dispatch({type: 'SET_LOADING', value: true});
-    const data = {
-      name: name,
-      email: email,
-      address: address,
-      phone: phone,
-    }
-
-    try {
-      const tokenizer = await AsyncStorage.getItem('token');
-      const response = await axios.post(
-        `${apiUrl}/user/update`, data, {
-          headers: {
-            Accept: 'application/json',
-            Authorization: tokenizer,
-          }
-        }
-      );
-      
-      if(response.status === 200){
-        dispatch({type: 'SET_LOADING', value: false});
-        showSuccess('Update Success');
-        setTimeout(() => {
-          navigation.dispatch(resetLogin); 
-        }, 2000);
-      } else{
-        dispatch({type: 'SET_LOADING', value: false});
-        showError('Failed Update');
-      }
-
-    } catch (error) {
+    let format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if(format.test(phone)) {
       dispatch({type: 'SET_LOADING', value: false});
-      console.log(error)
-      showError('Network Error');
+      showError('Phone number only number allowed')
+    } else {
+      const data = {
+        name: name,
+        email: email,
+        address: address,
+        phone: phone,
+      }
+      try {
+        const tokenizer = await AsyncStorage.getItem('token');
+        const response = await axios.post(
+          `${apiUrl}/user/update`, data, {
+            headers: {
+              Accept: 'application/json',
+              Authorization: tokenizer,
+            }
+          }
+        );
+        
+        if(response.status === 200){
+          dispatch({type: 'SET_LOADING', value: false});
+          showSuccess('Update Success');
+          setTimeout(() => {
+            navigation.dispatch(resetLogin); 
+          }, 2000);
+        } else{
+          dispatch({type: 'SET_LOADING', value: false});
+          showError('Failed Update');
+        }
+  
+      } catch (error) {
+        dispatch({type: 'SET_LOADING', value: false});
+        console.log(error)
+        showError('Network Error');
+      }
     }
   }
 
@@ -107,6 +112,7 @@ const UpdateProfile = ({navigation}) => {
             style={CommonStyles.textInput}
             underlineColorAndroid='transparent'
             value={phone}
+            keyboardType="number-pad"
             onChangeText={text => setPhone(text)}
           />
         </View>
