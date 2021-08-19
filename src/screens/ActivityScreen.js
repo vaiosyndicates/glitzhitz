@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Button } from 'react-native-paper';
 import {apiUrl} from '../util/API'
 import {TimeOut} from '../components/molekul'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const ActivityScreen = ({navigation}) => {
   let _isMounted = false
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
   },
   flatList: {
     paddingHorizontal: deviceWidth * 0.02,
-    height: deviceHeight * 0.75,
+    height: moderateScale(560),
     flexGrow: 0,
     paddingBottom: deviceHeight * 0.05,
   },
