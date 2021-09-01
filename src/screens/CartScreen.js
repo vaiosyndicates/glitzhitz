@@ -19,6 +19,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-native-paper';
 import {showError, showSuccess} from '../util/ShowMessage';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const CartScreen = ({navigation}) => {
   
@@ -146,14 +147,14 @@ const styles = StyleSheet.create({
     marginLeft: deviceWidth * 0.05,
     justifyContent: 'center',
     color: colors.violet1,
-    fontSize: fontSize.normal,
+    fontSize: moderateScale(15),
     fontFamily: fontFamily.medium,
   },
   price: {
     marginLeft: deviceWidth * 0.05,
     marginTop: deviceHeight * 0.02,
     color: colors.black,
-    fontSize: fontSize.small,
+    fontSize: moderateScale(12),
     fontFamily: fontFamily.regular
   },
    boxWrapper: {

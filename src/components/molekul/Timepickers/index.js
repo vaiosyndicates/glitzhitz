@@ -4,6 +4,7 @@ import DatePicker from 'react-native-date-picker'
 import ScrollPicker from '../../../elements/ScrollPicker'
 import CommonStyles from '../../../styles/CommonStyles'
 import { colors, deviceHeight, deviceWidth } from '../../../styles/variables'
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters'
 
 const Timepickers = ({onChanged, onPress, curDate}) => {
 
@@ -49,7 +50,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButton: {
-    width: deviceWidth * 0.10,
-    height: deviceHeight * 0.015,
+    width: moderateScale(30),
+    height: moderateScale(10),
+    top: moderateScale(5),
+    right: moderateScale(10)
   }
 })
