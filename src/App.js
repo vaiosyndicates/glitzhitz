@@ -46,24 +46,24 @@ class CustomDrawerView extends Component {
     this.setState({ fontLoaded: true });
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    /** Active Drawer Swipe **/
-    if (nextProps.navigation.state.index === 0)
-      this._drawer.blockSwipeAbleDrawer(false);
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   /** Active Drawer Swipe **/
+  //   if (nextProps.navigation.state.index === 0)
+  //     this._drawer.blockSwipeAbleDrawer(false);
 
-    if (
-      nextProps.navigation.state.index === 0
-      && this.props.navigation.state.index === 0
-    ) {
-      this._drawer.blockSwipeAbleDrawer(false);
-      this._drawer.close();
-    }
+  //   if (
+  //     nextProps.navigation.state.index === 0
+  //     && this.props.navigation.state.index === 0
+  //   ) {
+  //     this._drawer.blockSwipeAbleDrawer(false);
+  //     this._drawer.close();
+  //   }
 
-    /** Block Drawer Swipe **/
-    if (nextProps.navigation.state.index > 0) {
-      this._drawer.blockSwipeAbleDrawer(true);
-    }
-  }
+  //   /** Block Drawer Swipe **/
+  //   if (nextProps.navigation.state.index > 0) {
+  //     this._drawer.blockSwipeAbleDrawer(true);
+  //   }
+  // }
 
   render() {
     if (this.state.fontLoaded === false) {
