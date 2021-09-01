@@ -589,7 +589,7 @@ const DetailActivityOrder = ({navigation}) => {
                     <Text style={styles.totalPrice}>Rp. {parseFloat(data.order[0].total_price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}</Text>
                   </View>
                 </View>
-                {data.order[0].status === 'Payment Success' &&
+                {/* {data.order[0].status === 'Payment Success' &&
                   <View style={styles.genderSection}>
                     <View>
                       <Text style={styles.genderTitle}>GENDER MITRA</Text>
@@ -619,7 +619,7 @@ const DetailActivityOrder = ({navigation}) => {
                       <View></View>
                     </View>
                   </View>
-                }
+                } */}
                 <View style={styles.confirmSection}>
                   <PaySection title='PAY WITH' data={data.order} />
                 </View>
