@@ -162,7 +162,7 @@ const RefundScreen = ({navigation}) => {
                   <View>
                     <View>
                       <View style={styles.titleSection}>
-                        <Text style={styles.accountTitleName}>Account Number or Phone Number</Text>
+                        <Text style={styles.accountTitleName}>Account Number</Text>
                       </View>
                     </View>
                     <View>

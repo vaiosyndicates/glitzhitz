@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   emailSection: {
     flexDirection : 'row',
     alignItems: 'center',
-    marginLeft: moderateScale(25),
+    justifyContent: 'center',
     marginVertical: moderateScale(10),
   },
   inputEmail: {
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   passwordSection: {
     flexDirection: 'row',
-    marginLeft: moderateScale(25),
+    justifyContent: 'center',
     marginVertical: moderateScale(15),
   },
   visibilitySection: {

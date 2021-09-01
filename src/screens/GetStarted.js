@@ -70,9 +70,9 @@ const styles = StyleSheet.create({
   linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: moderateScale(600),
-    width: moderateScale(570),
-    borderRadius: moderateScale(600) /2,
+    height: deviceHeight * 0.89,
+    width: deviceWidth * 1.5,
+    borderRadius: deviceHeight * 0.89 /2,
     marginLeft: deviceWidth * -0.25
   },
   linearGradientOval: {
