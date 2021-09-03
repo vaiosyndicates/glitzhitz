@@ -706,7 +706,7 @@ const DetailOrderScreen = ({navigation}) => {
             <TotalSection title="TOTAL" total={navigation.state.params.totals} flag={flag} />
           }
         </View>
-        {/* <View style={styles.genderSection}>
+        <View style={styles.genderSection}>
           <View>
             <Text style={styles.genderTitle}>GENDER MITRA</Text>
           </View>
@@ -734,7 +734,7 @@ const DetailOrderScreen = ({navigation}) => {
             <View></View>
             <View></View>
           </View>
-        </View> */}
+        </View>
         <View style={styles.paySection}>
         {flag === 2 && trx.hasOwnProperty('order') &&
           <PaySection title='PAY WITH' data={trx.order} />
