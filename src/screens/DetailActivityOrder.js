@@ -564,7 +564,7 @@ const DetailActivityOrder = ({navigation}) => {
                   <Text style={styles.boxDateTitle}>Date</Text>
                   <Text style={styles.boxDateDate}>{data.order[0].order_time}</Text>
                 </View>
-                {data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null && data.order[0].status_mitra !== 'Reject' &&
+                {(data.order[0].status === 'Payment Success' && data.order[0].id_mitra !== null) && (data.order[0].status_mitra !== 'Reject') && (data.order[0].status === 'Payment Success' && data.order[0].status_mitra !== null) && 
                   <View style={styles.mitraSection}>
                     <MitraInfo onPress={()=> handleReorder()} disabled={true} ava={data.order[0].ava_mitra} name={data.order[0].nama_mitra} speciality={data.order[0].spesialis} status={data.order[0].status} />
                   </View>

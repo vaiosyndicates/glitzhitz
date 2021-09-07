@@ -11,6 +11,7 @@ export const showError = message => {
     textStyle: fontFamily.medium,
     floating: true,
     statusBarHeight: StatusBar.currentHeight,
+    duration: 20000,
   });
 };
 
