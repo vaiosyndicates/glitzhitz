@@ -89,7 +89,7 @@ export default class BookAppointmentScreen extends Component {
                   theme={{
                     backgroundColor: '#ffffff',
                     calendarBackground: '#ffffff',
-                    textSectionTitleColor: '#b6c1cd',
+                    textSectionTitleColor: colors.black,
                     textSectionTitleDisabledColor: '#d9e1e8',
                     selectedDayBackgroundColor: colors.violet1,
                     selectedDayTextColor: colors.white,
@@ -100,7 +100,7 @@ export default class BookAppointmentScreen extends Component {
                     selectedDotColor: '#ffffff',
                     arrowColor: 'orange',
                     disabledArrowColor: '#d9e1e8',
-                    monthTextColor: '#ffffff',
+                    monthTextColor: colors.black,
                     indicatorColor: 'blue',
                     textDayFontFamily: 'monospace',
                     textMonthFontFamily: 'monospace',
